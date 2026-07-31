@@ -1,0 +1,41 @@
+{
+  "name": "nexa-sunverter-academy",
+  "version": "1.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev:web": "pnpm --filter @nexa/web dev",
+    "build:web": "pnpm --filter @nexa/web build",
+    "start:web": "pnpm --filter @nexa/web start",
+    "deploy:check": "pnpm qa",
+    "dev:mobile": "pnpm --filter @nexa/mobile start",
+    "android": "pnpm --filter @nexa/mobile android",
+    "ios": "pnpm --filter @nexa/mobile ios",
+    "export:android": "pnpm --filter @nexa/mobile exec expo export --platform android",
+    "export:ios": "pnpm --filter @nexa/mobile exec expo export --platform ios",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "check:peers": "pnpm peers check",
+    "doctor:mobile": "pnpm --filter @nexa/mobile run doctor",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate:content": "node --import tsx scripts/validate-content.ts",
+    "check:translations": "node --import tsx scripts/check-translations.ts",
+    "check:branding": "node --import tsx scripts/check-branding.ts",
+    "check:links": "node --import tsx scripts/check-links.ts",
+    "qa": "pnpm validate:content && pnpm check:translations && pnpm check:branding && pnpm check:links && pnpm check:peers && pnpm typecheck && pnpm test && pnpm build:web && pnpm doctor:mobile"
+  },
+  "devDependencies": {
+    "@nexa/i18n": "workspace:*",
+    "@nexa/illustrations": "workspace:*",
+    "@nexa/product-content": "workspace:*",
+    "@nexa/shared-logic": "workspace:*",
+    "@types/node": "^24.1.0",
+    "fast-glob": "^3.3.3",
+    "tsx": "^4.20.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.0"
+  }
+}

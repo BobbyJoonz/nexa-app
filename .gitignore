@@ -1,0 +1,14 @@
+node_modules
+.next
+.expo
+dist
+coverage
+playwright-report
+test-results
+*.log
+*.tsbuildinfo
+.DS_Store
+.env
+.env.local
+android/.gradle
+ios/Pods
