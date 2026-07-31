@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" role="img" aria-labelledby="title desc">
+  <title id="title">Safe troubleshooting path</title>
+  <desc id="desc">Observe, identify a source-backed symptom, perform only safe checks, then escalate when required.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#3974A4"/></marker><style>.node{fill:#FBFCFD;stroke:#CCD5DE;stroke-width:3}.path{fill:none;stroke:#3974A4;stroke-width:5;marker-end:url(#arrow)}.title{fill:#172338;font:700 21px system-ui,sans-serif}.copy{fill:#5C6878;font:500 15px system-ui,sans-serif}</style></defs>
+  <rect width="960" height="460" rx="28" fill="#F4F6F8"/>
+  <g>
+    <rect class="node" x="45" y="130" width="190" height="170" rx="18"/><text class="title" x="140" y="195" text-anchor="middle">OBSERVE</text><text class="copy" x="140" y="230" text-anchor="middle">LCD, LED, buzzer</text><text class="copy" x="140" y="254" text-anchor="middle">Do not open enclosure</text>
+    <rect class="node" x="285" y="130" width="190" height="170" rx="18"/><text class="title" x="380" y="195" text-anchor="middle">IDENTIFY</text><text class="copy" x="380" y="230" text-anchor="middle">Code or symptom</text><text class="copy" x="380" y="254" text-anchor="middle">Match exact model</text>
+    <rect class="node" x="525" y="130" width="190" height="170" rx="18"/><text class="title" x="620" y="195" text-anchor="middle">SAFE CHECK</text><text class="copy" x="620" y="230" text-anchor="middle">Source-backed only</text><text class="copy" x="620" y="254" text-anchor="middle">No bypass actions</text>
+    <rect x="765" y="130" width="150" height="170" rx="18" fill="#FFF6E8" stroke="#B54708" stroke-width="3"/><text class="title" x="840" y="195" text-anchor="middle">ESCALATE</text><text class="copy" x="840" y="230" text-anchor="middle">Qualified installer</text><text class="copy" x="840" y="254" text-anchor="middle">Authorized service</text>
+  </g>
+  <path class="path" d="M235 215h50M475 215h50M715 215h50"/>
+</svg>

@@ -1,0 +1,43 @@
+{
+  "name": "@nexa/mobile",
+  "version": "1.1.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "prebuild": "expo prebuild",
+    "typecheck": "tsc --noEmit",
+    "doctor": "expo-doctor"
+  },
+  "dependencies": {
+    "@expo-google-fonts/vazirmatn": "^0.4.1",
+    "@expo/vector-icons": "^15.1.1",
+    "@nexa/design-tokens": "workspace:*",
+    "@nexa/i18n": "workspace:*",
+    "@nexa/product-content": "workspace:*",
+    "@nexa/shared-logic": "workspace:*",
+    "@react-native-async-storage/async-storage": "3.1.1",
+    "expo": "57.0.9",
+    "expo-asset": "57.0.8",
+    "expo-constants": "57.0.8",
+    "expo-font": "57.0.1",
+    "expo-image": "57.0.1",
+    "expo-linking": "57.0.4",
+    "expo-router": "57.0.9",
+    "expo-sharing": "57.0.8",
+    "expo-splash-screen": "57.0.5",
+    "expo-status-bar": "57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.2",
+    "react-native-safe-area-context": "5.8.0",
+    "react-native-screens": "4.26.2",
+    "react-native-worklets": "0.10.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "expo-doctor": "^1.20.1",
+    "typescript": "^6.0.3"
+  }
+}
