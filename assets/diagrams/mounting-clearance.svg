@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="title desc">
+  <title id="title">Verified mounting-hole spacing</title>
+  <desc id="desc">Front enclosure with two upper mounting holes spaced 200 millimeters apart, based on source page 6.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#891525"/></marker>
+    <style>.line{fill:none;stroke:#122C4F;stroke-width:4}.measure{fill:none;stroke:#891525;stroke-width:3;marker-start:url(#arrow);marker-end:url(#arrow)}.label{fill:#172338;font:600 22px system-ui,sans-serif}.note{fill:#5C6878;font:500 16px system-ui,sans-serif}</style>
+  </defs>
+  <rect width="760" height="520" rx="28" fill="#F4F6F8"/>
+  <path class="line" d="M225 125h310v300H225zM275 125v-45h44v45M441 125V80h44v45"/>
+  <circle cx="297" cy="98" r="7" fill="#122C4F"/><circle cx="463" cy="98" r="7" fill="#122C4F"/>
+  <path class="measure" d="M297 56h166"/>
+  <path d="M297 67V42M463 67V42" stroke="#891525" stroke-width="2"/>
+  <text class="label" x="380" y="38" text-anchor="middle">200 mm</text>
+  <text class="label" x="380" y="470" text-anchor="middle">M4 or M5 screws recommended</text>
+  <text class="note" x="380" y="500" text-anchor="middle">Mount vertically on a solid, non-combustible surface.</text>
+</svg>

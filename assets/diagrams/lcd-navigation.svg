@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 500" role="img" aria-labelledby="title desc">
+  <title id="title">LCD setting navigation</title>
+  <desc id="desc">ENTER opens and confirms settings, UP and DOWN browse programs, and ESC exits.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#3974A4"/></marker><style>.screen{fill:#CAD8C7;stroke:#172338;stroke-width:6}.button{fill:#172338;stroke:#D99100;stroke-width:3}.path{fill:none;stroke:#3974A4;stroke-width:4;marker-end:url(#arrow)}.label{fill:#172338;font:600 20px system-ui,sans-serif}.buttonText{fill:white;font:700 16px system-ui,sans-serif}.lcd{fill:#253229;font:700 58px monospace}</style></defs>
+  <rect width="880" height="500" rx="28" fill="#F4F6F8"/>
+  <rect class="screen" x="250" y="55" width="380" height="190" rx="12"/>
+  <text class="lcd" x="440" y="170" text-anchor="middle">01 UTL</text>
+  <g>
+    <circle class="button" cx="250" cy="350" r="52"/><text class="buttonText" x="250" y="357" text-anchor="middle">ESC</text>
+    <circle class="button" cx="380" cy="350" r="52"/><text class="buttonText" x="380" y="357" text-anchor="middle">UP</text>
+    <circle class="button" cx="510" cy="350" r="52"/><text class="buttonText" x="510" y="357" text-anchor="middle">DOWN</text>
+    <circle class="button" cx="640" cy="350" r="52"/><text class="buttonText" x="640" y="357" text-anchor="middle">ENTER</text>
+  </g>
+  <path class="path" d="M640 295C640 250 600 235 560 220"/>
+  <path class="path" d="M380 295C380 260 400 250 420 245"/>
+  <path class="path" d="M510 295C510 260 490 250 470 245"/>
+  <path class="path" d="M250 295C190 260 180 210 230 180"/>
+  <text class="label" x="440" y="455" text-anchor="middle">Hold ENTER for 3 seconds to enter setting mode</text>
+</svg>

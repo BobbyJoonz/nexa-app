@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 400" role="img" aria-labelledby="title desc">
+  <title id="title">Safety severity system</title>
+  <desc id="desc">Four distinct safety levels use shape, labels and color so meaning never depends on color alone.</desc>
+  <defs><style>.label{font:700 21px system-ui,sans-serif}.copy{fill:#5C6878;font:500 14px system-ui,sans-serif}.icon{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}</style></defs>
+  <rect width="920" height="400" rx="28" fill="#F4F6F8"/>
+  <g transform="translate(40 70)">
+    <rect width="190" height="260" rx="18" fill="#FFF0EF" stroke="#B42318" stroke-width="3"/><path class="icon" d="M95 45 55 120h80zM95 72v24m0 14v2" stroke="#B42318"/><text class="label" x="95" y="165" text-anchor="middle" fill="#B42318">DANGER</text><text class="copy" x="95" y="200" text-anchor="middle">Immediate hazard</text><text class="copy" x="95" y="225" text-anchor="middle">Stop and isolate</text>
+  </g>
+  <g transform="translate(255 70)">
+    <rect width="190" height="260" rx="18" fill="#FFF6E8" stroke="#B54708" stroke-width="3"/><path class="icon" d="M95 45 55 120h80zM95 72v24m0 14v2" stroke="#B54708"/><text class="label" x="95" y="165" text-anchor="middle" fill="#B54708">WARNING</text><text class="copy" x="95" y="200" text-anchor="middle">Serious risk</text><text class="copy" x="95" y="225" text-anchor="middle">Qualified action</text>
+  </g>
+  <g transform="translate(470 70)">
+    <rect width="190" height="260" rx="18" fill="#FFF9E8" stroke="#B76E00" stroke-width="3"/><path class="icon" d="M95 45 55 120h80zM95 72v24m0 14v2" stroke="#B76E00"/><text class="label" x="95" y="165" text-anchor="middle" fill="#B76E00">CAUTION</text><text class="copy" x="95" y="200" text-anchor="middle">Equipment or injury risk</text><text class="copy" x="95" y="225" text-anchor="middle">Review before action</text>
+  </g>
+  <g transform="translate(685 70)">
+    <rect width="190" height="260" rx="18" fill="#EEF3F7" stroke="#3974A4" stroke-width="3"/><circle cx="95" cy="84" r="38" class="icon" stroke="#3974A4"/><path class="icon" d="M95 74v40m0-57v2" stroke="#3974A4"/><text class="label" x="95" y="165" text-anchor="middle" fill="#3974A4">NOTICE</text><text class="copy" x="95" y="200" text-anchor="middle">Important procedure</text><text class="copy" x="95" y="225" text-anchor="middle">Read the source</text>
+  </g>
+</svg>

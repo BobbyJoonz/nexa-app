@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 500" role="img" aria-labelledby="title desc">
+  <title id="title">Verified photovoltaic connection envelope</title>
+  <desc id="desc">PV array connected through a separate DC circuit breaker with 500 VDC maximum open-circuit voltage and 30 to 500 VDC MPPT range.</desc>
+  <defs><style>.box{fill:#FBFCFD;stroke:#122C4F;stroke-width:3}.wireP{stroke:#891525}.wireN{stroke:#122C4F}.wireP,.wireN{fill:none;stroke-width:9;stroke-linecap:round}.label{fill:#172338;font:600 20px system-ui,sans-serif}.small{fill:#5C6878;font:500 15px system-ui,sans-serif}</style></defs>
+  <rect width="920" height="500" rx="28" fill="#F4F6F8"/>
+  <g transform="translate(70 145)">
+    <path d="m0 150 45-135h205l45 135zM40 60h220M20 105h260M95 15 65 150M155 15v135M215 15l30 135" fill="none" stroke="#D99100" stroke-width="6"/>
+    <text class="label" x="148" y="195" text-anchor="middle">PV ARRAY</text>
+  </g>
+  <rect class="box" x="420" y="155" width="130" height="190" rx="18"/><path d="M455 210h60M455 250h60M455 290h60" stroke="#D99100" stroke-width="6"/>
+  <text class="small" x="485" y="380" text-anchor="middle">DC BREAKER</text>
+  <rect class="box" x="650" y="95" width="200" height="310" rx="18"/><rect x="700" y="145" width="100" height="80" rx="12" fill="#172338"/>
+  <text class="label" x="750" y="445" text-anchor="middle">SUNVERTER</text>
+  <path class="wireP" d="M350 200H420M550 200H650"/><path class="wireN" d="M350 300H420M550 300H650"/>
+  <text class="small" x="460" y="55" text-anchor="middle">Max Voc 500 VDC · MPPT 30-500 VDC · max input 15 A</text>
+  <text class="small" x="460" y="480" text-anchor="middle">12 AWG · terminal torque 1.4-1.6 Nm · confirm polarity</text>
+</svg>

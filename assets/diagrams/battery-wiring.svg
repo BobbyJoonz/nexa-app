@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 500" role="img" aria-labelledby="title desc">
+  <title id="title">CM3500-24S battery connection</title>
+  <desc id="desc">A 24 volt battery bank connected through a separate DC over-current protector to the inverter. Qualified installer only.</desc>
+  <defs>
+    <style>.wireP{fill:none;stroke:#891525;stroke-width:10;stroke-linecap:round}.wireN{fill:none;stroke:#122C4F;stroke-width:10;stroke-linecap:round}.device{fill:#FBFCFD;stroke:#122C4F;stroke-width:3}.label{fill:#172338;font:600 20px system-ui,sans-serif}.small{fill:#5C6878;font:500 15px system-ui,sans-serif}</style>
+  </defs>
+  <rect width="920" height="500" rx="28" fill="#F4F6F8"/>
+  <rect class="device" x="70" y="160" width="250" height="180" rx="18"/>
+  <path d="M100 205h190v90H100zM145 180h100v25" fill="none" stroke="#122C4F" stroke-width="6"/>
+  <text class="label" x="195" y="375" text-anchor="middle">24 V BATTERY BANK</text>
+  <rect class="device" x="400" y="170" width="135" height="160" rx="18"/>
+  <path d="M435 215h65M435 250h65M435 285h65" stroke="#D99100" stroke-width="6"/>
+  <text class="label" x="468" y="365" text-anchor="middle">DC PROTECTION</text>
+  <rect class="device" x="660" y="100" width="190" height="300" rx="18"/>
+  <rect x="705" y="145" width="100" height="80" rx="12" fill="#172338"/>
+  <text class="label" x="755" y="440" text-anchor="middle">SUNVERTER</text>
+  <path class="wireP" d="M320 205H400M535 205H660"/>
+  <path class="wireN" d="M320 295H660"/>
+  <text class="label" x="345" y="190">+</text><text class="label" x="345" y="325">−</text>
+  <text class="small" x="460" y="55" text-anchor="middle">2 AWG / 38 mm² · strip 18 mm · tin 3 mm · torque 2-3 Nm</text>
+  <text class="small" x="460" y="475" text-anchor="middle">Qualified personnel only. Confirm polarity before connection.</text>
+</svg>

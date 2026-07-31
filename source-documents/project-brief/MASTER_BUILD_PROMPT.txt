@@ -1,0 +1,1732 @@
+# MASTER BUILD PROMPT
+# NEXA SUNVERTER — ULTRA-PREMIUM INTERACTIVE PRODUCT LEARNING APP
+# Target Agent: GPT-Sol 5.6
+# Execution Mode: Research → Source Audit → Design → Asset Production → Implementation → QA
+# Quality Requirement: AAA-level visual polish, production-grade engineering, zero generic AI design
+
+You are GPT-Sol 5.6 operating simultaneously as:
+
+1. Senior Product Designer
+2. Creative Director
+3. UX Architect
+4. Industrial Product Visualization Artist
+5. Technical Illustrator
+6. Bilingual Persian/English Technical Writer
+7. Senior React / React Native Engineer
+8. Design-System Engineer
+9. Accessibility Specialist
+10. QA and Performance Lead
+
+You must DESIGN AND IMPLEMENT a complete bilingual educational application for the NEXA brand.
+
+The application teaches users, graphically and interactively, how to understand, install, configure, operate, and troubleshoot NEXA hybrid solar inverter/charger products, referred to in this project as “Sunverter”.
+
+This is not a generic marketing landing page.
+This is not a dashboard template.
+This is not a PDF viewer with a few buttons.
+This is not a mockup-only task.
+
+The final result must feel like a premium interactive product academy and digital technical companion built specifically for NEXA.
+
+The user must be able to understand the product visually, section by section, through annotated product imagery, custom SVG diagrams, guided explanations, interactive simulations, and verified technical content.
+
+Communicate progress and final explanations to me in Persian.
+Use English only for code, identifiers, file names, and English UI copy.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. NON-NEGOTIABLE PRODUCT REQUIREMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The application MUST:
+
+- Work as:
+  - A modern responsive web application
+  - An Android application
+  - An iPhone/iOS application
+
+- Be written in TypeScript and the JavaScript ecosystem.
+
+- Support two complete interface languages:
+  - فارسی — full RTL
+  - English — full LTR
+
+- Require NO registration, NO login, NO OTP, and NO account creation.
+
+- On first launch, show only a premium language-selection experience.
+
+- Immediately after language selection, show a premium two-model product-selection experience.
+
+- Initially support exactly two NEXA Sunverter models.
+
+- Be data-driven so more models can be added later without redesigning the application.
+
+- Remember the selected language, selected product, completed lessons, and last-opened section locally on the device.
+
+- Store this local preference without requiring an account.
+
+- Allow the user to change language and product model at any time.
+
+- Be useful offline after the required educational content and assets have been cached.
+
+- Use the uploaded manuals, datasheets, product images, and NEXA logo as the primary source of truth.
+
+- Never invent technical values.
+
+- Never infer one model’s electrical specifications from another model.
+
+- Never display an unverified voltage, current, cable size, torque, power rating, battery voltage, PV range, fault code, setting value, or safety instruction.
+
+The first product bundle is expected to represent a NEXA 6.5 kW Sunverter.
+
+However, you MUST verify that the attached image, manual, and datasheet genuinely describe a 6.5 kW model.
+
+The currently attached manual may contain specification tables only up to 5.5 kW. If that conflict exists:
+
+1. Record it in SOURCE_AUDIT.md.
+2. Do not copy 5.5 kW specifications into the 6.5 kW product.
+3. Do not silently rename 5.5 kW data as 6.5 kW.
+4. Use the dedicated 6.5 kW datasheet when supplied.
+5. Mark unsupported fields as “Verification required / نیازمند تأیید”.
+6. Keep the layout complete without inserting fictional values.
+
+The second model must be populated from its own product image, manual, and datasheet.
+
+If a second model source is temporarily incomplete, scaffold its complete data structure, but never fabricate its data.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. INPUT FILE AUDIT — REQUIRED BEFORE DESIGN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Before writing UI code, inspect every attached file:
+
+- NEXA logo image
+- Product photograph 1
+- Product photograph 2
+- Original manufacturer product photograph if supplied
+- NEXA manual PDF
+- Original ASTAR/source manual PDF if supplied
+- Datasheet for model 1
+- Datasheet for model 2
+- Any specification tables
+- Any wiring diagrams
+- Any installation diagrams
+- Any LCD screenshots
+- Any fault-code tables
+
+Some PDFs may be image-only PDFs.
+
+Do not assume text extraction will work.
+
+You MUST render and visually inspect every PDF page when needed.
+Use document vision or page rendering to read:
+
+- Tables
+- Diagrams
+- LCD symbols
+- Warning boxes
+- Small labels
+- Cable diagrams
+- Numbered product callouts
+- Fault-code lists
+- Setting-program tables
+
+Create these files before implementation:
+
+docs/SOURCE_AUDIT.md
+docs/CONTENT_MAP.md
+docs/PRODUCT_DATA_CONFLICTS.md
+docs/DESIGN_SYSTEM.md
+docs/ASSET_MANIFEST.md
+docs/QA_REPORT.md
+
+SOURCE_AUDIT.md must include:
+
+- Every input filename
+- Document title
+- Brand visible in the source
+- Product model
+- Rated power
+- Battery-system voltage
+- Applicable pages
+- Extracted sections
+- Conflicts between files
+- Missing information
+- Verification status
+- Which source has authority for each value
+
+Use this source-priority order:
+
+1. Model-specific official datasheet
+2. Model-specific official manual
+3. Verified labels visible on the exact product image
+4. User’s explicit written instruction
+5. Original manufacturer manual for diagram cross-checking only
+6. General engineering knowledge for non-model-specific explanation only
+
+When two sources conflict, do not decide silently.
+
+Record the conflict and use the highest-authority model-specific source.
+
+Every technical content object should contain provenance:
+
+{
+  value,
+  unit,
+  sourceDocument,
+  sourcePage,
+  verificationStatus
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. MANDATORY USE OF TASTE-SKILL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You MUST use the repository below before creating the visual system:
+
+https://github.com/leonxlnx/taste-skill
+
+Do not merely mention it.
+Do not claim you used it without reading its actual SKILL.md files.
+
+Install or directly read the following skills:
+
+npx skills add https://github.com/leonxlnx/taste-skill --skill "design-taste-frontend"
+
+npx skills add https://github.com/leonxlnx/taste-skill --skill "gpt-taste"
+
+npx skills add https://github.com/leonxlnx/taste-skill --skill "imagegen-frontend-web"
+
+npx skills add https://github.com/leonxlnx/taste-skill --skill "imagegen-frontend-mobile"
+
+npx skills add https://github.com/leonxlnx/taste-skill --skill "brandkit"
+
+npx skills add https://github.com/leonxlnx/taste-skill --skill "image-to-code"
+
+When a CLI installation is not available, fetch and read the relevant SKILL.md files directly from the repository.
+
+Apply the skills selectively and intelligently.
+
+Required Taste-Skill configuration for this project:
+
+DESIGN_VARIANCE: 7/10
+MOTION_INTENSITY: 6/10
+VISUAL_DENSITY: 6/10
+
+Interpretation:
+
+- The composition should be distinctive and editorially controlled.
+- It must not look like a standard SaaS dashboard.
+- Motion should explain energy, hierarchy, and interaction.
+- Motion must never become decorative noise.
+- Technical information must remain readable.
+- The design should feel premium, calm, engineered, and intentional.
+
+After reading the skills, create a section in DESIGN_SYSTEM.md called:
+
+“Taste-Skill Decisions Applied”
+
+List:
+
+- Typography rules applied
+- Layout clichés rejected
+- Motion rules applied
+- Density decisions
+- Color restrictions
+- Component patterns rejected
+- Accessibility exceptions
+- Project-specific overrides
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. TECHNICAL ARCHITECTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Quality is more important than forcing 100% UI code sharing.
+
+Use a pnpm monorepo.
+
+Recommended structure:
+
+apps/
+  web/
+  mobile/
+
+packages/
+  product-content/
+  design-tokens/
+  i18n/
+  icons/
+  illustrations/
+  schemas/
+  shared-logic/
+  ui-contracts/
+
+docs/
+  SOURCE_AUDIT.md
+  CONTENT_MAP.md
+  PRODUCT_DATA_CONFLICTS.md
+  DESIGN_SYSTEM.md
+  ASSET_MANIFEST.md
+  QA_REPORT.md
+
+assets/
+  brand/
+  products/
+  diagrams/
+  manuals/
+  datasheets/
+  fonts/
+
+WEB:
+
+- Next.js App Router
+- TypeScript strict mode
+- Tailwind CSS
+- shadcn/ui primitives
+- Motion or GSAP only where justified
+- next/image
+- Static generation wherever possible
+
+MOBILE:
+
+- Expo
+- React Native
+- Expo Router
+- TypeScript strict mode
+- NativeWind or a token-driven native styling layer
+- React Native Reanimated for meaningful motion
+- expo-image
+- Native safe-area handling
+
+SHARED:
+
+- Zod schemas
+- Shared product-content data
+- Shared translation keys
+- Shared design tokens
+- Shared icon definitions
+- Shared business logic
+- Shared lesson completion logic
+- Shared model registry
+
+Do not import DOM-only shadcn components into React Native.
+
+On web, use actual shadcn/ui components where appropriate.
+
+On mobile, implement native counterparts that follow the same visual tokens and UI contract.
+
+Example:
+
+ProductAccordion.web.tsx
+ProductAccordion.native.tsx
+
+Technical content is initially static, versioned, and validated.
+
+Do NOT create a database solely to store fixed manual content.
+
+If an API, CMS, analytics service, or dynamic content backend becomes genuinely necessary, use:
+
+- NestJS
+- Fastify adapter under NestJS
+- Drizzle ORM
+- PostgreSQL
+
+Do not use Prisma.
+
+No authentication backend is required for the current version.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. REQUIRED USER FLOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FLOW 1 — FIRST LAUNCH / LANGUAGE GATE
+
+Create an exceptional language-selection screen.
+
+It must contain:
+
+- NEXA logo
+- A minimal animated Sunverter silhouette
+- “زبان را انتخاب کنید”
+- “Choose your language”
+- Two large, accessible choices:
+  - فارسی
+  - English
+- No registration
+- No login prompt
+- No promotional pop-up
+- No skip ambiguity
+
+The visual experience should immediately communicate:
+
+- Energy
+- Precision
+- Reliability
+- Industrial engineering
+- Premium education
+
+Do not use flags to represent languages.
+
+FLOW 2 — PRODUCT MODEL SELECTION
+
+After language selection, show two NEXA Sunverter models.
+
+Each model card must include:
+
+- Verified product cutout
+- Exact model name
+- Verified rated power
+- Verified battery-system voltage if available
+- Short differentiating description
+- Verification badge when data is complete
+- Clear selected state
+- Subtle product rotation or depth effect
+- “Explore this model / مشاهده این مدل”
+
+Do not use two generic equal cards floating in empty space.
+
+Use a carefully composed product-gallery layout:
+
+- Asymmetric desktop layout
+- Horizontal or snap-based native mobile layout
+- Large product cutouts
+- Intentional negative space
+- Visible technical hierarchy
+- A restrained comparison affordance
+
+FLOW 3 — PRODUCT HOME
+
+After model selection, open a model-specific product academy.
+
+The first viewport must include:
+
+- Large NEXA-branded product cutout
+- Product name
+- Rated power only if verified
+- A concise explanation of what the product does
+- Animated energy-flow preview
+- “Start learning”
+- “Explore product anatomy”
+- “Open troubleshooting”
+- Current learning progress stored locally
+
+The home screen must not resemble an admin dashboard.
+
+Use a product-storytelling composition.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. REQUIRED EDUCATIONAL MODULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Create the following modules for EACH model.
+
+Each module must have:
+
+1. A concise visual introduction
+2. An original custom SVG or annotated product visual
+3. Plain-language explanation
+4. Step-by-step technical explanation
+5. Expandable advanced details
+6. Safety warnings where relevant
+7. Source document and page reference
+8. A “Mark as understood” local action
+9. Persian and English versions
+10. Mobile and desktop optimized layouts
+
+MODULE 01 — PRODUCT OVERVIEW
+
+Explain:
+
+- What a hybrid solar inverter/charger is
+- What this specific model does
+- Main operating roles
+- Relationship between:
+  - Solar panels
+  - Grid or utility
+  - Battery
+  - Loads
+  - Inverter/charger
+
+Create a custom animated energy-flow SVG.
+
+The arrows must respond to the selected operating mode.
+
+MODULE 02 — INTERACTIVE PRODUCT ANATOMY
+
+Use the exact product photo and source diagrams.
+
+Create interactive hotspots for all verified external parts, such as:
+
+- LCD display
+- Status indicator
+- Charging indicator
+- Fault indicator
+- Function buttons
+- Grounding
+- AC input
+- AC output
+- Battery input
+- PV input
+- Wi-Fi communication port
+- Power on/off switch
+
+Use only callouts verified for the selected model.
+
+Interaction:
+
+- Tap or hover a hotspot
+- Highlight the related part
+- Open a native Drawer on mobile
+- Open a Dialog or side panel on desktop
+- Show:
+  - Name
+  - Function
+  - Safety note
+  - Related lesson
+  - Source page
+
+MODULE 03 — SAFETY ACADEMY
+
+Turn the manual’s safety instructions into a high-clarity visual module.
+
+Separate severity levels:
+
+- DANGER
+- WARNING
+- CAUTION
+- NOTICE
+
+Use established safety colors carefully.
+
+Do not use red as a decorative brand accent in this module when it could be confused with danger.
+
+Include:
+
+- Electric-shock risk
+- Battery short-circuit risk
+- Grounding
+- Qualified-personnel requirements
+- Disconnecting AC/DC sources
+- Correct polarity
+- Correct cable selection
+- Ventilation and mounting requirements
+- Prohibition on unsafe disassembly
+- Frozen-battery warning when supported by the manual
+
+Add an explicit message in both languages:
+
+“This application is an educational companion and does not replace the official manual or a qualified installer.”
+
+Persian:
+
+«این برنامه یک راهنمای آموزشی است و جایگزین دفترچه رسمی یا نصاب متخصص نیست.»
+
+MODULE 04 — UNBOXING AND INSTALLATION
+
+Explain graphically:
+
+- Package inspection
+- Included accessories
+- Preparation
+- Removing the lower cover
+- Mounting orientation
+- Wall clearances
+- Ventilation
+- Allowed mounting surface
+- Mounting-hole positions
+
+Create custom vector diagrams based on the verified manual illustrations.
+
+Do not invent dimensions.
+
+MODULE 05 — CONNECTIONS
+
+Build separate lessons for:
+
+- Battery connection
+- AC input
+- AC output
+- Protective earth / grounding
+- PV input
+- Communication connection if supported
+
+Create clear custom SVG diagrams.
+
+Use:
+
+- L / N / PE labels
+- Positive and negative battery polarity
+- PV positive and negative
+- Circuit-breaker placement when explicitly supported
+- Verified cable sizes
+- Verified stripping lengths
+- Verified torque values
+
+Do not convert a generic diagram into model-specific guidance unless the model-specific document confirms it.
+
+Do not provide a personalized wiring plan that exceeds the source documents.
+
+MODULE 06 — FIRST POWER-ON
+
+Create a guided checklist:
+
+- Installation complete
+- Connections checked
+- Polarity checked
+- Breakers and protections checked
+- Battery connected
+- Load conditions checked
+- Power switch action
+- Expected LEDs
+- Expected LCD behavior
+
+Make this a checklist, not a destructive hardware-control feature.
+
+The app must never imply it can remotely control the inverter.
+
+MODULE 07 — LCD AND CONTROL-PANEL SIMULATOR
+
+This is a flagship feature.
+
+Create a visually accurate interactive LCD simulator based on the source manual.
+
+Simulate the verified front-panel buttons, such as:
+
+- ESC
+- UP
+- DOWN
+- ENTER
+
+The simulator should allow a user to:
+
+- Learn button functions
+- Enter a simulated setting mode
+- Browse programs
+- View program numbers
+- View available options
+- Read an explanation
+- Reset the simulation
+
+This is a teaching simulation only.
+
+Do not claim that it is connected to real hardware.
+
+LCD typography must visually resemble a segmented technical display, while remaining accessible.
+
+Create a reduced-motion alternative.
+
+MODULE 08 — SETTINGS EXPLORER
+
+Extract every verified setting program from the selected model’s manual.
+
+Possible examples may include:
+
+- Output-source priority
+- Charging-current limit
+- AC input-voltage range
+- Battery type
+- Auto restart
+- Output voltage
+- Output frequency
+- Maximum utility-charging current
+- Back-to-utility voltage
+- Back-to-battery voltage
+- Charger-source priority
+- Buzzer behavior
+- Backlight
+- Overload bypass
+- Modbus ID
+- Bulk charging voltage
+- Floating charging voltage
+- Low DC cut-off voltage
+- Battery equalization
+
+These examples are not permission to assume availability.
+
+Only show programs verified for the selected model.
+
+For every program, show:
+
+- Program number
+- Official label
+- Plain-language explanation
+- Available values
+- Default value
+- When a user might choose each option
+- Dependencies on other programs
+- Safety warning
+- Source page
+
+Provide:
+
+- Search
+- Category filters
+- “Basic / Advanced” display mode
+- Interactive simulated LCD preview
+
+MODULE 09 — OPERATING MODES AND ENERGY FLOW
+
+Visually teach verified modes and priorities.
+
+Examples from a source manual may include:
+
+- Utility first
+- Solar first
+- SBU
+- SUB
+- SUF
+- Solar and utility
+- Only solar
+
+Only include modes supported by the exact selected product.
+
+Create animated SVG energy maps:
+
+PV → Load
+PV → Battery
+Grid → Load
+Grid → Battery
+Battery → Load
+
+Use animation to communicate actual flow.
+
+Do not use decorative random particle effects.
+
+MODULE 10 — BATTERY AND CHARGING
+
+Explain:
+
+- Supported battery categories
+- AGM
+- Flooded
+- User-defined
+- Lithium without communication
+- BMS considerations when supported
+- Bulk stage
+- Absorption stage
+- Float stage
+- Equalization stage
+- Low DC cut-off
+- Charge current
+- Charge-voltage settings
+
+Create an accessible charging-curve visualization based on the manual.
+
+Clearly separate:
+
+- General explanation
+- Verified product settings
+- Safety-critical instructions
+
+MODULE 11 — FAULT CODE FINDER
+
+Create a searchable fault-code system.
+
+Users must be able to search by:
+
+- Fault code
+- Warning code
+- Symptom
+- LED color
+- Beep pattern
+- LCD icon
+- Keyword
+
+Each fault result must show:
+
+- Fault code
+- Official fault description
+- Plain-language meaning
+- Possible cause
+- Safe user-level checks
+- Conditions requiring a qualified technician
+- Prohibited actions
+- Source page
+- Applicable model
+
+Never convert “return to repair center” into an unsafe DIY repair guide.
+
+MODULE 12 — TROUBLESHOOTING DECISION TREE
+
+Convert the manual’s troubleshooting table into an interactive guided decision tree.
+
+Examples:
+
+- Unit shuts down automatically
+- No response after power-on
+- Utility exists but unit remains in battery mode
+- Relay repeatedly switches
+- Buzzer sounds continuously
+- Red fault LED is on
+
+Each path must:
+
+- Ask one clear question at a time
+- Avoid panic-inducing language
+- End in a safe verified action
+- Clearly escalate to a qualified installer when required
+- Never recommend bypassing protective equipment
+
+MODULE 13 — SPECIFICATIONS
+
+Create a high-quality technical-specification experience.
+
+Include verified data such as:
+
+- Rated output power
+- Output waveform
+- Output voltage regulation
+- Frequency
+- Peak efficiency
+- Surge capability
+- Battery voltage
+- Charging current
+- PV rated power
+- PV open-circuit voltage
+- MPPT range
+- Maximum PV input current
+- Maximum charging current
+- Dimensions
+- Weight
+- Operating temperature
+- Storage temperature
+- Humidity
+
+Do not show blank values as zero.
+
+Use:
+
+- Compact specification groups
+- Search
+- Expandable definitions
+- Comparison between the two models
+- Source badges
+- “Verified” or “Needs verification” state
+
+Technical units must remain visually LTR inside Persian content.
+
+MODULE 14 — MANUALS AND DATASHEETS
+
+Provide:
+
+- Open manual
+- Open datasheet
+- Download or share using platform-appropriate functionality
+- Document title
+- Document revision if available
+- Applicable model
+- Language
+- Page count
+- Verification date
+- Related lessons
+
+Do not edit or overwrite the original source files.
+
+MODULE 15 — KNOWLEDGE CHECK
+
+Create optional short quizzes and practical checklists.
+
+Do not turn safety-critical topics into playful gamification.
+
+Use calm educational feedback:
+
+- Correct
+- Review this section
+- Safety-critical point
+- Source reference
+
+Store quiz progress locally only.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. PRODUCT IMAGE REBRANDING — CRITICAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+One supplied product image currently shows an ASTAR logo on the front metal enclosure.
+
+The final consumer-facing product imagery must show the supplied exact NEXA logo instead.
+
+Perform a professional non-destructive image-editing workflow.
+
+Required steps:
+
+1. Preserve the original source image untouched.
+2. Create a high-resolution working copy.
+3. Precisely mask only the ASTAR front wordmark.
+4. Reconstruct the white enclosure surface underneath.
+5. Preserve:
+   - Product geometry
+   - Control panel
+   - Vents
+   - Screws
+   - Warning labels
+   - Highlights
+   - Perspective
+   - Surface texture
+   - Natural shadows
+6. Place the exact uploaded NEXA logo on the front enclosure.
+7. Match the logo perspective to the product plane.
+8. Match local sharpness, print texture, exposure, and white balance.
+9. Make the logo look professionally printed on the enclosure.
+10. Do not make it appear as a floating CSS overlay.
+11. Do not redraw or modify the NEXA letterforms.
+12. Preserve the red horizontal detail in the NEXA wordmark.
+13. Do not replace certification labels or caution labels.
+14. Do not alter the model’s physical ports or panel layout.
+15. Do not invent internal components.
+
+Export:
+
+assets/products/model-01/source-original.*
+assets/products/model-01/nexa-product-master.png
+assets/products/model-01/nexa-product-cutout.webp
+assets/products/model-01/nexa-product-hero.webp
+assets/products/model-01/nexa-product-mobile.webp
+assets/products/model-01/nexa-product-hotspots.webp
+
+Also export a transparent-background master when technically possible.
+
+Repeat this pipeline for model 2.
+
+If image-editing tools are available, use them.
+
+If image editing is unavailable, do not pretend a CSS logo overlay is the final production asset. Produce an explicit asset-generation task and temporary clearly marked development asset.
+
+No ASTAR branding may remain visible in final consumer-facing generated assets, screens, icons, splash screens, or document thumbnails.
+
+The original ASTAR source document may remain privately stored for source verification.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. BRAND AND VISUAL DIRECTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The visual direction is:
+
+“Premium industrial energy education with museum-grade product presentation.”
+
+The interface should feel:
+
+- Precise
+- Engineered
+- Trustworthy
+- Modern
+- Calm
+- Expensive
+- Clear
+- Technical without becoming intimidating
+- Visually rich without becoming cluttered
+
+Derive the exact brand colors from the supplied NEXA logo.
+
+Expected direction:
+
+- Deep NEXA navy as the primary brand color
+- Warm off-white or very light neutral background
+- Restrained NEXA red as a selective accent
+- Safety amber only for warnings, active energy, or technical highlights
+- Neutral graphite for typography
+- Soft metallic tones inspired by the product enclosure
+
+Do not hardcode guessed logo colors when the actual colors can be sampled.
+
+Create semantic color tokens:
+
+--brand-primary
+--brand-accent
+--surface-canvas
+--surface-raised
+--surface-technical
+--text-primary
+--text-secondary
+--border-subtle
+--energy-solar
+--energy-grid
+--energy-battery
+--energy-load
+--safety-danger
+--safety-warning
+--safety-caution
+--status-success
+
+Do not use:
+
+- Generic AI purple
+- Purple-blue SaaS gradients
+- Neon outer glows
+- Excessive glassmorphism
+- Over-saturated accent colors
+- Pure black everywhere
+- Random gradient text
+- Fake holograms
+- Sci-fi HUD clichés
+- Excessive rounded cards
+- Three identical feature cards
+- Generic stock solar images
+- Meaningless background particles
+- Custom cursor effects
+- Huge empty hero headlines
+- Unnecessary 3D libraries
+- Decorative charts with fake data
+
+Use depth through:
+
+- Precise layering
+- Subtle inset lines
+- Soft neutral shadows
+- Product cutouts
+- Controlled contrast
+- Technical grid details
+- Fine SVG line work
+- Restrained motion
+- Material-inspired surfaces
+
+Create an original visual system, not a clone of Apple, Tesla, Linear, Vercel, or any Dribbble shot.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. TYPOGRAPHY — EXTREMELY IMPORTANT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Typography quality is a primary acceptance criterion.
+
+For English:
+
+Primary:
+- Geist Sans
+
+Alternative when better justified:
+- Satoshi
+- Cabinet Grotesk
+- Outfit
+
+For technical values and LCD-related content:
+
+- Geist Mono
+or
+- IBM Plex Mono
+
+For Persian:
+
+Primary:
+- Vazirmatn
+
+An alternative Persian font may be used only when:
+- Its license permits use and distribution
+- Persian letterforms are complete
+- Numbers and punctuation are high quality
+- Mixed Persian/English technical text remains stable
+
+Do not use Inter as the default font.
+
+Do not use a serif font merely to appear premium.
+
+Typography rules:
+
+- Strong but controlled display type
+- Tight headline tracking only where script permits
+- Comfortable body line-height
+- Maximum readable line length
+- Clear hierarchy between:
+  - Marketing introduction
+  - Lesson title
+  - Technical definition
+  - Specification value
+  - Safety warning
+  - Source reference
+- No oversized screaming headings
+- No decorative random italics
+- No mixed-font gimmicks inside one headline
+- No auto-generated-looking text blocks
+
+Persian must be professionally typeset.
+
+Requirements:
+
+- Correct RTL layout
+- Correct Persian punctuation
+- Correct نیم‌فاصله
+- Natural technical translation
+- No machine-like literal translation
+- No broken Latin units inside RTL paragraphs
+- Use directional isolation for:
+  - 230VAC
+  - 48VDC
+  - 6.5kW
+  - MPPT
+  - PV
+  - AC
+  - DC
+  - BMS
+  - Program numbers
+  - Fault codes
+
+Navigation chevrons and directional UI controls must mirror in RTL.
+
+Electrical-flow arrows must preserve their technical meaning and must not be blindly mirrored.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10. SHADCN/UI USAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Read the official documentation:
+
+https://ui.shadcn.com/docs
+
+Use shadcn/ui as a source of robust accessible web primitives, not as a visual template.
+
+Potentially useful web components:
+
+- Button
+- Button Group
+- Card
+- Tabs
+- Accordion
+- Dialog
+- Alert Dialog
+- Drawer
+- Sheet
+- Tooltip
+- Popover
+- Command
+- Carousel
+- Progress
+- Scroll Area
+- Separator
+- Badge
+- Breadcrumb
+- Navigation Menu
+
+Apply them only where they improve usability.
+
+Examples:
+
+- Accordion for secondary advanced explanations
+- Tabs for grouped specification content
+- Dialog on desktop for product hotspots
+- Drawer on mobile for product hotspots
+- Command-style search for fault codes
+- Alert Dialog for safety acknowledgements only
+- Carousel for mobile model selection
+- Progress for local educational progress
+
+Do not use a component just because it exists.
+
+Do not leave default shadcn appearance unchanged.
+
+Every shadcn component must be restyled using NEXA design tokens.
+
+Create proper native equivalents for mobile.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+11. GRAPHICS, SVG, AND TECHNICAL ILLUSTRATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Create original project-specific SVG illustrations.
+
+Required SVG categories:
+
+- Energy-flow system
+- Product anatomy callouts
+- Mounting clearances
+- Battery wiring
+- AC input/output
+- Protective earth
+- PV connection
+- Charging stages
+- LCD navigation map
+- Operating-mode diagrams
+- Fault-state icons
+- Warning severity icons
+- Troubleshooting decision paths
+
+Every SVG must:
+
+- Be based on verified source material
+- Use reusable design tokens
+- Scale correctly
+- Work in RTL and LTR where applicable
+- Have accessible titles and descriptions
+- Avoid tiny unreadable labels
+- Support reduced motion
+- Render correctly on high-DPI displays
+- Avoid embedding large raster screenshots unnecessarily
+
+Do not trace low-resolution manual pages and call that final design.
+
+Reconstruct diagrams cleanly while preserving factual meaning.
+
+Do not add terminals, ports, or electrical paths absent from the source.
+
+Use original illustrations instead of unrelated stock imagery.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+12. MOTION SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Motion must explain the product.
+
+Use motion for:
+
+- Energy direction
+- Product hotspot focus
+- Section transition
+- LCD button feedback
+- Model selection
+- Progressive illustration reveal
+- Charging-stage progression
+- Troubleshooting path transitions
+
+Do not animate everything.
+
+Web:
+
+- Use CSS transitions for simple interactions
+- Use Motion for component transitions
+- Use GSAP only for a genuinely complex product sequence
+
+Mobile:
+
+- Use React Native Reanimated
+- Preserve native gesture behavior
+- Keep transitions smooth on mid-range Android hardware
+
+Required reduced-motion behavior:
+
+- Disable non-essential parallax
+- Stop repeating energy-flow animation
+- Replace motion with static state changes
+- Preserve all educational meaning
+
+Avoid:
+
+- Scroll hijacking
+- Long intro sequences
+- Forced cinematic loading
+- Excessive blur
+- Heavy continuous 3D rendering
+- Animations that block reading
+- Magnetic buttons
+- Motion that makes safety content difficult to read
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+13. BILINGUAL CONTENT SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+No user-facing text may be hardcoded inside components.
+
+Use a typed shared localization structure.
+
+Example:
+
+locales/
+  en/
+    common.json
+    products.json
+    lessons.json
+    faults.json
+    safety.json
+  fa/
+    common.json
+    products.json
+    lessons.json
+    faults.json
+    safety.json
+
+Use semantic keys, not English sentences as keys.
+
+Example:
+
+product.anatomy.lcd.title
+product.anatomy.lcd.description
+fault.code_07.title
+safety.electric_shock.warning
+
+Create a shared technical glossary:
+
+- Inverter
+- Charger
+- Hybrid inverter
+- Utility
+- Grid
+- Load
+- Battery
+- Photovoltaic
+- MPPT
+- Bulk charging
+- Float charging
+- Equalization
+- Cut-off voltage
+- Bypass
+- Grounding
+- Protective earth
+- Short circuit
+- Overload
+- Fault
+- Warning
+
+Persian translation must be natural and technically consistent.
+
+Provide the English term in parentheses when it improves clarity.
+
+Do not translate model names, electrical abbreviations, program codes, or fault codes.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+14. CONTENT DESIGN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Use progressive disclosure.
+
+Each lesson should follow this rhythm:
+
+1. One-sentence explanation
+2. Visual explanation
+3. “Why it matters”
+4. Step-by-step explanation
+5. Safety note
+6. Advanced technical detail
+7. Related setting or fault
+8. Source reference
+
+The writing tone must be:
+
+- Calm
+- Precise
+- Educational
+- Non-salesy
+- Non-alarmist
+- Respectful
+- Easy for beginners
+- Still credible for installers
+
+Avoid phrases such as:
+
+- Revolutionary
+- Game-changing
+- Best-in-class
+- Ultimate solution
+- Next-generation innovation
+
+Do not copy full manual pages as giant paragraphs.
+
+Convert source material into structured educational content while preserving technical meaning.
+
+Do not silently correct source values.
+
+When wording in a source is unclear, label the explanation as an interpretation and retain the original technical statement in advanced details.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+15. DATA MODEL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Create a typed product schema similar to:
+
+type VerificationStatus =
+  | "verified"
+  | "conflicting"
+  | "missing"
+  | "needs-review";
+
+interface SourceReference {
+  documentId: string;
+  fileName: string;
+  page: number;
+  section?: string;
+}
+
+interface VerifiedValue<T> {
+  value: T | null;
+  unit?: string;
+  verificationStatus: VerificationStatus;
+  sources: SourceReference[];
+  notes?: string;
+}
+
+interface ProductModel {
+  id: string;
+  slug: string;
+  brand: "NEXA";
+  modelName: VerifiedValue<string>;
+  ratedPowerKw: VerifiedValue<number>;
+  batteryVoltageVdc: VerifiedValue<number>;
+  heroImage: string;
+  cutoutImage: string;
+  manualDocumentId: string | null;
+  datasheetDocumentId: string | null;
+  anatomy: ProductPart[];
+  settings: SettingProgram[];
+  faultCodes: FaultCode[];
+  warningCodes: WarningCode[];
+  specifications: SpecificationGroup[];
+  lessons: LessonModule[];
+}
+
+Validate all product data with Zod during build.
+
+The build should fail on malformed verified values.
+
+The build must not fail merely because an optional source value is missing.
+
+Render missing values as a clear verification state, not as zero, “N/A” everywhere, or fabricated text.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+16. ACCESSIBILITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+“AAA visual quality” refers to production polish.
+
+For accessibility, target WCAG 2.2 AA as the minimum acceptance level.
+
+Requirements:
+
+- Full keyboard navigation on web
+- Visible focus states
+- Screen-reader labels
+- Correct semantic heading order
+- Accessible Dialog and Drawer behavior
+- Accessible image descriptions
+- SVG title and description
+- Sufficient contrast
+- No information represented by color alone
+- Large mobile touch targets
+- Dynamic Type-friendly mobile layouts
+- Reduced-motion support
+- Reduced-transparency fallback
+- Accessible error states
+- Accessible language declaration
+- Correct RTL reading order
+- Logical tab order
+- No focus traps
+- No inaccessible canvas-only diagrams
+
+Test with:
+
+- Keyboard only
+- Screen-reader semantics
+- 200% browser zoom
+- Large mobile text
+- RTL
+- LTR
+- Reduced motion
+- Dark system preference if dark mode exists
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+17. PERFORMANCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The product imagery may be visually rich, but the app must remain fast.
+
+Requirements:
+
+- Responsive image sizes
+- WebP or AVIF where supported
+- PNG only when transparency or fidelity requires it
+- Lazy-load non-critical diagrams
+- Preload only the selected model hero
+- Avoid loading both full manuals on the first screen
+- Code-split heavy interactive modules
+- Use SVG for diagrams
+- Avoid unnecessary Three.js
+- Avoid massive animation libraries for simple transitions
+- Cache versioned educational content
+- Use stable dimensions to prevent layout shift
+- Keep mobile memory use controlled
+- Test on a mid-range Android profile
+- Test with slow network conditions
+
+The app must not display a fake loading screen to hide slow architecture.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+18. SAFETY AND LEGAL GUARDRAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This application concerns high-voltage electrical equipment.
+
+Safety rules are absolute.
+
+Never:
+
+- Suggest bypassing a breaker
+- Suggest bypassing grounding
+- Suggest bypassing protective devices
+- Suggest connecting live wiring
+- Suggest opening internal high-voltage sections
+- Suggest repairing internal power electronics
+- Suggest guessing battery polarity
+- Suggest using unspecified cable sizes
+- Suggest exceeding voltage or current limits
+- Suggest using settings from a different model
+- Suggest ignoring fault conditions
+- Present simulation as real hardware control
+
+Always:
+
+- Use the exact manual wording for safety-critical limits
+- Show qualified-installer escalation
+- Distinguish user checks from technician work
+- Link technical instructions to source pages
+- Warn when data is unverified
+- Preserve original manuals for reference
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+19. QUALITY BANS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The following will be treated as project failure:
+
+- Generic AI-generated SaaS appearance
+- Purple gradient hero
+- Excessive glass cards
+- Repeated identical cards
+- Inter used as default without justification
+- Lorem ipsum
+- Fake specifications
+- Hardcoded English-only content
+- Broken Persian RTL
+- ASTAR logo still visible on final product imagery
+- NEXA logo stretched or redrawn
+- Product logo pasted as a flat CSS overlay
+- Unverified 6.5 kW specifications
+- Screens implemented only as static images
+- PDF pages used as the entire app UI
+- Missing mobile layouts
+- Missing accessibility labels
+- Missing loading, empty, and error states
+- Unsafe electrical advice
+- Placeholder TODO sections
+- Incomplete navigation
+- A plan without implementation
+- A mockup without runnable code
+- Claims of Taste-Skill usage without reading it
+- Installing shadcn and leaving default components unchanged
+- Creating a backend that provides no product value
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+20. REQUIRED EXECUTION ORDER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Execute in this exact order.
+
+PHASE 1 — SOURCE AUDIT
+
+- Inspect every attachment.
+- Render image-only PDF pages.
+- Identify each product model.
+- Detect the 5.5 kW versus 6.5 kW conflict.
+- Produce SOURCE_AUDIT.md.
+- Produce PRODUCT_DATA_CONFLICTS.md.
+- Do not begin final UI before this audit is complete.
+
+PHASE 2 — CONTENT ARCHITECTURE
+
+- Map manual sections into educational modules.
+- Create typed schemas.
+- Create English source content.
+- Create professional Persian translations.
+- Add source references.
+- Validate data.
+
+PHASE 3 — BRAND AND ASSET PREPARATION
+
+- Analyze the exact NEXA logo.
+- Extract brand colors.
+- Create the brand-token system.
+- Replace ASTAR branding on product imagery.
+- Export production image variants.
+- Create ASSET_MANIFEST.md.
+
+PHASE 4 — DESIGN SYSTEM
+
+- Read Taste-Skill.
+- Create a design-direction statement.
+- Define type scale.
+- Define spacing scale.
+- Define color tokens.
+- Define surfaces and borders.
+- Define motion rules.
+- Define RTL behavior.
+- Define safety components.
+- Produce DESIGN_SYSTEM.md.
+
+PHASE 5 — HIGH-FIDELITY DESIGN
+
+Design all core screens for:
+
+- 390px mobile
+- 430px mobile
+- Tablet
+- 1440px desktop
+
+Core screens:
+
+1. Language selection
+2. Product model selection
+3. Product home
+4. Product anatomy
+5. Lesson detail
+6. LCD simulator
+7. Settings explorer
+8. Fault-code search
+9. Troubleshooting flow
+10. Specifications
+11. Model comparison
+12. Manuals and downloads
+
+Do not stop after creating design descriptions.
+
+PHASE 6 — IMPLEMENTATION
+
+- Build the web app.
+- Build the mobile app.
+- Share content and design tokens.
+- Implement full bilingual behavior.
+- Implement model switching.
+- Implement local progress.
+- Implement all primary interactions.
+- Add real supplied documents and assets.
+- Add tests.
+
+PHASE 7 — VISUAL QA
+
+Capture and inspect screenshots at:
+
+- 360 × 800
+- 390 × 844
+- 430 × 932
+- 768 × 1024
+- 1440 × 900
+- 1920 × 1080
+
+Check:
+
+- Typography
+- Persian clipping
+- RTL alignment
+- Product-image quality
+- Logo perspective
+- Hotspot positions
+- Empty states
+- Long translations
+- Safe-area padding
+- Keyboard navigation
+- Reduced motion
+- Dark-system preference if supported
+- Landscape behavior where relevant
+
+PHASE 8 — TECHNICAL QA
+
+Run:
+
+- Type checking
+- Linting
+- Unit tests
+- Component tests
+- Web end-to-end tests
+- Mobile smoke tests
+- Accessibility audit
+- Broken-link check
+- Missing-translation check
+- Source-provenance validation
+- Unverified-specification scan
+- ASTAR-branding visual/text scan
+
+PHASE 9 — FINAL DELIVERY
+
+Provide:
+
+- Runnable repository
+- All source code
+- All generated SVG files
+- Edited NEXA product assets
+- Original source assets preserved separately
+- Design-system documentation
+- Source audit
+- Product-data conflicts
+- QA report
+- Setup commands
+- Development commands
+- Web build command
+- Android build instructions
+- iOS build instructions
+- Environment-variable example with no secrets
+- Exact list of completed modules
+- Exact list of genuinely missing source data
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+21. FINAL ACCEPTANCE CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Do not declare completion until every applicable item is true.
+
+[ ] Language selection appears before any registration flow
+[ ] There is no registration or login
+[ ] Persian is fully RTL
+[ ] English is fully LTR
+[ ] The user can select between two models
+[ ] Product content changes correctly by model
+[ ] The first model’s 6.5 kW identity is source-verified
+[ ] No 5.5 kW data is mislabeled as 6.5 kW
+[ ] ASTAR is removed from final product-facing assets
+[ ] NEXA logo proportions are exact
+[ ] Product image geometry is preserved
+[ ] Manual and datasheet sources are available
+[ ] Product anatomy is interactive
+[ ] Custom SVG diagrams are implemented
+[ ] LCD simulator works
+[ ] Settings explorer works
+[ ] Fault finder works
+[ ] Troubleshooting flow works
+[ ] Specifications are source-backed
+[ ] Unverified values are visibly marked
+[ ] Technical values render correctly in RTL
+[ ] All user-facing text is localized
+[ ] No lorem ipsum exists
+[ ] No generic AI-purple design exists
+[ ] No default shadcn styling remains
+[ ] Taste-Skill decisions are documented
+[ ] Accessibility checks pass
+[ ] Reduced motion is supported
+[ ] Responsive screenshots were reviewed
+[ ] Web application runs
+[ ] Android application runs
+[ ] iOS project is build-ready
+[ ] No unsafe electrical advice exists
+[ ] No broken route or placeholder screen exists
+[ ] QA_REPORT.md is complete
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+22. BEHAVIORAL INSTRUCTION TO GPT-SOL 5.6
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Be decisive.
+
+Do not repeatedly ask for approval after every phase.
+
+First inspect the supplied files.
+
+Ask a question only when a genuinely blocking source conflict cannot be resolved from the attachments.
+
+When information is missing:
+
+- Continue implementing the verified portions.
+- Build a polished missing-data state.
+- Record the missing item.
+- Never fabricate it.
+
+Do not return only a plan.
+
+Do not return only a design description.
+
+Do not return only isolated code snippets.
+
+Build the actual application.
+
+Prioritize, in this order:
+
+1. Technical truth
+2. Electrical safety
+3. Content clarity
+4. Product-specific visual accuracy
+5. Persian/English typography
+6. Accessibility
+7. Interaction quality
+8. Performance
+9. Code reuse
+
+The final product must feel unmistakably designed for NEXA, not generated from a template.
