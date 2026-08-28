@@ -1,4 +1,5 @@
-import type { ReactNode, StyleProp, ViewStyle } from "react-native";
+import type { ReactNode } from "react";
+import type { StyleProp, ViewStyle } from "react-native";
 import { StyleSheet } from "react-native";
 import { haptics } from "./haptics";
 import { ui } from "./platform";

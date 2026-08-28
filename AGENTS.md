@@ -58,6 +58,7 @@
 
 - گیت موبایل: `pnpm qa:mobile` (محتوا + ترجمه + برند + tsc + vitest + doctor + export اندروید **و** iOS). ناهم‌ترازی وابستگی: `pnpm --filter @nexa/mobile exec expo install --fix`.
 - **ترتیب qa:mobile را دست نزن:** چون `experiments.typedRoutes = true` است، `typecheck` باید **بعد از** `export:android`/`export:ios` بیاید — export ها `.expo/types/router.d.ts` را بازتولید می‌کنند و مسیرهای جدید (`/search`, `/checklist`) تا قبل از آن در تایپ‌ها نیستند و typecheck بی‌دلیل قرمز می‌شود.
+- **pnpm را با `corepack pnpm` یا شیم `tools/pnpm/` اجرا کن، نه pnpm سراسری:** pnpm های npm-global این ماشین (v10) store-dir شکستهٔ drive-relative دارند (`D:pnpm-store\v10`) و با کد -90 در هر `install` می‌میرند. شیم همیشه به نسخهٔ قفل‌شدهٔ `packageManager` هدایت می‌کند. در گیت: `$env:PATH = "<root>\tools\pnpm;$env:PATH"` قبل از اجرا.
 - برخی نشست‌ها shell خراب دارند (کرش 0xC0000142 هنگام spawn هر پروسه، حتی ripgrep) → اگر pwsh/glob/grep مردند، فقط ابزارهای read/write/edit/glob؟ نه — فقط file tools؛ مراحل shell را به کاربر تحویل بده و بعداً با `read` وریفای کن (lockfile، خروجی‌ها).
 - محل پروژه در Downloads است؛ پیشنهاد بلندمدت: انتقال به `C:\dev\nexa` + `git config core.longpaths true`.
 
@@ -71,8 +72,8 @@
 - [x] نوار بازخورد محتوا روی همهٔ Screenها — **تلگرام فعال است** (`https://t.me/imma_bobby`)؛ ایمیل خفته تا تعریف صندوق پشتیبانی (`FEEDBACK_EMAIL` در `src/ui/feedback.tsx`)
 - [x] **فاز ابزار میدانی:** آکادمی = `app/academy/[model].tsx` (مسیر اصلی و از پیش موجود — probe ناقص قبلی «بن‌بست» را اشتباه نتیجه گرفت؛ فایل تکراری داینامیک `[slug].tsx` که در فاز ۱ ساخته شده بود **حذف شد** — دو route داینامیک در یک پوشه، خطای bundle است)، شبیه‌ساز LCD روی منوی ۳۱ برنامهٔ واقعی (`components/lesson/lcd-simulator.tsx` — با پنل آموزشی زیر هر برنامه)، کوییز منبع‌دار (`quizBank` + `components/lesson/quiz-lesson.tsx`)، جست‌وجوی سراسری + گرید کد خطا (`app/search.tsx`)، چک‌لیست راه‌اندازی آفلاین (`app/checklist.tsx` + `storageKeys.commissioningChecklist`)، تست یکپارچگی `tests/content-consistency.test.ts` — همه JS و آمادهٔ اولین OTA
 - [x] تبلیغ‌خلا: کارت مدل دوم از صفحهٔ ورودی حذف شد (داده در content ماند؛ تا منبع برسد UI قول جعلی نمی‌دهد)
-- [ ] `git init` + baseline commit (فوراً — تاریخچهٔ CHANGELOG در نبود git از دست رفت)
-- [ ] `pnpm install` (lockfile ناهم‌گام: expo-updates، expo-haptics، @sentry/react-native) سپس `pnpm --filter @nexa/mobile exec expo install --fix` برای هم‌ترازی نسخهٔ دقیق Sentry با SDK
+- [x] گیت A (این ماشین): نصب با pnpm@11.18.0 قفل‌شده ✓؛ هم‌ترازی SDK 57 (شامل `@sentry/react-native@~7.11.0`، expo 57.0.18) ✓؛ فیکس واقعی‌ها: بگ «فرم خالی شارژ = pass جعلی» → skipped (`sizing.ts`)، مسیر پلاگین سنتری → `.../expo`، dedupe `expo-constants` با override در `pnpm-workspace.yaml`، import غلط `ReactNode` از react-native، null در accessibilityLabel. **33 تست ✓، هر دو export ✓ (андроید 5.2MB / ios 4.9MB)، تایپ‌چک ✓** — تنها قرمزِ دکتر = schema اپ که `exp.host` روی این شبکه 403 می‌دهد (شبکه، نه پروژه)
+- [ ] **⚠️ شبکه:** `exp.host` روی این اینترنت 403 دارد → لاگین EAS، `eas update` و برخی چک‌های دکتر فقط با VPN/پراکسی کار می‌کنند. خود بیلد EAS روی کلاود است و ایرادی ندارد.
 - [ ] **مالک:** پروژهٔ رایگان sentry.io بسازد، DSN را در `app.json → expo.extra.sentry.dsn` بگذارد (بعداً با OTA قابل به‌روزرسانی است)؛ توکن symbolication هم اختیاری در EAS secrets
 - [ ] **مالک (اختیاری):** اگر صندوق ایمیل پشتیبانی تعریف شد، `FEEDBACK_EMAIL` را در `apps/mobile/src/ui/feedback.tsx` پر کنید — دکمهٔ تلگرام همین حالا زنده است
 - [ ] لاگین EAS مالک + `build:configure` + `update:configure`

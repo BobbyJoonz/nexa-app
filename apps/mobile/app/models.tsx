@@ -22,7 +22,7 @@ export default function ModelsScreen() {
       <Text style={[styles.title, localizedTextStyle(locale)]}>{locale === "fa" ? "سانورتر خود را انتخاب کنید" : "Choose your Sunverter"}</Text>
       <Text style={[styles.subtitle, localizedTextStyle(locale)]}>{locale === "fa" ? "فقط مدل دارای منبع معتبر قابل انتخاب است." : "Only a model with a verified source is selectable."}</Text>
 
-      <PressableSurface style={styles.featured} onPress={() => router.push(`/academy/${verified.slug}`)} accessibilityRole="button" accessibilityLabel={verified.modelName.value}>
+      <PressableSurface style={styles.featured} onPress={() => router.push(`/academy/${verified.slug}`)} accessibilityRole="button" accessibilityLabel={verified.modelName.value ?? undefined}>
         <View style={styles.imageStage}>
           <Image source={require("../assets/nexa-product-mobile.webp")} style={styles.product} contentFit="contain" />
           <View style={styles.verifiedBadge}><Ionicons name="shield-checkmark" size={14} color={theme.colors.success} /><Text style={styles.verifiedText}>{locale === "fa" ? "تأییدشده" : "Verified"}</Text></View>

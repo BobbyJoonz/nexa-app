@@ -8,6 +8,33 @@
 
 ## Unreleased
 
+### دروازهٔ A — نصب، هم‌ترازی SDK 57، گیت واقعی روی این ماشین
+
+- **نصب با نسخهٔ قفل‌شده:** `pnpm@11.18.0` از طریق corepack؛ شیم پروژه‌محور `tools/pnpm/pnpm.cmd`
+  افزوده شد چون pnpm های npm-global این ماشین (v10) store-dir شکستهٔ drive-relative دارند
+  (`D:pnpm-store\v10`) و در هر `install` با کد -90 می‌میرند — از این پس هر فراخوانی
+  `pnpm` داخل ریپو به نسخهٔ قفل‌شده می‌رود.
+- **هم‌ترازی کامل با SDK 57** (دستی و مستند، چون `expo install --fix` روی pnpm سراسری
+  شکسته می‌مرد): expo 57.0.18، expo-router 57.0.17، expo-updates 57.0.19،
+  react-native 0.86.3، `@sentry/react-native@~7.11.0` (جفت معتبر SDK)، بقیهٔ expo-* ~57.0.x.
+- **رفع واقعی‌هایی که گیت صید کرد:**
+  1. `sizing.ts` — فرم خالی یا صفرِ «جریان شارژ» به‌عنوان «pass» جعلی خوانده می‌شد
+     (`Number("") === 0`)؛ حالا مثل بقیهٔ چک‌ها `skipped` است (قرارداد صداقت فایل).
+  2. app.json — مسیر پلاگین سنتری از `.../expo-config` (وجود ندارد در 7.11.0) به
+     `.../expo` اصلاح شد؛ export اندروید/آی‌او‌اس بدون آن باندل نمی‌شد.
+  3. dedupe ماژول نیتیو: `expo-constants` در دو نسخه (57.0.16 + 57.0.15 تو در توی
+     expo-asset) → override تک‌نسخه‌ای در `pnpm-workspace.yaml`.
+  4. تایپ‌چک: `ReactNode` از ماژول غلط (`react-native`) import شده بود و
+     `accessibilityLabel` مقدار `string | null` می‌گرفت — هردو رفع شدند؛ این‌ها چون
+     typedRoutes بعد از export بازتولید می‌شود تازه دیده می‌شوند (ترتیب
+     export→typecheck کار خودش را کرد).
+- **شواهد سبز:** 33 تست vitest ✓ · export اندروید ✓ (hermes 5.2MB) · export iOS ✓
+  (4.9MB) · تایپ‌چک کل مونوریپو ✓. تنها قرمزِ باقی‌مانده، چک schema خودِ
+  `expo-doctor` است که از `exp.host` جواب می‌گیرد و این شبکه 403 می‌دهد — محیطی، نه پروژه.
+- **تصحیح سابقهٔ «بن‌بست مسیر»:** مسیر آکادمی هرگز شکسته نبود (`[model].tsx` از ابتدا
+  وجود داشت)؛ فایل تکراری `[slug].tsx` که بر اساس probe ناقص ساخته شده بود حذف شد —
+  دو route داینامیک در یک پوشه یعنی خطای bundle.
+
 ### Mobile — لایهٔ UI تطبیقی iOS / Android (HIG ↔ Material 3)
 
 - بستر `apps/mobile/src/ui/`: `platform.ts` (توکن‌های OS)، `direction.ts`

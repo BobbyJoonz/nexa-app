@@ -14,3 +14,8 @@ minimumReleaseAgeExclude:
   - expo-font@57.0.2
   - expo-updates@57.0.19
   - expo@57.0.18
+# Force a single expo-constants copy: expo-asset declares ~57.0.15 (range
+# includes 57.0.16), yet the lockfile nested a 57.0.15 peer-variant alongside
+# the project's 57.0.16 — a real duplicate native module per expo-doctor.
+overrides:
+  expo-constants: 57.0.16

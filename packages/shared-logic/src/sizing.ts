@@ -156,8 +156,11 @@ export interface ChargingInput {
 export function evaluateCharging(input: ChargingInput, limits: DeviceLimits): { total: SizingCheck; utility: SizingCheck } {
   const ac = finite(input.utilityChargeA);
   const pv = finite(input.pvChargeA);
-  const validAc = ac !== null && ac >= 0;
-  const validPv = pv !== null && pv >= 0;
+  // Numeric 0 and empty input are BOTH invalid here: Number("") is 0, so an
+  // untouched field must not read as a truthful zero-amp value (honesty
+  // contract: invalid input is "skipped", never a silent "pass").
+  const validAc = ac !== null && ac > 0;
+  const validPv = pv !== null && pv > 0;
   const total = validAc && validPv ? round1(ac + pv) : null;
   return {
     total: makeCheck(
