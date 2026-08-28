@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Three-stage battery charging curve</title>
+  <desc id="desc">Current and voltage across Bulk, Absorption and Float stages based on the supplied manual.</desc>
+  <defs><style>.axis{stroke:#8B98A8;stroke-width:2}.volt{fill:none;stroke:#891525;stroke-width:6}.current{fill:none;stroke:#3974A4;stroke-width:6}.label{fill:#172338;font:600 19px system-ui,sans-serif}.small{fill:#5C6878;font:500 15px system-ui,sans-serif}</style></defs>
+  <rect width="960" height="520" rx="28" fill="#F4F6F8"/>
+  <path class="axis" d="M100 420V80M100 420H880"/>
+  <path class="axis" d="M360 90V420M650 90V420" stroke-dasharray="6 8"/>
+  <path class="volt" d="M100 360C220 340 300 230 360 145H650V270H880"/>
+  <path class="current" d="M100 145H360C470 145 540 250 650 350H880"/>
+  <text class="label" x="230" y="465" text-anchor="middle">BULK</text>
+  <text class="label" x="505" y="465" text-anchor="middle">ABSORPTION</text>
+  <text class="label" x="765" y="465" text-anchor="middle">FLOAT</text>
+  <text class="small" x="155" y="112" fill="#3974A4">Charging current</text>
+  <text class="small" x="695" y="245" fill="#891525">Battery voltage</text>
+  <text class="small" x="480" y="45" text-anchor="middle">Equalization is a separate source-controlled function for supported lead-acid profiles.</text>
+</svg>

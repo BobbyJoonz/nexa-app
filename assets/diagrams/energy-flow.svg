@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Sunverter energy-flow map</title>
+  <desc id="desc">A technical diagram linking PV, utility grid, battery and loads through the inverter.</desc>
+  <defs>
+    <marker id="arrowSolar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10Z" fill="#D99100"/>
+    </marker>
+    <marker id="arrowGrid" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10Z" fill="#3974A4"/>
+    </marker>
+    <marker id="arrowBattery" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10Z" fill="#617C41"/>
+    </marker>
+    <style>
+      .node{fill:#FBFCFD;stroke:#CCD5DE;stroke-width:2}
+      .label{fill:#172338;font:600 22px system-ui,sans-serif}
+      .sub{fill:#5C6878;font:500 15px system-ui,sans-serif}
+      .solar,.grid,.battery{fill:none;stroke-width:5;stroke-linecap:round;stroke-dasharray:11 14}
+      .solar{stroke:#D99100;marker-end:url(#arrowSolar);animation:flow 1.8s linear infinite}
+      .grid{stroke:#3974A4;marker-end:url(#arrowGrid);animation:flow 2.2s linear infinite}
+      .battery{stroke:#617C41;marker-end:url(#arrowBattery);animation:flow 2s linear infinite}
+      @keyframes flow{to{stroke-dashoffset:-50}}
+      @media(prefers-reduced-motion:reduce){.solar,.grid,.battery{animation:none;stroke-dasharray:none}}
+    </style>
+  </defs>
+  <rect width="960" height="520" rx="28" fill="#F4F6F8"/>
+  <g opacity=".45" stroke="#CCD5DE">
+    <path d="M40 100H920M40 260H920M40 420H920"/>
+    <path d="M160 40V480M480 40V480M800 40V480"/>
+  </g>
+  <rect class="node" x="380" y="175" width="200" height="170" rx="20"/>
+  <path d="M420 225h120v70H420zM440 310h80" fill="none" stroke="#122C4F" stroke-width="6" stroke-linejoin="round"/>
+  <text class="label" x="480" y="380" text-anchor="middle">SUNVERTER</text>
+  <g transform="translate(70 70)">
+    <rect class="node" width="190" height="120" rx="18"/>
+    <path d="m48 78 16-42h66l16 42zm20-28h62M61 63h76M84 36l-8 42M111 36l8 42" fill="none" stroke="#D99100" stroke-width="4"/>
+    <text class="label" x="95" y="108" text-anchor="middle">PV</text>
+  </g>
+  <g transform="translate(70 330)">
+    <rect class="node" width="190" height="120" rx="18"/>
+    <path d="M95 25 62 94M95 25l33 69M76 66h38M69 80h52M88 42h14" fill="none" stroke="#3974A4" stroke-width="4"/>
+    <text class="label" x="95" y="108" text-anchor="middle">GRID</text>
+  </g>
+  <g transform="translate(700 70)">
+    <rect class="node" width="190" height="120" rx="18"/>
+    <path d="M55 82V45l40-27 40 27v37H55zm28 0V58h24v24" fill="none" stroke="#891525" stroke-width="4"/>
+    <text class="label" x="95" y="108" text-anchor="middle">LOAD</text>
+  </g>
+  <g transform="translate(700 330)">
+    <rect class="node" width="190" height="120" rx="18"/>
+    <path d="M52 40h86v54H52zm28-12h30v12M72 67h16m-8-8v16m22-8h16" fill="none" stroke="#617C41" stroke-width="4"/>
+    <text class="label" x="95" y="108" text-anchor="middle">BATTERY</text>
+  </g>
+  <path class="solar" d="M260 130C340 130 330 215 380 215"/>
+  <path class="grid" d="M260 390C340 390 330 305 380 305"/>
+  <path class="solar" d="M580 215C640 215 630 130 700 130"/>
+  <path class="battery" d="M580 305C640 305 630 390 700 390"/>
+  <text class="sub" x="480" y="44" text-anchor="middle">Technical direction is preserved in RTL and LTR</text>
+</svg>

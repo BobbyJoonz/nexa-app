@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 480" role="img" aria-labelledby="title desc">
+  <title id="title">AC input, AC output and protective earth</title>
+  <desc id="desc">Verified terminal labels L, N and PE with separate input and output protection.</desc>
+  <defs><style>.box{fill:#FBFCFD;stroke:#122C4F;stroke-width:3}.wire{fill:none;stroke-width:7;stroke-linecap:round}.label{fill:#172338;font:600 20px system-ui,sans-serif}.small{fill:#5C6878;font:500 15px system-ui,sans-serif}</style></defs>
+  <rect width="920" height="480" rx="28" fill="#F4F6F8"/>
+  <rect class="box" x="360" y="70" width="200" height="330" rx="20"/>
+  <text class="label" x="460" y="115" text-anchor="middle">SUNVERTER</text>
+  <g class="box"><circle cx="410" cy="270" r="28"/><circle cx="460" cy="270" r="28"/><circle cx="510" cy="270" r="28"/></g>
+  <text class="label" x="410" y="277" text-anchor="middle">L</text><text class="label" x="460" y="277" text-anchor="middle">N</text><text class="label" x="510" y="277" text-anchor="middle">PE</text>
+  <rect class="box" x="70" y="130" width="150" height="200" rx="18"/><text class="label" x="145" y="235" text-anchor="middle">AC INPUT</text>
+  <rect class="box" x="700" y="130" width="150" height="200" rx="18"/><text class="label" x="775" y="235" text-anchor="middle">AC OUTPUT</text>
+  <path class="wire" d="M220 200H360" stroke="#891525"/><path class="wire" d="M220 245H360" stroke="#3974A4"/><path class="wire" d="M220 290H360" stroke="#617C41"/>
+  <path class="wire" d="M560 200H700" stroke="#891525"/><path class="wire" d="M560 245H700" stroke="#3974A4"/><path class="wire" d="M560 290H700" stroke="#617C41"/>
+  <text class="small" x="460" y="435" text-anchor="middle">10 AWG · terminal torque 1.4-1.6 Nm · qualified personnel only</text>
+</svg>
