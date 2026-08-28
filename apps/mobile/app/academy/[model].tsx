@@ -30,7 +30,19 @@ export default function AcademyScreen() {
   const { model } = useLocalSearchParams<{ model: string }>();
   const product = getProduct(model);
   const { locale, completed } = useAcademy();
-  if (!product || product.modelName.verificationStatus !== "verified") return null;
+  // Anti-shock: an unknown/unverified model must never render a blank screen
+  // (deep links, stale tabs). Fall back to a recoverable not-found state.
+  if (!product || product.modelName.verificationStatus !== "verified") {
+    return (
+      <Screen back>
+        <View style={styles.missing}>
+          <Ionicons name="alert-circle-outline" size={34} color={theme.colors.textSecondary} />
+          <Text style={[styles.missingTitle, localizedTextStyle(locale)]}>{locale === "fa" ? "این مدل پیدا نشد" : "Model not found"}</Text>
+          <Text style={[styles.missingBody, localizedTextStyle(locale)]}>{locale === "fa" ? "از فهرست مدل‌ها انتخاب کنید." : "Choose from the model list."}</Text>
+        </View>
+      </Screen>
+    );
+  }
   const percent = completionPercent(completed, product.lessons.length);
 
   return (
@@ -105,5 +117,8 @@ const styles = StyleSheet.create({
   lessonTitle: { color: theme.colors.brandPrimary, fontSize: 14, fontWeight: "700" },
   lessonSummary: { marginTop: 2, color: theme.colors.textSecondary, fontSize: 10, lineHeight: 16 },
   safetyDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: theme.colors.warning },
-  index: { color: "#9BA6B2", fontSize: 9, fontWeight: "700" }
+  index: { color: "#9BA6B2", fontSize: 9, fontWeight: "700" },
+  missing: { alignItems: "center", gap: 8, paddingTop: 96, paddingHorizontal: 28 },
+  missingTitle: { color: theme.colors.brandPrimary, fontSize: 17, fontWeight: "800", fontFamily: "Vazirmatn_700Bold" },
+  missingBody: { color: theme.colors.textSecondary, fontSize: 12, lineHeight: 20 }
 });
