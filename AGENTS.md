@@ -57,7 +57,7 @@
 ## ۶) گیت کیفیت و محیط
 
 - گیت موبایل: `pnpm qa:mobile` (محتوا + ترجمه + برند + tsc + vitest + doctor + export اندروید **و** iOS). ناهم‌ترازی وابستگی: `pnpm --filter @nexa/mobile exec expo install --fix`.
-- **ترتیب qa:mobile را دست نزن:** چون `experiments.typedRoutes = true` است، `typecheck` باید **بعد از** `export:android`/`export:ios` بیاید — export ها `.expo/types/router.d.ts` را بازتولید می‌کنند و مسیرهای جدید (`/search`, `/checklist`, `/academy/:slug`) تا قبل از آن در تایپ‌ها نیستند و typecheck بی‌دلیل قرمز می‌شود.
+- **ترتیب qa:mobile را دست نزن:** چون `experiments.typedRoutes = true` است، `typecheck` باید **بعد از** `export:android`/`export:ios` بیاید — export ها `.expo/types/router.d.ts` را بازتولید می‌کنند و مسیرهای جدید (`/search`, `/checklist`) تا قبل از آن در تایپ‌ها نیستند و typecheck بی‌دلیل قرمز می‌شود.
 - برخی نشست‌ها shell خراب دارند (کرش 0xC0000142 هنگام spawn هر پروسه، حتی ripgrep) → اگر pwsh/glob/grep مردند، فقط ابزارهای read/write/edit/glob؟ نه — فقط file tools؛ مراحل shell را به کاربر تحویل بده و بعداً با `read` وریفای کن (lockfile، خروجی‌ها).
 - محل پروژه در Downloads است؛ پیشنهاد بلندمدت: انتقال به `C:\dev\nexa` + `git config core.longpaths true`.
 
@@ -69,7 +69,7 @@
 - [x] ماشین‌حساب سازگاری منبع‌دار (`app/calculator.tsx`) + موتور خالص `shared-logic/src/sizing.ts` + `tests/sizing.test.ts` + استخراج‌گر `deviceLimits` در product-content (پرتاب خطا روی انحراف محتوا)
 - [x] Sentry سیم‌کشی شد و تصمیمش نهایی است (داخل بیلد #۱) — الگوی خفته با `extra.sentry.dsn`
 - [x] نوار بازخورد محتوا روی همهٔ Screenها — **تلگرام فعال است** (`https://t.me/imma_bobby`)؛ ایمیل خفته تا تعریف صندوق پشتیبانی (`FEEDBACK_EMAIL` در `src/ui/feedback.tsx`)
-- [x] **فاز ابزار میدانی:** آکادمی واقعی (`app/academy/[slug].tsx` — رفع بن‌بست مسیر `/academy/:slug`)، شبیه‌ساز LCD روی منوی ۳۱ برنامهٔ واقعی (`components/lesson/lcd-simulator.tsx` — با پنل آموزشی زیر هر برنامه)، کوییز منبع‌دار (`quizBank` + `components/lesson/quiz-lesson.tsx`)، جست‌وجوی سراسری + گرید کد خطا (`app/search.tsx`)، چک‌لیست راه‌اندازی آفلاین (`app/checklist.tsx` + `storageKeys.commissioningChecklist`)، تست یکپارچگی `tests/content-consistency.test.ts` — همه JS و آمادهٔ اولین OTA
+- [x] **فاز ابزار میدانی:** آکادمی = `app/academy/[model].tsx` (مسیر اصلی و از پیش موجود — probe ناقص قبلی «بن‌بست» را اشتباه نتیجه گرفت؛ فایل تکراری داینامیک `[slug].tsx` که در فاز ۱ ساخته شده بود **حذف شد** — دو route داینامیک در یک پوشه، خطای bundle است)، شبیه‌ساز LCD روی منوی ۳۱ برنامهٔ واقعی (`components/lesson/lcd-simulator.tsx` — با پنل آموزشی زیر هر برنامه)، کوییز منبع‌دار (`quizBank` + `components/lesson/quiz-lesson.tsx`)، جست‌وجوی سراسری + گرید کد خطا (`app/search.tsx`)، چک‌لیست راه‌اندازی آفلاین (`app/checklist.tsx` + `storageKeys.commissioningChecklist`)، تست یکپارچگی `tests/content-consistency.test.ts` — همه JS و آمادهٔ اولین OTA
 - [x] تبلیغ‌خلا: کارت مدل دوم از صفحهٔ ورودی حذف شد (داده در content ماند؛ تا منبع برسد UI قول جعلی نمی‌دهد)
 - [ ] `git init` + baseline commit (فوراً — تاریخچهٔ CHANGELOG در نبود git از دست رفت)
 - [ ] `pnpm install` (lockfile ناهم‌گام: expo-updates، expo-haptics، @sentry/react-native) سپس `pnpm --filter @nexa/mobile exec expo install --fix` برای هم‌ترازی نسخهٔ دقیق Sentry با SDK

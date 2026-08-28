@@ -53,7 +53,7 @@ Zod parses product model records at module load. Invalid source content fails du
 - sourced sizing calculator (`app/calculator.tsx`): device limits are extracted at import time from the verified `specifications` rows (`deviceLimits`), so any content drift throws instead of silently mis-advising; the pure math engine lives in `@nexa/shared-logic/src/sizing.ts` with vitest coverage that locks the sourced numbers
 - crash telemetry: `@sentry/react-native` wired behind a dormant DSN contract (`extra.sentry.dsn`); nothing is sent until configured and it is disabled in development
 - content-error feedback strip on every screen (mailto/Telegram), dormant until contact constants are filled
-- field-tool screens, all JS and OTA-deliverable: academy lesson list with review progress (`app/academy/[slug].tsx`), menu-accurate LCD simulator driven by the real 31-program table (`components/lesson/lcd-simulator.tsx`), sourced knowledge-check bank (`quizBank` + `components/lesson/quiz-lesson.tsx`), global search plus a fault-code quick grid (`app/search.tsx`), and an offline commissioning checklist persisted in AsyncStorage without any account (`app/checklist.tsx`)
+- field-tool screens, all JS and OTA-deliverable: academy lesson list with review progress (`app/academy/[model].tsx`), menu-accurate LCD simulator driven by the real 31-program table (`components/lesson/lcd-simulator.tsx`), sourced knowledge-check bank (`quizBank` + `components/lesson/quiz-lesson.tsx`), global search plus a fault-code quick grid (`app/search.tsx`), and an offline commissioning checklist persisted in AsyncStorage without any account (`app/checklist.tsx`)
 - local fonts and bundled images
 - device-local learning progress
 
