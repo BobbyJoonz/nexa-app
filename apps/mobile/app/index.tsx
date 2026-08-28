@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { t } from "@nexa/i18n";
 import { MobileBrand } from "@/components/screen";
 import { useAcademy } from "@/providers/academy-provider";
 import { localizedTextStyle, theme } from "@/theme";
@@ -32,10 +33,10 @@ export default function LanguageScreen() {
       </View>
       <View style={styles.copy}>
         <MobileBrand />
-        <Text style={[styles.title, localizedTextStyle(locale)]}>دانش فنی، بدون پیچیدگی.</Text>
-        <Text style={[styles.subtitle, localizedTextStyle(locale)]}>زبان آموزش محصول را انتخاب کنید.</Text>
-        <Button variant="filled" block label="فارسی" trailing={forwardGlyph("fa", "#FFFFFF")} onPress={() => choose("fa")} accessibilityLabel="ادامه به فارسی" />
-        <Button variant="secondary" block label="English" trailing={forwardGlyph("en", theme.colors.brandPrimary)} onPress={() => choose("en")} accessibilityLabel="Continue in English" />
+        <Text style={[styles.title, localizedTextStyle(locale)]}>{t(locale, "language.title")}</Text>
+        <Text style={[styles.subtitle, localizedTextStyle(locale)]}>{t(locale, "language.subtitle")}</Text>
+        <Button variant="filled" block label={t(locale, "language.selfFa")} trailing={forwardGlyph("fa", "#FFFFFF")} onPress={() => choose("fa")} accessibilityLabel={t(locale, "language.ctaFa")} />
+        <Button variant="secondary" block label={t(locale, "language.selfEn")} trailing={forwardGlyph("en", theme.colors.brandPrimary)} onPress={() => choose("en")} accessibilityLabel={t(locale, "language.ctaEn")} />
       </View>
     </SafeAreaView>
   );

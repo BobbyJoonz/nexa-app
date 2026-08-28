@@ -10,6 +10,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { Image } from "expo-image";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { t } from "@nexa/i18n";
 import { NexaLoader } from "@/components/nexa-loader";
 import { AcademyProvider, useAcademy } from "@/providers/academy-provider";
 import { theme } from "@/theme";
@@ -72,18 +73,20 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   // JS-only, provider-free capture: the boundary itself must never depend on a
   // broken tree. No-op until Sentry is configured.
   captureException(error, { boundary: "root", message: error.message });
+  // Provider-free locale: the boundary must render even when the provider tree
+  // is broken, so we use the pure dictionary with the fa default — the exact
+  // behavior shipped today (localized boundary remains a backlog item).
+  const locale = "fa" as const;
   return (
     <SafeAreaView style={errorStyles.safe}>
       <View style={errorStyles.card}>
         <Image source={require("../assets/nexa-logo.png")} style={errorStyles.logo} contentFit="contain" />
         <View style={errorStyles.rule} />
-        <Text style={errorStyles.title}>برنامه درست بارگذاری نشد</Text>
-        <Text style={errorStyles.body}>
-          اطلاعات شما حذف نشده است. دوباره تلاش کنید؛ اگر مشکل ماند، نسخهٔ برنامه و تصویر این صفحه را برای پشتیبانی بفرستید.
-        </Text>
+        <Text style={errorStyles.title}>{t(locale, "error.title")}</Text>
+        <Text style={errorStyles.body}>{t(locale, "error.body")}</Text>
         {__DEV__ ? <Text selectable style={errorStyles.debug}>{error.message}</Text> : null}
         <Pressable style={errorStyles.button} onPress={retry} accessibilityRole="button">
-          <Text style={errorStyles.buttonText}>تلاش دوباره · Retry</Text>
+          <Text style={errorStyles.buttonText}>{t(locale, "error.retry")}</Text>
         </Pressable>
       </View>
     </SafeAreaView>

@@ -8,6 +8,21 @@
 
 ## Unreleased
 
+### فاز ۲ — M2: پاک‌سازی بدهی i18n (اولین آیتم اجراشدهٔ فاز ۲)
+
+- صفحهٔ زبان (`app/index.tsx`) و ErrorBoundary (`app/_layout.tsx`) حالا متن را از
+  دیکشنری `@nexa/i18n` می‌خوانند — پیش از این دیکشنری «موزه‌ای» بود (۳۶ کلید، صفر مصرف).
+- کلیدهای تازه: `language.title/subtitle` با کپیِ واقعی UI (دیکشنری با صفحه رانده شده
+  بود)، `language.selfFa/selfEn` (نام خودِ زبان، مستقل از لوکال)،
+  `language.ctaFa/ctaEn` (برچسب‌های accessibility)، `error.title/body/retry`.
+- ErrorBoundary عمداً provider-free ماند (قانون AGENTS §3) — واکشی با `t()` خالص و
+  پیش‌فرض fa، دقیقاً رفتار قبلی. لوکال‌شدن صفحهٔ خطا در بک‌لاگ است.
+- **گارد ضدبازگشت در `scripts/check-translations.ts`:** هر رشتهٔ فارسی خام در
+  `index.tsx` و `_layout.tsx` = خطای گیت. (بقیهٔ صفحه‌ها الگوی ternary دوزبانهٔ مستند
+  دارند؛ بازآرایی کامل i18n عمداً خارج از M2 و در بک‌لاگ.)
+- شواهد: ۴۱ کلید دیکشنری ✓، گارد ✓، ۳۳ تست ✓، export اندروید/iOS ✓، typecheck ✓.
+  تنها قرمزِ گیت = چک schema شبکه‌ایِ doctor (403 در `exp.host`، محیطی).
+
 ### دروازهٔ A — نصب، هم‌ترازی SDK 57، گیت واقعی روی این ماشین
 
 - **نصب با نسخهٔ قفل‌شده:** `pnpm@11.18.0` از طریق corepack؛ شیم پروژه‌محور `tools/pnpm/pnpm.cmd`
