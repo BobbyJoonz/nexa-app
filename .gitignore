@@ -18,6 +18,9 @@ test-results
 credentials.json
 apps/mobile/credentials/
 apps/mobile/android-credentials.json
+# Android platform-tools zip (build-session download only — dl.google.com is blocked without VPN).
+tools-platform-tools.zip
+platform-tools.zip
 # Native projects are generated with expo prebuild (CNG) and must not be committed.
 apps/mobile/android/
 apps/mobile/ios/

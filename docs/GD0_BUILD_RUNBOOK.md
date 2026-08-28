@@ -43,10 +43,14 @@ npx eas-cli build:configure
 npx eas-cli update:configure
 ```
 
-**قبل از اولین بیلد: adb نصب کن** (این ماشین الآن adb ندارد — برای logcat و نصب با USB لازم است):
+**قبل از اولین بیلد: adb نصب کن** (این ماشین adb و winget ندارد — برای logcat و نصب با USB لازم است):
 
 ```powershell
-winget install Google.PlatformTools     # یا دانلود از developer.android.com/tools
+# winget این ماشین موجود نیست → دانلود دستی (رتوشده) پلتفرم-تولز:
+#   ⚠️ dl.google.com و developer.android.com هم مثل exp.host بدون VPN جواب نمی‌دهند — اول VPN.
+#   1) https://developer.android.com/tools → Android command line tools → Platform-tools (zip)
+#   2) Extract کن به C:\platform-tools
+#   3) PATH: setx PATH "$env:PATH;C:\platform-tools"   (ترمینال بعدی اعمال می‌شود)
 adb version                             # تأیید
 ```
 
@@ -57,16 +61,21 @@ adb version                             # تأیید
 
 ### مسیر A — keystore خودمالک (پیشنهادی؛ JDK 21 روی همین ماشین موجود است ✓)
 
+> همهٔ مسیرها نسبی به `apps/mobile/` هستند (هم‌جا با eas.json) — keystorePath در
+> credentials.json باید **نسبی** باشد تا EAS آن را پیدا کند؛ مسیر مطلق نمی‌شود.
+
 ```powershell
+cd C:\Users\Lenovo\Downloads\nexa-app-main\nexa-app-main\apps\mobile
+
 # (A1) توليد کلید — یک بار برای همیشه؛ PASSWORD را خودت بساز/به خاطر بسپار
-New-Item -ItemType Directory -Force -Path "C:\Users\Lenovo\nexa-keys" | Out-Null
-keytool -genkeypair -v -keystore C:\Users\Lenovo\nexa-keys\nexa-upload.jks `
+New-Item -ItemType Directory -Force -Path credentials | Out-Null
+keytool -genkeypair -v -keystore credentials\nexa-upload.jks `
   -alias nexa -keyalg RSA -keysize 2048 -validity 10000 `
   -storepass <PASSWORD> -keypass <PASSWORD> `
   -dname "CN=NEXA Sunverter Academy, OU=Mobile, O=NEXA, L=Tehran, C=IR"
 
 # (A2) معرفی به EAS — فایل credentials.json (پسورد دارد؛ gitignore شده)
-#      در apps/mobile/credentials/nexa-upload.jks و محتوای زیر در apps/mobile/credentials.json:
+#      در apps/mobile/credentials.json با این محتوا:
 #      { "android": { "keystore": {
 #          "keystorePath": "credentials/nexa-upload.jks",
 #          "keystorePassword": "<PASSWORD>",
@@ -74,7 +83,7 @@ keytool -genkeypair -v -keystore C:\Users\Lenovo\nexa-keys\nexa-upload.jks `
 #          "keyPassword": "<PASSWORD>" } } }
 ```
 
-- بکاپ = همان فایل: `nexa-upload.jks` + پسوردها را در **دو جای آفلاین** بگذار (فلش + ابر شخصی). بدون وابستگی به سرور اکسپو.
+- بکاپ = کپی `credentials\nexa-upload.jks` + پسوردها در **دو جای آفلاین** (فلش + ابر شخصی). بدون وابستگی به سرور اکسپو.
 - `credentials.json` و پوشهٔ `credentials/` از گیت خارج‌اند (قانون .gitignore؛ اگر `git status` آن‌ها را نشان داد، فوراً متوقف شو).
 
 ### مسیر B — keystore مدیریت‌شدهٔ اکسپو (فال‌بک؛ صفر تنظیم محلی)
