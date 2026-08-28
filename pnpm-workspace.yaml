@@ -19,3 +19,4 @@ minimumReleaseAgeExclude:
 # the project's 57.0.16 — a real duplicate native module per expo-doctor.
 overrides:
   expo-constants: 57.0.16
+  '@react-native/metro-config': 0.86.3
