@@ -13,6 +13,11 @@ test-results
 # Signing material must NEVER enter the repository — backup lives outside the repo.
 *.jks
 *.keystore
+*.jks.bak
+# EAS credentials manifest carries keystore passwords — never commit it.
+credentials.json
+apps/mobile/credentials/
+apps/mobile/android-credentials.json
 # Native projects are generated with expo prebuild (CNG) and must not be committed.
 apps/mobile/android/
 apps/mobile/ios/

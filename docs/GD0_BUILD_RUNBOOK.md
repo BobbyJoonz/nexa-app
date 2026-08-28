@@ -29,6 +29,7 @@
 cd C:\Users\Lenovo\Downloads\nexa-app-main\nexa-app-main\apps\mobile
 
 # (۱) لاگین — مرورگر باز می‌شود، توکن را تأیید کن
+#     اگر مرورگر باز نشد، URL چاپ‌شده را خودت در مرورگر بزن.
 npx eas-cli login
 
 # (۲) تأیید لاگین — باید نام اکانت را چاپ کند، نه «Not logged in»
@@ -36,20 +37,63 @@ npx eas-cli whoami
 
 # (۳) اتصال پروژه به EAS (ساخت/انتخاب پروژه؛ یک‌بار) — projectId را در eas.json می‌نویسد
 npx eas-cli init
-#    اگر init سؤال «use the project with id…» داد: YES
 
 # (۴) پیکربندی بیلد/آپدیت (یک‌بار)
 npx eas-cli build:configure
 npx eas-cli update:configure
-
-# (۵) بیلد — فقط همین یکی سخت است؛ حدود ۱۵–۳۰ دقیقه روی کلاود اکسپو
-npx eas-cli build --platform android --profile preview --non-interactive
-#    اگر خواست keystore جدید بسازد → YES (managed؛ اکسپو نگهش می‌دارد)
 ```
 
-خروجی: یک URL (صفحهٔ بیلد) و بعد از اتمام، **لینک دانلود APK**.
+**قبل از اولین بیلد: adb نصب کن** (این ماشین الآن adb ندارد — برای logcat و نصب با USB لازم است):
 
-## ۳) نصب روی گوشی
+```powershell
+winget install Google.PlatformTools     # یا دانلود از developer.android.com/tools
+adb version                             # تأیید
+```
+
+## ۳) 🔑 keystore — اول تصمیم، بعد بیلد (دو مسیر؛ A پیشنهادی)
+
+> کلید امضا = مالکیت اپ. هر بیلد بعدی باید با **همین** کلید امضا شود وگرنه
+> روی دستگاه‌های قبلی نصب نمی‌شود. بدون بکاپ، کلید از دست رفته = پایان پروژه.
+
+### مسیر A — keystore خودمالک (پیشنهادی؛ JDK 21 روی همین ماشین موجود است ✓)
+
+```powershell
+# (A1) توليد کلید — یک بار برای همیشه؛ PASSWORD را خودت بساز/به خاطر بسپار
+New-Item -ItemType Directory -Force -Path "C:\Users\Lenovo\nexa-keys" | Out-Null
+keytool -genkeypair -v -keystore C:\Users\Lenovo\nexa-keys\nexa-upload.jks `
+  -alias nexa -keyalg RSA -keysize 2048 -validity 10000 `
+  -storepass <PASSWORD> -keypass <PASSWORD> `
+  -dname "CN=NEXA Sunverter Academy, OU=Mobile, O=NEXA, L=Tehran, C=IR"
+
+# (A2) معرفی به EAS — فایل credentials.json (پسورد دارد؛ gitignore شده)
+#      در apps/mobile/credentials/nexa-upload.jks و محتوای زیر در apps/mobile/credentials.json:
+#      { "android": { "keystore": {
+#          "keystorePath": "credentials/nexa-upload.jks",
+#          "keystorePassword": "<PASSWORD>",
+#          "keyAlias": "nexa",
+#          "keyPassword": "<PASSWORD>" } } }
+```
+
+- بکاپ = همان فایل: `nexa-upload.jks` + پسوردها را در **دو جای آفلاین** بگذار (فلش + ابر شخصی). بدون وابستگی به سرور اکسپو.
+- `credentials.json` و پوشهٔ `credentials/` از گیت خارج‌اند (قانون .gitignore؛ اگر `git status` آن‌ها را نشان داد، فوراً متوقف شو).
+
+### مسیر B — keystore مدیریت‌شدهٔ اکسپو (فال‌بک؛ صفر تنظیم محلی)
+
+- فقط `credentials.json` را نداشته باش و بیلد را **تعاملی** اجرا کن؛ CLI می‌پرسد keystore بسازد → YES.
+- بکاپ: `npx eas-cli credentials -p android` → نمایش/دانلود کلید (اگر نسخه‌ات فقط خلاصه نشان داد، خلاصه + نام + hash را ثبت کن و گزینهٔ دانلود را زیر منوها پیدا کن؛ در نسخه‌های مدیریت‌شده، دانلود از همین منو ممکن است).
+- ریسک شناخته‌شده: کلید روی سرور اکسپو می‌ماند — بکاپ آفلاین از آن گرفته نشود = قفل شدن به اکسپو.
+
+## ۴) بیلد — فقط همین یکی سخت است (۱۵–۳۰ دقیقه روی کلاود اکسپو)
+
+```powershell
+npx eas-cli build --platform android --profile preview
+# تعاملی نگهش دار (بدون --non-interactive): اگر مسیر A را رفتی هیچ سؤالی نمی‌پرسد؛
+# اگر مسیر B را رفتی، اولین بار دربارهٔ ساخت keystore می‌پرسد → YES.
+```
+
+خروجی: یک URL (صفحهٔ بیلد) و بعد از اتمام، **لینک دانلود APK** — همان را روی گوشی باز کن.
+
+## ۵) نصب روی گوشی
 
 - **راه A (ساده):** لینک APK را روی گوشی باز کن → دانلود → نصب (فعال‌کردن «نصب از منابع ناشناس» در تنظیمات).
 - **راه B (USB + adb، برای logcat لازم است):**
@@ -59,16 +103,7 @@ npx eas-cli build --platform android --profile preview --non-interactive
   adb install -r <path-to.apk>
   ```
 
-## ۴) 🔑 بکاپ keystore — بلافاصله بعد از بیلد، قبل از هر چیز دیگر
-
-قانون قفل‌شدهٔ AGENTS: «بکاپ keystore غیرقابل‌جبران‌ترین ریسک». نبود آن = ناتوانی در نصب نسخهٔ بعدی روی همین گوشی‌ها.
-
-1. `npx eas-cli credentials` → پلتفرم Android → گزینهٔ نمایش/download keystore (وارد کردن رمز).
-2. فایل `.jks` + رمز + alias را **در دو جای آفلاین** ذخیره کن (فلش + درایو ابری شخصی).
-3. `eas.json` + `app.json` (versionCode) را در همان جعبه ثبت کن تا نسخه‌بندی بعدی زنجیره شود.
-   ⚠️ **«Keystore مدیریت‌شدهٔ اکسپو» روی سرورهای اکسپو می‌ماند** — برای استقلال از اکسپو، همیشه کپی آفلاین بگیر.
-
-## ۵) تأیید معیار خروج (logcat — فقط راه B)
+## ۶) تأیید معیار خروج (logcat — فقط راه B)
 
 ```powershell
 adb logcat -d | Select-String -Pattern "FATAL EXCEPTION|AndroidRuntime"
@@ -82,20 +117,22 @@ adb shell dumpsys activity activities | Select-String -Pattern "mResumedActivity
 - [ ] آیکون/اسپلش درست (نه مربع سفید/جایگزین)
 - [ ] هیچ `FATAL EXCEPTION` در logcat لانچ
 - [ ] صفحهٔ زبان fa/en ظاهر می‌شود
-- [ ] keystore بکاپ آفلاین گرفته شده
+- [ ] keystore بکاپ آفلاین گرفته شده (مسیر A = فایل خودت؛ مسیر B = خروجی credentials)
 - [ ] خروجی `npx eas-cli whoami` = نام اکانت (ثبت برای همین جلسه)
 
-## ۶) اگر بیلد شکست خورد — ماتریس
+## ۷) اگر بیلد شکست خورد — ماتریس
 
 | خطا | محتمل‌ترین علت | راه |
 |---|---|---|
 | 403 / timeout در ابتدای build | VPN قطع/ضعیف | VPN را عوض کن، `eas build` دوباره |
 | «A project with the name… already exists» | init تکراری | همان پروژه را انتخاب کن |
 | خطای schema در `expo-doctor` | 403 شبکه‌ای (`exp.host`) — شناخته‌شده | بی‌تأثیر روی بیلد؛ نادیده بگیر |
+| «User interaction is not allowed in non-interactive mode» | (فقط اگر --non-interactive زدی) | تعاملی اجرا کن — این سند عمداً آن را حذف کرده |
+| خطای credentials.json در build | مسیر/پسورد keystore | مسیر نسبی باش (credentials/…)؛ پسوردها با فایل یکسان |
 | نصب روی گوشی: «برنامه نصب نشد» | امضای کرش/حافظه | APK را دوباره دانلود؛ حافظه خالی کن |
 | نصب «نسخهٔ جدید» بعداً رد می‌شود | versionCode مساوی | همیشه قبل از بیلد بعدی `versionCode` را یک واحد زیاد کن (فعلاً 2) |
 
-## ۷) نسخه‌بندی برای بیلدهای بعدی (قانون)
+## ۸) نسخه‌بندی برای بیلدهای بعدی (قانون)
 
 `preview` خودکار زیاد نمی‌کند (`autoIncrement` فقط در production) → **قبل از هر بیلد preview بعدی،**
 در `apps/mobile/app.json → expo.android.versionCode` را +1 کن. با همین keystore، نصب روی نسخهٔ قبلی ممکن می‌شود.
