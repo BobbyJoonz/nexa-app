@@ -383,19 +383,359 @@ export const connectionFacts = [  { id: "battery-cable", label: bilingual("Batte
   { id: "pv-torque", label: bilingual("PV terminal torque", "گشتاور ترمینال PV"), value: "1.4-1.6 Nm", source: ref(9, "PV connection") }
 ] as const;
 
-export const anatomy = [
-  { id: "lcd", label: bilingual("LCD display", "نمایشگر LCD"), x: 59, y: 34, source: ref(4, "Product overview") },
-  { id: "status", label: bilingual("Status indicator", "نشانگر وضعیت"), x: 54, y: 43, source: ref(4, "Product overview") },
-  { id: "charge", label: bilingual("Charging indicator", "نشانگر شارژ"), x: 59, y: 43, source: ref(4, "Product overview") },
-  { id: "fault", label: bilingual("Fault indicator", "نشانگر خطا"), x: 64, y: 43, source: ref(4, "Product overview") },
-  { id: "buttons", label: bilingual("Function buttons", "دکمه‌های عملکرد"), x: 59, y: 48, source: ref(4, "Product overview") },
-  { id: "earth", label: bilingual("Protective earth", "زمین حفاظتی"), x: 25, y: 90, source: ref(4, "Product overview") },
-  { id: "ac-in", label: bilingual("AC input", "ورودی AC"), x: 38, y: 90, source: ref(4, "Product overview") },
-  { id: "ac-out", label: bilingual("AC output", "خروجی AC"), x: 48, y: 90, source: ref(4, "Product overview") },
-  { id: "battery-in", label: bilingual("Battery input", "ورودی باتری"), x: 59, y: 90, source: ref(4, "Product overview") },
-  { id: "pv-in", label: bilingual("PV input", "ورودی PV"), x: 70, y: 90, source: ref(4, "Product overview") },
-  { id: "wifi", label: bilingual("Wi-Fi communication", "ارتباط Wi-Fi"), x: 81, y: 90, source: ref(4, "Product overview") },
-  { id: "power", label: bilingual("Power switch", "کلید روشن و خاموش"), x: 89, y: 90, source: ref(4, "Product overview") }
+export interface AnatomyPart {
+  id: string;
+  label: LocalizedText;
+  x: number;
+  y: number;
+  /** Platform-neutral icon key; mapped to per-platform icon sets in the UI. */
+  icon: "lcd" | "status" | "charge" | "fault" | "buttons" | "earth" | "ac-in" | "ac-out" | "battery" | "pv" | "wifi" | "power";
+  /** What the part is and what it does — user-facing, no source citations. */
+  role: LocalizedText;
+  /** One practical tip for the user or installer. */
+  guide: LocalizedText;
+  /** Short value line. */
+  stat: LocalizedText;
+  /** Three on-site inspection steps the learner can actually follow. */
+  inspect: LocalizedText[];
+  /** Short hazard warning shown when the part carries electrical/installation risk. */
+  safety?: LocalizedText;
+  /** Academy lesson this part leads to. */
+  relatedLesson: string;
+  /** CTA label next to the related-lesson link. */
+  relatedLabel: LocalizedText;
+  source: SourceReference;
+}
+
+export const anatomy: AnatomyPart[] = [
+  {
+    id: "lcd", label: bilingual("LCD display", "نمایشگر LCD"), x: 59, y: 34, icon: "lcd",
+    role: bilingual(
+      "Main display; shows input voltage, battery voltage, PV power and load percentage. All setting programs are browsed here.",
+      "نمایشگر اصلی دستگاه؛ ولتاژ ورودی، ولتاژ باتری، توان PV و درصد بار را نشان می‌دهد. همهٔ برنامه‌های تنظیمی از همین‌جا مرور می‌شوند."
+    ),
+    guide: bilingual("Returns to the default screen after one minute.", "پس از یک دقیقه به صفحهٔ پیش‌فرض برمی‌گردد."),
+    stat: bilingual("230 VAC · battery · PV · load", "۲۳۰ ولت AC · باتری · PV · بار"),
+    inspect: [
+      bilingual(
+        "Right after power-on, read input voltage and battery voltage on the LCD.",
+        "بلافاصله پس از روشن‌شدن، ولتاژ ورودی و ولتاژ باتری را روی LCD بخوان."
+      ),
+      bilingual(
+        "Watch the PV-power and load-% readouts to confirm the display cycles correctly.",
+        "به ارقام توان PV و درصد بار نگاه کن تا از چرخش صحیح صفحه مطمئن شوی."
+      ),
+      bilingual(
+        "If rows flicker or freeze, note the shown values before powering down.",
+        "اگر ردیف‌ها پرش یا یخ زدند، پیش از خاموش‌کردن مقادیر نمایش‌داده‌شده را یادداشت کن."
+      )
+    ],
+    relatedLesson: "lcd", relatedLabel: bilingual("Learn the display & keys", "آموزش نمایشگر و دکمه‌ها"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "status", label: bilingual("Status indicator", "نشانگر وضعیت"), x: 54, y: 43, icon: "status",
+    role: bilingual(
+      "Status light; green means normal operation, red means check for a fault.",
+      "چراغ وضعیت؛ سبز یعنی عملکرد عادی و قرمز یعنی به خطا نگاه کنید."
+    ),
+    guide: bilingual("Blinks in battery mode or on fault.", "در حالت باتری یا هنگام خطا چشمک می‌زند."),
+    stat: bilingual("Green = normal · red = fault", "سبز = عادی · قرمز = خطا"),
+    inspect: [
+      bilingual(
+        "Green during normal operation; red with the buzzer means a fault state.",
+        "در عملکرد عادی سبز است؛ قرمز همراه بیزر یعنی حالت خطا."
+      ),
+      bilingual(
+        "Watch it for a few seconds after power-on — it should settle to green.",
+        "چند لحظه پس از روشن‌شدن تماشایش کن — باید سبز شود."
+      ),
+      bilingual(
+        "Blinks in battery mode; steady red means stop and read the fault code.",
+        "در حالت باتری چشمک می‌زند؛ قرمز ثابت یعنی توقف و خواندن کد خطا."
+      )
+    ],
+    relatedLesson: "troubleshooting", relatedLabel: bilingual("Troubleshooting lesson", "آموزش عیب‌یابی"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "charge", label: bilingual("Charging indicator", "نشانگر شارژ"), x: 59, y: 43, icon: "charge",
+    role: bilingual(
+      "Charging light; on or blinking while the battery is being charged.",
+      "چراغ شارژ؛ هنگام شارژ شدن باتری روشن یا چشمک‌زن است."
+    ),
+    guide: bilingual("Off means charging is not active.", "خاموش بودن یعنی شارژ انجام نمی‌شود."),
+    stat: bilingual("Blinking while charging", "شارژ فعال = چشمک"),
+    inspect: [
+      bilingual(
+        "On or blinking while charging; off when charging is idle.",
+        "هنگام شارژ روشن یا چشمک‌زن است؛ خاموش یعنی شارژ غیرفعال."
+      ),
+      bilingual(
+        "Compare it with the LCD battery voltage to confirm charging actually started.",
+        "آن را با ولتاژ باتری روی LCD مقایسه کن تا تأیید شود شارژ واقعاً شروع شده."
+      ),
+      bilingual(
+        "If it never lights while the unit runs, suspect the charge source or program 03.",
+        "اگر با روشن‌بودن دستگاه هرگز روشن نشد، منبع شارژ یا برنامهٔ ۰۳ را بررسی کن."
+      )
+    ],
+    relatedLesson: "battery", relatedLabel: bilingual("Battery & charging lesson", "درس باتری و شارژ"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "fault", label: bilingual("Fault indicator", "نشانگر خطا"), x: 64, y: 43, icon: "fault",
+    role: bilingual(
+      "Fault light; with the continuous buzzer it signals a fault code.",
+      "چراغ خطا؛ همراه بیزر پیوسته نشان‌دهندهٔ وجود کد خطاست."
+    ),
+    guide: bilingual("Note the code and use the fault finder.", "کد را یادداشت کنید و از یابندهٔ خطا کمک بگیرید."),
+    stat: bilingual("Sounded with the continuous buzzer", "با بیزر پیوسته روشن"),
+    safety: bilingual(
+      "Fault states can hide live circuits — isolate all sources before inspecting.",
+      "حالت خطا می‌تواند مدارهای زنده را پنهان کند — پیش از بازرسی همهٔ منابع را ایزوله کن."
+    ),
+    inspect: [
+      bilingual(
+        "Note the code on the LCD and the buzz pattern before touching anything.",
+        "پیش از هر لمسی، کد روی LCD و الگوی بیزر را یادداشت کن."
+      ),
+      bilingual(
+        "Use the fault-code finder to map the code to its cause.",
+        "با یابندهٔ کد خطا، کد را به علتش ربط بده."
+      ),
+      bilingual(
+        "If it stays red after a reset, stop and call a qualified installer.",
+        "اگر پس از ریست همچنان قرمز ماند، بایست و نصاب متخصص خبر کن."
+      )
+    ],
+    relatedLesson: "faults", relatedLabel: bilingual("Fault code finder", "یابندهٔ کد خطا"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "buttons", label: bilingual("Function buttons", "دکمه‌های عملکرد"), x: 59, y: 48, icon: "buttons",
+    role: bilingual(
+      "ESC, UP, DOWN and ENTER keys; used to browse programs and change settings.",
+      "چهار دکمهٔ ESC، بالا، پایین و ENTER؛ برای مرور برنامه‌ها و تغییر تنظیمات."
+    ),
+    guide: bilingual("ENTER opens settings; ESC exits.", "ENTER وارد تنظیمات می‌شود و ESC برمی‌گردد."),
+    stat: bilingual("ESC · ▲ · ▼ · ENTER", "کلیدهای ESC · ▲ · ▼ · ENTER"),
+    inspect: [
+      bilingual(
+        "ESC, ▲, ▼ and ENTER drive the whole setting menu.",
+        "ESC، ▲، ▼ و ENTER کل منوی تنظیمات را می‌چرخانند."
+      ),
+      bilingual(
+        "ENTER opens a setting; ESC always returns one step.",
+        "ENTER یک تنظیم را باز می‌کند و ESC همیشه یک گام برمی‌گردد."
+      ),
+      bilingual(
+        "Do not hold any key — each acts immediately so no program is skipped.",
+        "هیچ دکمه‌ای را نگه ندار — هر کلید یکجا عمل می‌کند تا برنامه‌ای رد نشود."
+      )
+    ],
+    relatedLesson: "lcd", relatedLabel: bilingual("Learn the keys", "آموزش کار با دکمه‌ها"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "earth", label: bilingual("Protective earth", "زمین حفاظتی"), x: 25, y: 90, icon: "earth",
+    role: bilingual(
+      "Protective earth terminal; connected first and disconnected last.",
+      "ترمینال زمین حفاظتی؛ اولین اتصالی که انجام می‌شود و آخرین اتصالی که باز می‌شود."
+    ),
+    guide: bilingual("Earthing is for qualified installers only.", "سیم‌کشی زمین فقط توسط نصاب متخصص انجام شود."),
+    stat: bilingual("Protective earth", "زمین حفاظتی"),
+    safety: bilingual(
+      "Protective earth is life-safety wiring — qualified installer only.",
+      "زمین حفاظتی سیم‌کشی ایمنی جان است — فقط نصاب متخصص."
+    ),
+    inspect: [
+      bilingual(
+        "It must be the first connection made and the last one removed.",
+        "باید اولین اتصال انجام‌شده و آخرین اتصال بازشده باشد."
+      ),
+      bilingual(
+        "Visually confirm the terminal stays tight after installation.",
+        "پس از نصب، از نظر ظاهری تأیید کن ترمینال سفت مانده است."
+      ),
+      bilingual(
+        "Never bypass the earth as some setups do for convenience.",
+        "هرگز برای راحتی، زمین را دور نزن."
+      )
+    ],
+    relatedLesson: "connections", relatedLabel: bilingual("Connections lesson", "درس اتصالات"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "ac-in", label: bilingual("AC input", "ورودی AC"), x: 38, y: 90, icon: "ac-in",
+    role: bilingual(
+      "Grid (utility) input; AC input wiring must be separate and protected.",
+      "ورودی برق شهر؛ سیم‌کشی ورودی AC باید جدا و با حفاظت مناسب باشد."
+    ),
+    guide: bilingual("Check input via the LCD voltage readout.", "ولتاژ ورودی را از روی LCD بررسی کنید."),
+    stat: bilingual("90–280 VAC", "۹۰–۲۸۰ ولت AC"),
+    safety: bilingual(
+      "Mains voltage is present here — isolate before any work on the unit.",
+      "ولتاژ برق شهر این‌جاست — پیش از هر کاری روی دستگاه، ایزوله کن."
+    ),
+    inspect: [
+      bilingual(
+        "Check mains presence via the LCD voltage readout, never by touch.",
+        "حضور برق شهر را با قرائت ولتاژ LCD چک کن، هرگز با لمس."
+      ),
+      bilingual(
+        "Confirm the input breaker and wiring are rated for the line.",
+        "تأیید کن کلید و سیم ورودی برای این خط برق مناسب هستند."
+      ),
+      bilingual(
+        "Never reverse input and output at this terminal row.",
+        "هرگز ورودی و خروجی را در این ردیف ترمینال جابه‌جا نکن."
+      )
+    ],
+    relatedLesson: "connections", relatedLabel: bilingual("AC input connection", "اتصال ورودی AC"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "ac-out", label: bilingual("AC output", "خروجی AC"), x: 48, y: 90, icon: "ac-out",
+    role: bilingual(
+      "AC output; supplies the loads and must not be reversed with the input.",
+      "خروجی AC؛ برق بارها را تأمین می‌کند و نباید با ورودی جابه‌جا شود."
+    ),
+    guide: bilingual("Continuous load must stay within rated power.", "بار پیوسته نباید از توان نامی بیشتر شود."),
+    stat: bilingual("230 VAC output", "۲۳۰ ولت AC خروجی"),
+    safety: bilingual(
+      "The output can be live from the battery even without grid — treat it as live.",
+      "خروجی حتی بدون برق شهر می‌تواند از باتری زنده باشد — زنده فرضش کن."
+    ),
+    inspect: [
+      bilingual(
+        "Keep the output breaker off until the load list is confirmed.",
+        "تا تأیید لیست بار، کلید خروجی را خاموش نگه دار."
+      ),
+      bilingual(
+        "Verify rated power covers the continuous load before connecting.",
+        "پیش از اتصال، تأیید کن توان نامی بار پیوسته را پوشش می‌دهد."
+      ),
+      bilingual(
+        "Check that phase wires are fixed with the documented torque.",
+        "چک کن سیم‌های فاز با گشتاور مستند سفت شده‌اند."
+      )
+    ],
+    relatedLesson: "connections", relatedLabel: bilingual("AC output connection", "اتصال خروجی AC"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "battery-in", label: bilingual("Battery input", "ورودی باتری"), x: 59, y: 90, icon: "battery",
+    role: bilingual(
+      "24 V battery terminals; polarity and torque must be exact.",
+      "ترمینال‌های باتری ۲۴ ولت؛ قطبیت و گشتاور باید دقیق رعایت شود."
+    ),
+    guide: bilingual("Isolate all sources before touching.", "پیش از لمس، همهٔ منابع ایزوله شوند."),
+    stat: bilingual("24 VDC · 2–3 Nm", "۲۴ ولت DC · ۲–۳ نیوتن‌متر"),
+    safety: bilingual(
+      "High DC energy — wrong polarity can damage the unit and tools.",
+      "انرژی DC بالاست — قطبیت اشتباه می‌تواند دستگاه و ابزار را بسوزاند."
+    ),
+    inspect: [
+      bilingual(
+        "Confirm polarity (+/−) matches the terminal labels twice.",
+        "قطبیت (+/−) را دو بار با برچسب ترمینال تطبیق بده."
+      ),
+      bilingual(
+        "Tighten to the documented torque, not by feel.",
+        "با گشتاور مستند سفت کن، نه با حس."
+      ),
+      bilingual(
+        "Re-check polarity before ever powering on after maintenance.",
+        "پس از هر تعمیر، پیش از روشن‌شدن دوباره قطبیت را چک کن."
+      )
+    ],
+    relatedLesson: "connections", relatedLabel: bilingual("Battery connection", "اتصال باتری"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "pv-in", label: bilingual("PV input", "ورودی PV"), x: 70, y: 90, icon: "pv",
+    role: bilingual(
+      "Solar (PV) input; array open-circuit voltage must not exceed 500 VDC.",
+      "ورودی پنل خورشیدی؛ ولتاژ مدار باز آرایه نباید از ۵۰۰ ولت DC بیشتر شود."
+    ),
+    guide: bilingual("Check Voc with the temperature-adjusted sizing calculator.", "Voc را با تصحیح دما در ماشین‌حساب سازگاری بسنجید."),
+    stat: bilingual("500 VDC max", "حداکثر ۵۰۰ ولت DC"),
+    safety: bilingual(
+      "Panels are live in daylight — cover them before wiring.",
+      "پنل‌ها در روز روشن زنده‌اند — پیش از سیم‌کشی بپوشانشان."
+    ),
+    inspect: [
+      bilingual(
+        "Confirm array Voc stays at or below 500 VDC on the coldest day.",
+        "تأیید کن Voc آرایه در سردترین روز از ۵۰۰ ولت DC بیشتر نشود."
+      ),
+      bilingual(
+        "Use the sizing calculator with the panel temperature coefficient.",
+        "با ماشین‌حساب سازگاری و ضریب دمایی پنل محاسبه کن."
+      ),
+      bilingual(
+        "Check polarity before connecting the PV strings.",
+        "پیش از اتصال رشته‌ها، قطبیت را چک کن."
+      )
+    ],
+    relatedLesson: "connections", relatedLabel: bilingual("PV connection", "اتصال پنل خورشیدی"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "wifi", label: bilingual("Wi-Fi communication", "ارتباط Wi-Fi"), x: 81, y: 90, icon: "wifi",
+    role: bilingual(
+      "Optional communication module port for monitoring and advanced setup.",
+      "پورت ماژول ارتباطی اختیاری برای مانیتورینگ و تنظیمات پیشرفته."
+    ),
+    guide: bilingual("Coordinate communication setup with the installer.", "راه‌اندازی ارتباط با نصاب هماهنگ شود."),
+    stat: bilingual("Optional monitoring", "مانیتورینگ اختیاری"),
+    inspect: [
+      bilingual(
+        "Port reserved for the optional monitoring module.",
+        "پورت اختصاصی ماژول مانیتورینگ اختیاری."
+      ),
+      bilingual(
+        "Verify the module model matches the unit before installing.",
+        "پیش از نصب، تأیید کن مدل ماژول با دستگاه سازگار است."
+      ),
+      bilingual(
+        "App pairing and setup are shared with the installer.",
+        "جفت‌سازی اپ و راه‌اندازی با نصاب هماهنگ می‌شود."
+      )
+    ],
+    relatedLesson: "settings", relatedLabel: bilingual("Settings explorer", "برنامه‌های تنظیمی"),
+    source: ref(4, "Product overview")
+  },
+  {
+    id: "power", label: bilingual("Power switch", "کلید روشن و خاموش"), x: 89, y: 90, icon: "power",
+    role: bilingual(
+      "Power switch; operate only after the commissioning checklist is complete.",
+      "کلید روشن و خاموش؛ فقط پس از تکمیل چک‌لیست راه‌اندازی استفاده شود."
+    ),
+    guide: bilingual("Power on only after earth and polarity are confirmed.", "روشن‌کردن فقط پس از تأیید زمین و قطبیت."),
+    stat: bilingual("ON / OFF", "روشن / خاموش"),
+    safety: bilingual(
+      "Power-on is the last commissioning step — never early.",
+      "روشن‌کردن آخرین گام راه‌اندازی است — هرگز زودتر."
+    ),
+    inspect: [
+      bilingual(
+        "Confirm earth, polarity and Voc checks passed before switching.",
+        "پیش از روشن‌کردن، تأیید کن بررسی زمین، قطبیت و Voc رد شده‌اند."
+      ),
+      bilingual(
+        "Power on with no load first and watch the LCD settle.",
+        "ابتدا بی‌بار روشن کن و صبر کن تا LCD پایدار شود."
+      ),
+      bilingual(
+        "If the unit trips immediately, keep it off and call the installer.",
+        "اگر دستگاه همان لحظه قطع شد، خاموش نگه دار و نصاب خبر کن."
+      )
+    ],
+    relatedLesson: "power-on", relatedLabel: bilingual("First power-on lesson", "درس روشن‌کردن اولیه"),
+    source: ref(4, "Product overview")
+  }
 ] as const;
 
 export * from "./troubleshooting";
