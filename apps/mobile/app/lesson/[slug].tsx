@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
+import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { useMemo, useState } from "react";
@@ -11,7 +12,8 @@ import {
   getProduct,
   localize,
   settings,
-  specifications
+  specifications,
+  type AnatomyPart
 } from "@nexa/product-content";
 import {
   Modal,
@@ -49,6 +51,16 @@ const anatomyIcons = {
   wifi: "wifi-outline",
   power: "power-outline"
 } as const;
+
+/** Fixed zoom cell: keeps the magnifier anchor pixel-exact without measuring layout. */
+const ZOOM_CELL = { width: 240, height: 307 };
+const zoomImageStyle = (part: AnatomyPart) => ({
+  position: "absolute",
+  width: ZOOM_CELL.width * 2.2,
+  height: ZOOM_CELL.height * 2.2,
+  left: ZOOM_CELL.width / 2 - (part.x / 100) * ZOOM_CELL.width * 2.2,
+  top: ZOOM_CELL.height / 2 - (part.y / 100) * ZOOM_CELL.height * 2.2
+});
 
 function EnergyFlow({ locale }: { locale: "fa" | "en" }) {
   const nodes = [
@@ -143,11 +155,36 @@ function AnatomyList({ locale, model }: { locale: "fa" | "en"; model: string }) 
               </View>
               {active ? (
                 <>
+                  <View style={styles.partZoom}>
+                    <Image
+                      source={require("../../assets/nexa-product-mobile.webp")}
+                      contentFit="fill"
+                      style={zoomImageStyle(active)}
+                    />
+                    <View style={styles.partZoomDot} />
+                    <Text style={[styles.partZoomCaption, localizedTextStyle(locale)]}>
+                      {locale === "fa" ? "نمای بزرگ‌شدهٔ همین نقطه روی دستگاه" : "Zoomed view of this exact point on the unit"}
+                    </Text>
+                  </View>
                   <View style={[styles.partHead, localizedRow(locale)]}>
                     <View style={styles.partIcon}><Ionicons name={anatomyIcons[active.icon] ?? "information-circle-outline"} size={24} color="white" /></View>
                     <Text style={[styles.partSpec, localizedTextStyle(locale)]}>{localize(active.stat, locale)}</Text>
                   </View>
                   <Text style={[styles.partRole, localizedTextStyle(locale)]}>{localize(active.role, locale)}</Text>
+                  {active.safety ? (
+                    <View style={[styles.partSafety, localizedRow(locale)]}>
+                      <Ionicons name="warning-outline" size={17} color={theme.colors.warning} />
+                      <Text style={[styles.partSafetyText, localizedTextStyle(locale)]}>{localize(active.safety, locale)}</Text>
+                    </View>
+                  ) : null}
+                  <View style={styles.partInspect}>
+                    {active.inspect.map((step, stepIndex) => (
+                      <View style={[styles.partInspectRow, localizedRow(locale)]} key={stepIndex}>
+                        <Text style={styles.partInspectNum}>{locale === "fa" ? toFaDigits(String(stepIndex + 1).padStart(2, "0")) : String(stepIndex + 1).padStart(2, "0")}</Text>
+                        <Text style={[styles.partInspectText, localizedTextStyle(locale)]}>{localize(step, locale)}</Text>
+                      </View>
+                    ))}
+                  </View>
                   <View style={[styles.partGuide, localizedRow(locale), locale === "fa" && styles.partGuideRtl]}>
                     <Ionicons name="bulb-outline" size={17} color={theme.colors.warning} />
                     <Text style={[styles.partGuideText, localizedTextStyle(locale)]}>{localize(active.guide, locale)}</Text>
@@ -351,6 +388,15 @@ const styles = StyleSheet.create({
   partGuide: { alignItems: "flex-start", gap: 9, marginTop: 16, padding: 13, borderLeftWidth: 3, borderLeftColor: theme.colors.warning, backgroundColor: "#FFF7ED" },
   partGuideRtl: { borderLeftWidth: 0, borderRightWidth: 3, borderRightColor: theme.colors.warning },
   partGuideText: { flex: 1, color: "#24435F", fontSize: 12, lineHeight: 20 },
+  partZoom: { alignSelf: "center", width: ZOOM_CELL.width, height: ZOOM_CELL.height, marginTop: 18, overflow: "hidden", borderWidth: 1, borderColor: theme.colors.borderSubtle, borderRadius: 14, backgroundColor: "#F4F6F8" },
+  partZoomDot: { position: "absolute", top: ZOOM_CELL.height / 2 - 12, left: ZOOM_CELL.width / 2 - 12, width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: "white", backgroundColor: "rgba(137,21,37,.85)", ...theme.shadow },
+  partZoomCaption: { position: "absolute", left: 0, right: 0, bottom: 0, paddingVertical: 5, color: "white", backgroundColor: "rgba(13,34,62,.74)", fontSize: 9, textAlign: "center" },
+  partSafety: { alignItems: "flex-start", gap: 8, marginTop: 14, padding: 12, borderWidth: 1, borderColor: "rgba(181,71,8,.3)", borderRadius: 10, backgroundColor: "#FFF1EC" },
+  partSafetyText: { flex: 1, color: "#7A2D00", fontSize: 11.5, lineHeight: 19 },
+  partInspect: { marginTop: 12 },
+  partInspectRow: { alignItems: "flex-start", gap: 10, paddingVertical: 9, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.colors.borderSubtle },
+  partInspectNum: { width: 26, height: 26, paddingTop: 5, color: "white", borderRadius: 13, textAlign: "center", backgroundColor: theme.colors.brandPrimary, fontSize: 10, fontWeight: "700", overflow: "hidden" },
+  partInspectText: { flex: 1, color: theme.colors.textPrimary, fontSize: 12, lineHeight: 21 },
   checks: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors.borderSubtle },
   check: { alignItems: "center", gap: 12, minHeight: 74, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.colors.borderSubtle },
   checkNumber: { width: 36, height: 36, alignItems: "center", justifyContent: "center", borderRadius: 18, borderWidth: 1, borderColor: theme.colors.borderSubtle },

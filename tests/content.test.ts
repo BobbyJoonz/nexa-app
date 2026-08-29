@@ -59,6 +59,23 @@ describe("anatomy rich content", () => {
     expect(new Set(anatomy.map((part) => `${part.label.en}|${part.label.fa}`)).size).toBe(12);
   });
 
+  it("gives every part at least 3 bilingual inspection steps", () => {
+    anatomy.forEach((part) => {
+      expect(part.inspect.length, part.id).toBeGreaterThanOrEqual(3);
+      expect(part.inspect.every((step) => step.en && step.fa), part.id).toBe(true);
+    });
+  });
+
+  it("flags a bilingual safety warning on every hazardous part", () => {
+    const hazardIds = ["fault", "earth", "ac-in", "ac-out", "battery-in", "pv-in", "power"];
+    anatomy.forEach((part) => {
+      if (hazardIds.includes(part.id)) {
+        expect(part.safety, part.id).toBeDefined();
+        expect(Boolean(part.safety && part.safety.en && part.safety.fa), part.id).toBe(true);
+      }
+    });
+  });
+
   it("retains the doc source for provenance without rendering it", () => {
     expect(anatomy.every((part) => part.source.page > 0 && part.source.fileName)).toBe(true);
   });

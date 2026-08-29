@@ -64,7 +64,7 @@ export default function CalculatorScreen() {
         </Text>
         <Text style={[styles.note, localizedTextStyle(locale)]}>
           {fa
-            ? "همهٔ حدود سمت دستگاه از جدول مشخصات تأییدشده می‌آیند. مقادیر سمت پنل ورودی‌های خود شماست — از دیتاشیت پنل بخوانید."
+            ? "همهٔ حدود سمت دستگاه از جدول مشخصات تأییدشده است؛ مقادیر سمت پنل، ورودی‌های خود شماست — از دیتاشیت پنل بخوانید."
             : "Every device-side limit comes from the verified specification table. Panel-side figures are your own inputs — read them from your panel datasheet."}
         </Text>
       </View>
@@ -208,22 +208,18 @@ function CheckCard({ check, title, children }: { check: SizingCheck; title: stri
     <View style={[styles.checkCard, { borderColor: meta.color }]}>
       <View style={[styles.checkHead, localizedRow(locale)]}>
         <Text style={[styles.checkTitle, localizedTextStyle(locale)]}>{title}</Text>
-        <View style={[styles.verdict, localizedRow(locale), { backgroundColor: meta.bg }]}>
+        <View style={[styles.verdict, { backgroundColor: meta.bg }]}>
           <Ionicons name={meta.icon} size={14} color={meta.color} />
           <Text style={[styles.verdictText, { color: meta.color }]}>{meta.label}</Text>
         </View>
       </View>
       {ratioText !== null && check.status !== "skipped" ? (
-        <Text style={[styles.measure, localizedTextStyle(locale)]}>{`${locale === "fa" ? "ظرفیت مصرف‌شده" : "Utilization"}: ${ratioText}${check.measured !== null ? ` · ${check.measured}` : ""}${check.limit !== null ? ` / ${check.limit}` : ""}`}</Text>
+        <Text style={styles.measure}>{`${locale === "fa" ? "ظرفیت مصرف‌شده" : "Utilization"}: ${ratioText}${check.measured !== null ? ` · ${check.measured}` : ""}${check.limit !== null ? ` / ${check.limit}` : ""}`}</Text>
       ) : null}
       {children}
     </View>
   );
 }
-
-
-
-
 
 const styles = StyleSheet.create({
   header: { paddingVertical: 18 },
@@ -248,5 +244,5 @@ const styles = StyleSheet.create({
   advisory: { alignItems: "flex-start", gap: 6, marginTop: 10, padding: 10, borderRadius: 8, backgroundColor: "#FFF7ED" },
   advisoryText: { flex: 1, color: theme.colors.caution, fontSize: 10, lineHeight: 17 },
   batteryCard: { alignItems: "center", gap: 10, marginTop: 16, padding: 14, borderRadius: theme.radii.control, borderStyle: "dashed", borderWidth: 1, borderColor: theme.colors.borderSubtle, backgroundColor: "rgba(232,237,242,.65)" },
-  batteryText: { flex: 1, color: theme.colors.brandPrimary, fontSize: 12, fontWeight: "700" }
+  batteryText: { flex: 1, color: theme.colors.brandPrimary, fontSize: 12, fontWeight: "700" },
 });

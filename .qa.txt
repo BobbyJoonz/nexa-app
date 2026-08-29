@@ -1,0 +1,10 @@
+﻿validate: Content validated: 15 lessons, 31 settings, 21 faults, 18 specifications. exit=0
+
+ ❯ tests/content.test.ts (9 tests | 1 failed) 17ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 6 passed (7)
+      Tests  1 failed | 106 passed (107)
+   Duration  646ms (transform 589ms, setup 0ms, import 1.39s, tests 217ms, environment 1ms)
+[ELIFECYCLE] Test failed. See above for more details.
+
+

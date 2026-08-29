@@ -33,7 +33,7 @@ import {
   Wrench,
   Zap
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import {
   anatomy,
   connectionFacts,
@@ -143,12 +143,34 @@ function Anatomy({ locale, model }: { locale: "en" | "fa"; model: string }) {
                 }
               >
                 <div className="anatomy-part">
+                  <div className="anatomy-zoom" style={{ "--x": point.x, "--y": point.y } as CSSProperties}>
+                    <Image
+                      className="anatomy-zoom-image"
+                      src="/assets/products/nexa-product-hotspots.webp"
+                      alt={`${localize(point.label, locale)} close-up`}
+                      width={820}
+                      height={1050}
+                    />
+                    <span className="anatomy-zoom-dot" aria-hidden="true" />
+                    <small>{locale === "fa" ? "نمای بزرگ‌شدهٔ همین نقطه روی دستگاه" : "Zoomed view of this exact point on the unit"}</small>
+                  </div>
                   <div className="anatomy-head">
                     <span className="anatomy-icon"><Icon size={26} /></span>
                     <h3 className="anatomy-role">{localize(point.role, locale)}</h3>
                   </div>
-                  <p className="anatomy-guide"><Lightbulb size={17} />{localize(point.guide, locale)}</p>
+                  {point.safety ? (
+                    <p className="anatomy-safety"><ShieldAlert size={17} />{localize(point.safety, locale)}</p>
+                  ) : null}
+                  <ol className="anatomy-inspect">
+                    {point.inspect.map((step, stepIndex) => (
+                      <li key={stepIndex}>
+                        <span>{String(stepIndex + 1).padStart(2, "0")}</span>
+                        <p>{localize(step, locale)}</p>
+                      </li>
+                    ))}
+                  </ol>
                   <p className="anatomy-stat">{localize(point.stat, locale)}</p>
+                  <p className="anatomy-guide"><Lightbulb size={17} />{localize(point.guide, locale)}</p>
                   <Link className="anatomy-cta" href={`/academy/${model}/${point.relatedLesson}`}>
                     {localize(point.relatedLabel, locale)}
                     {locale === "fa" ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}

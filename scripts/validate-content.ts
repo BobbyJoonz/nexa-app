@@ -28,6 +28,8 @@ const assertions: Array<[boolean, string]> = [
   [anatomy.every((p) => p.x >= 0 && p.x <= 100 && p.y >= 0 && p.y <= 100), "Every anatomy hotspot must sit inside the 0…100 coordinate space"],
   [new Set(anatomy.map((p) => `${p.label.en}|${p.label.fa}`)).size === anatomy.length, "Anatomy part labels must be unique in both languages"],
   [anatomy.every((p) => p.role.en && p.role.fa && p.guide.en && p.guide.fa && p.relatedLesson && p.relatedLabel), "Every anatomy part must carry bilingual role/guide copy and a related lesson"],
+  [anatomy.every((p) => p.inspect.length >= 3 && p.inspect.every((s) => s.en && s.fa)), "Every anatomy part must carry at least 3 bilingual inspection steps"],
+  [["fault", "earth", "ac-in", "ac-out", "battery-in", "pv-in", "power"].every((id) => { const p = anatomy.find((item) => item.id === id); return p?.safety && p.safety.en && p.safety.fa; }), "Every hazardous anatomy part must carry a bilingual safety warning"],
   [anatomy.every((p) => lessons.some((l) => l.slug === p.relatedLesson)), "Every anatomy related lesson must resolve to a real lesson"],
   [Object.values(documents).length === 4, "All four supplied manuals must be catalogued"],
   [quizBank.length >= 5, "The knowledge check bank must hold at least five questions"],

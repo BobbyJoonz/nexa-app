@@ -8,7 +8,7 @@ import { PressableSurface } from "@/src/ui/pressable-surface";
 /**
  * Teaching LCD simulator driven by the REAL documented program table.
  * Mirrors the physical key flow: ESC, UP, DOWN, ENTER — exactly like the
- * device's "Operation and display panel" chapter.
+ * device's "Operation and display panel" chapter (manual p.11).
  *
  * Key behaviour is a faithful simulation, NOT app UI, so the four keys stay
  * raw Pressables on purpose (see docs/PLATFORM_UI.md — LCD keys exception).
@@ -190,7 +190,7 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
           setMode("home");
         }}
         accessibilityRole="button"
-        style={[styles.reset, localizedRow(locale)]}
+        style={styles.reset}
       >
         <Ionicons name="refresh-outline" size={14} color={theme.colors.brandPrimary} />
         <Text style={styles.resetText}>{fa ? "بازنشانی به پیش‌فرض" : "Reset to defaults"}</Text>
@@ -198,8 +198,8 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
 
       <Text style={[styles.note, { writingDirection: fa ? "rtl" : "ltr" }]}>
         {fa
-          ? "شبیه‌ساز آموزشی، بدون اتصال به سخت‌افزار — همان چیدمان منوی دستگاه."
-          : "Teaching simulator, not connected to hardware — same menu flow as the unit."}
+          ? "شبیه‌ساز آموزشی، بدون اتصال به سخت‌افزار — چیدمان منوی همان تنظیمات دستگاه."
+          : "Teaching simulator, not connected to hardware — the same device settings menu layout."}
       </Text>
     </View>
   );

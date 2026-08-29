@@ -343,6 +343,17 @@ html[lang="fa"] .gate-heading h1 { letter-spacing: -0.045em; }
 .anatomy-cta:hover { background: var(--red); }
 .anatomy-cta svg { transition: transform 160ms ease; }
 html[dir="rtl"] .anatomy-cta svg { transform: scaleX(-1); }
+.anatomy-zoom { position: relative; width: 100%; max-width: 300px; margin: 0 auto 20px; overflow: hidden; aspect-ratio: 820 / 1050; border: 1px solid var(--border); border-radius: 14px; background: var(--technical); }
+.anatomy-zoom-image { position: absolute; top: 0; left: 0; width: 220%; height: 220%; max-width: none; transform: translate(calc(50% - (var(--x) * 2.2) * 1%), calc(50% - (var(--y) * 2.2) * 1%)); }
+.anatomy-zoom-dot { position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; border: 2px solid white; border-radius: 50%; background: rgba(137,21,37,.85); box-shadow: 0 0 0 5px rgba(137,21,37,.18); }
+.anatomy-zoom small { position: absolute; inset-inline: 0; bottom: 0; padding: 5px 8px; color: white; background: rgba(13,34,62,.74); font-size: 10px; text-align: center; }
+.anatomy-safety { display: flex; align-items: flex-start; gap: 9px; margin: 0; padding: 12px 14px; color: #7a2d00; border: 1px solid rgba(181,71,8,.3); border-radius: 10px; background: #fff1ec; font-size: 12.5px; line-height: 1.7; }
+.anatomy-safety svg { flex: 0 0 auto; margin-top: 2px; }
+.anatomy-inspect { display: flex; flex-direction: column; gap: 0; margin: 2px 0 0; padding: 0; list-style: none; }
+.anatomy-inspect li { display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: start; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+.anatomy-inspect li:last-child { border-bottom: 0; }
+.anatomy-inspect li > span { padding-top: 2px; color: var(--red); font: 600 11px "IBM Plex Mono", monospace; }
+.anatomy-inspect p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.75; }
 .dialog-overlay { position: fixed; z-index: 40; inset: 0; background: rgba(13,34,62,.65); backdrop-filter: blur(7px); animation: fade-in 160ms ease; }
 .dialog-content { position: fixed; z-index: 60; top: 50%; left: 50%; width: min(510px, calc(100% - 40px)); padding: 30px; border: 1px solid var(--border); border-radius: 16px; background: var(--raised); box-shadow: var(--shadow-lg); transform: translate(-50%,-50%); }
 .dialog-content h2 { padding-inline-end: 34px; color: var(--navy); font-size: 25px; }
