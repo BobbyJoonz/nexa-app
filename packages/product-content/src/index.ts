@@ -133,7 +133,7 @@ export const settings: SettingProgram[] = [
     bilingual("Appliance: 90-280 VAC", "لوازم خانگی: ۹۰ تا ۲۸۰ ولت AC"),
     bilingual("UPS: 170-280 VAC", "UPS: ۱۷۰ تا ۲۸۰ ولت AC"),
     bilingual("Generator: 90-280 VAC", "ژنراتور: ۹۰ تا ۲۸۰ ولت AC")
-  ], bilingual("Appliance", "لوازم خانگی"), "power", true, 13),
+  ], bilingual("Appliance: 90-280 VAC", "لوازم خانگی: ۹۰ تا ۲۸۰ ولت AC"), "power", true, 13),
   setting("05", "Battery type", "نوع باتری", "Selects the charging profile and exposes dependent voltage programs.", "پروفایل شارژ را انتخاب و برنامه‌های وابسته ولتاژ را فعال می‌کند.", [
     bilingual("AGM", "AGM"),
     bilingual("Flooded", "اسیدی"),
@@ -455,7 +455,7 @@ export const anatomy: AnatomyPart[] = [
       "چهار دکمهٔ ESC، بالا، پایین و ENTER؛ برای مرور برنامه‌ها و تغییر تنظیمات."
     ),
     guide: bilingual("ENTER opens settings; ESC exits.", "ENTER وارد تنظیمات می‌شود و ESC برمی‌گردد."),
-    stat: bilingual("ESC · ▲ · ▼ · ENTER", "ESC · ▲ · ▼ · ENTER"),
+    stat: bilingual("ESC · ▲ · ▼ · ENTER", "کلیدهای ESC · ▲ · ▼ · ENTER"),
     relatedLesson: "lcd", relatedLabel: bilingual("Learn the keys", "آموزش کار با دکمه‌ها"),
     source: ref(4, "Product overview")
   },
@@ -538,31 +538,7 @@ export const anatomy: AnatomyPart[] = [
   }
 ];
 
-export const troubleshooting = {
-  start: {
-    question: bilingual("What do you observe?", "چه وضعیتی مشاهده می‌کنید؟"),
-    choices: [
-      { label: bilingual("No response after power-on", "پس از روشن‌کردن واکنشی نیست"), next: "no-response" },
-      { label: bilingual("Utility is present but battery mode remains", "برق شهر هست اما دستگاه روی باتری است"), next: "utility-battery" },
-      { label: bilingual("Buzzer is continuous and red LED is on", "بیزر پیوسته است و LED قرمز روشن است"), next: "fault-code" }
-    ]
-  },
-  "no-response": {
-    question: bilingual("Is the battery wiring and polarity confirmed by a qualified installer?", "آیا سیم‌کشی و قطبیت باتری توسط نصاب متخصص تأیید شده است؟"),
-    result: bilingual("Do not reconnect live wiring. Ask a qualified installer to check battery voltage, polarity and connections.", "سیم زنده را دوباره وصل نکنید. از نصاب متخصص بخواهید ولتاژ، قطبیت و اتصالات باتری را بررسی کند."),
-    source: ref(27, "No response after power-on")
-  },
-  "utility-battery": {
-    question: bilingual("Does the LCD show zero AC input voltage?", "آیا LCD ولتاژ ورودی AC را صفر نشان می‌دهد؟"),
-    result: bilingual("Have a qualified installer check the AC protection and wiring, then verify Program 03 matches the source quality.", "از نصاب متخصص بخواهید حفاظت و سیم‌کشی AC را بررسی کند و سپس تطابق برنامه ۰۳ با کیفیت منبع را بسنجد."),
-    source: ref(27, "Utility exists but unit works in battery mode")
-  },
-  "fault-code": {
-    question: bilingual("Read and record the fault code without opening the enclosure.", "بدون بازکردن محفظه، کد خطا را بخوانید و یادداشت کنید."),
-    result: bilingual("Use the fault finder. Internal repair is prohibited; persistent faults require an authorized service center.", "از یابنده خطا استفاده کنید. تعمیر داخلی ممنوع است و خطای ماندگار باید به مرکز خدمات مجاز ارجاع شود."),
-    source: ref(27, "Buzzer continuous and red LED on")
-  }
-} as const;
+export * from "./troubleshooting";
 
 const verifiedProduct: ProductModel = {
   id: "cm3500-24s",
