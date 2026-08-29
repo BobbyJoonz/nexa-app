@@ -55,7 +55,7 @@ const anatomyIcons = {
 /** Fixed zoom cell: keeps the magnifier anchor pixel-exact without measuring layout. */
 const ZOOM_CELL = { width: 240, height: 307 };
 const zoomImageStyle = (part: AnatomyPart) => ({
-  position: "absolute",
+  position: "absolute" as const,
   width: ZOOM_CELL.width * 2.2,
   height: ZOOM_CELL.height * 2.2,
   left: ZOOM_CELL.width / 2 - (part.x / 100) * ZOOM_CELL.width * 2.2,
