@@ -320,19 +320,29 @@ html[lang="fa"] .gate-heading h1 { letter-spacing: -0.045em; }
 .explain-grid svg { color: var(--red); }
 .explain-grid h3 { margin: 30px 0 8px; color: var(--navy); font-size: 17px; }
 .explain-grid p { margin: 0; color: var(--muted); font-size: 13px; }
-.source-note { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 34px; padding: 13px 16px; color: var(--muted); border-inline-start: 3px solid var(--border); background: rgba(232,237,242,.65); font-size: 12px; }
-.source-note small { opacity: .75; }
-
 .anatomy-view { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 28px; }
 .anatomy-product { position: relative; display: grid; place-items: center; min-height: 630px; overflow: hidden; border-radius: 16px; background: radial-gradient(circle, white, var(--technical)); }
-.anatomy-product img { max-height: 650px; width: auto; }
+.anatomy-host { position: relative; width: 100%; max-width: 520px; aspect-ratio: 820 / 1050; }
+.anatomy-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .hotspot { position: absolute; display: grid; place-items: center; width: 28px; height: 28px; color: white; border: 2px solid white; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 6px rgba(137,21,37,.14); cursor: pointer; transform: translate(-50%, -50%); transition: transform 160ms ease; }
-html[dir="rtl"] .hotspot { transform: translate(50%, -50%); }
 .hotspot:hover { transform: translate(-50%, -50%) scale(1.12); }
-html[dir="rtl"] .hotspot:hover { transform: translate(50%, -50%) scale(1.12); }
+.hotspot:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; }
 .anatomy-key { display: flex; flex-direction: column; gap: 0; margin: 0; padding: 0; list-style: none; }
 .anatomy-key li { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
 .anatomy-key span { display: grid; place-items: center; width: 26px; height: 26px; flex: 0 0 auto; color: var(--red); border: 1px solid rgba(137,21,37,.3); border-radius: 50%; font: 600 10px "IBM Plex Sans"; }
+.anatomy-key svg { flex: 0 0 auto; color: var(--navy); opacity: .72; }
+.anatomy-key em { flex: 1; font-style: normal; }
+.anatomy-part { display: flex; flex-direction: column; gap: 14px; }
+.anatomy-head { display: flex; align-items: flex-start; gap: 14px; }
+.anatomy-icon { display: grid; place-items: center; width: 46px; height: 46px; flex: 0 0 auto; color: white; border-radius: 12px; background: var(--navy); }
+.anatomy-role { margin: 0; color: var(--navy); font-size: 13.5px; line-height: 1.75; }
+.anatomy-guide { display: flex; align-items: flex-start; gap: 9px; margin: 0; padding: 12px 14px; color: #24435f; border-inline-start: 3px solid var(--warning); background: rgba(181,71,8,.08); font-size: 12.5px; line-height: 1.7; }
+.anatomy-guide svg { flex: 0 0 auto; margin-top: 2px; color: var(--warning); }
+.anatomy-stat { margin: 0; padding: 10px 14px; color: var(--success); border-radius: 10px; background: rgba(47,111,85,.08); font-family: "IBM Plex Mono", monospace; font-size: 12.5px; }
+.anatomy-cta { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 2px; padding: 12px 16px; color: white; border-radius: 10px; background: var(--navy); font-size: 13px; font-weight: 600; text-decoration: none; transition: background 160ms ease; }
+.anatomy-cta:hover { background: var(--red); }
+.anatomy-cta svg { transition: transform 160ms ease; }
+html[dir="rtl"] .anatomy-cta svg { transform: scaleX(-1); }
 .dialog-overlay { position: fixed; z-index: 40; inset: 0; background: rgba(13,34,62,.65); backdrop-filter: blur(7px); animation: fade-in 160ms ease; }
 .dialog-content { position: fixed; z-index: 60; top: 50%; left: 50%; width: min(510px, calc(100% - 40px)); padding: 30px; border: 1px solid var(--border); border-radius: 16px; background: var(--raised); box-shadow: var(--shadow-lg); transform: translate(-50%,-50%); }
 .dialog-content h2 { padding-inline-end: 34px; color: var(--navy); font-size: 25px; }
@@ -427,7 +437,6 @@ html[dir="rtl"] .hotspot:hover { transform: translate(50%, -50%) scale(1.12); }
 .decision-list button { display: flex; justify-content: space-between; align-items: center; min-height: 104px; padding: 16px; color: white; border: 1px solid rgba(255,255,255,.2); border-radius: 10px; background: rgba(255,255,255,.07); cursor: pointer; text-align: start; }
 .decision-list button:hover { background: rgba(255,255,255,.13); }
 .troubleshoot-panel.result p { max-width: 760px; color: rgba(255,255,255,.72); }
-.troubleshoot-panel.result .source-note { color: rgba(255,255,255,.72); background: rgba(255,255,255,.08); }
 .troubleshoot-panel.result .button { margin-top: 20px; }
 .triage-crumb { margin-bottom: 8px; color: var(--muted); font-size: 12px; }
 .triage-hint { max-width: 760px; margin: -18px 0 22px; padding: 12px 16px; color: rgba(255,255,255,.78); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; background: rgba(255,255,255,.06); font-size: 14px; line-height: 1.7; }
