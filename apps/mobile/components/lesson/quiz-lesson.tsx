@@ -9,8 +9,8 @@ import { PressableSurface } from "@/src/ui/pressable-surface";
 
 /**
  * Knowledge check — sourced question bank, one question at a time.
- * Answering reveals an explanation with its manual page; the concept of
- * "safe answer first, escalate" stays central (docs/ARCHITECTURE safety).
+ * Answering reveals the explanation from the lesson the question comes from;
+ * the concept of "safe answer first, escalate" stays central (docs/ARCHITECTURE).
  * No score persistence: review is for learning, not for gamification.
  *
  * RTL contract (user requirement): when the locale is Persian every option
@@ -71,7 +71,6 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
   const question = phase.question;
   const answered = phase.state === "answered";
   const picked = answered ? phase.picked : null;
-  const showSource = answered;
 
   return (
     <View>
@@ -109,13 +108,6 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
             </Text>
           </View>
         ) : null}
-
-        {showSource && phase.state === "answered" ? (
-          <View style={[styles.sourceRow, localizedRow(locale)]}>
-            <Ionicons name="document-text-outline" size={12} color={theme.colors.textSecondary} />
-            <Text style={[styles.sourceText, localizedTextStyle(locale)]}>{`${fa ? "منبع" : "Source"}: ${question.source.fileName}, ${fa ? `صفحهٔ ${toFaDigits(question.source.page)}` : `p.${question.source.page}`}`}</Text>
-          </View>
-        ) : null}
       </View>
 
       {answered && phase.state === "answered" ? (
@@ -124,8 +116,8 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
 
       <Text style={[styles.intro, localizedTextStyle(locale)]}>
         {fa
-          ? "پرسش‌ها از همان منابع تأییدشدهٔ درس‌ها آمده‌اند؛ توضیح هر پاسخ صفحهٔ دفترچه را نشان می‌دهد."
-          : "Questions come from the same verified sources as the lessons; each explanation cites its manual page."}
+          ? "پرسش‌ها از همان درس‌های آکادمی آمده‌اند؛ توضیح هر پاسخ را در همان درس می‌خوانید."
+          : "Questions come from the academy lessons; you'll find each explanation in the lesson it belongs to."}
       </Text>
     </View>
   );
@@ -147,8 +139,6 @@ const styles = StyleSheet.create({
   feedbackGood: { backgroundColor: "#EEF8F2" },
   feedbackBad: { backgroundColor: "#FFF1F0" },
   feedbackText: { flex: 1, color: theme.colors.textPrimary, fontSize: 11, lineHeight: 19 },
-  sourceRow: { alignItems: "center", gap: 6, marginTop: 12 },
-  sourceText: { color: theme.colors.textSecondary, fontSize: 9 },
   doneTitle: { marginTop: 12, color: theme.colors.brandPrimary, fontSize: 18, fontWeight: "800", textAlign: "center" },
   doneBody: { marginTop: 6, color: theme.colors.textSecondary, fontSize: 13, textAlign: "center" },
   doneHint: { marginTop: 8, color: theme.colors.textSecondary, fontSize: 11, lineHeight: 19, textAlign: "center" },

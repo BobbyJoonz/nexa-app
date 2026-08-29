@@ -46,8 +46,8 @@ export function AcademyDashboard() {
             <h1>{locale === "fa" ? "سانورترت را بشناس." : "Know your Sunverter."}</h1>
             <p className="hero-lead">
               {locale === "fa"
-                ? "از مسیر انرژی تا کدهای خطا، هر بخش به صفحه مشخصی از دفترچه منبع متصل است."
-                : "From energy flow to fault codes, every section is tied to a specific source page."}
+                ? "از مسیر انرژی تا کدهای خطا، بدون نیاز به جست‌وجو در دفترچه‌ها، گام‌به‌گام یاد بگیر."
+                : "From energy flow to fault codes, learn step by step without hunting through manuals."}
             </p>
             <div className="hero-progress">
               <div>

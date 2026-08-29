@@ -2,14 +2,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { localize, settings } from "@nexa/product-content";
-import { toFaDigits } from "@nexa/shared-logic";
 import { localizedRow, theme } from "@/theme";
 import { PressableSurface } from "@/src/ui/pressable-surface";
 
 /**
  * Teaching LCD simulator driven by the REAL documented program table.
  * Mirrors the physical key flow: ESC, UP, DOWN, ENTER — exactly like the
- * device's "Operation and display panel" chapter (manual p.11).
+ * device's "Operation and display panel" chapter.
  *
  * Key behaviour is a faithful simulation, NOT app UI, so the four keys stay
  * raw Pressables on purpose (see docs/PLATFORM_UI.md — LCD keys exception).
@@ -183,9 +182,6 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
           </View>
         </View>
         <Text style={[styles.teachSummary, fa ? styles.rtl : null]}>{localize(program.summary, locale)}</Text>
-        <Text style={[styles.teachSource, fa ? styles.rtl : null]}>
-          {fa ? `دفترچهٔ ${program.source.fileName} — صفحهٔ ${toFaDigits(program.source.page)}` : `${program.source.fileName} — p.${program.source.page}`}
-        </Text>
       </View>
 
       <PressableSurface
@@ -202,8 +198,8 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
 
       <Text style={[styles.note, { writingDirection: fa ? "rtl" : "ltr" }]}>
         {fa
-          ? "شبیه‌ساز آموزشی، بدون اتصال به سخت‌افزار — همان چیدمان منوی دفترچه (صفحهٔ ۱۱)."
-          : "Teaching simulator, not connected to hardware — same menu flow as the manual (p.11)."}
+          ? "شبیه‌ساز آموزشی، بدون اتصال به سخت‌افزار — همان چیدمان منوی دستگاه."
+          : "Teaching simulator, not connected to hardware — same menu flow as the unit."}
       </Text>
     </View>
   );
@@ -241,7 +237,6 @@ const styles = StyleSheet.create({
   teachCategoryTag: { overflow: "hidden", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 100, backgroundColor: theme.colors.technical },
   teachCategoryText: { color: theme.colors.brandPrimary, fontSize: 9, fontWeight: "700" },
   teachSummary: { marginTop: 9, color: theme.colors.textPrimary, fontSize: 12, lineHeight: 20 },
-  teachSource: { marginTop: 8, color: theme.colors.textSecondary, fontSize: 9, opacity: 0.85 },
   reset: { overflow: "hidden", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 7, minHeight: 40, borderRadius: theme.radii.pill, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.borderSubtle, backgroundColor: theme.colors.raised },
   resetText: { color: theme.colors.brandPrimary, fontSize: 11, fontWeight: "700" },
   note: { color: theme.colors.textSecondary, fontSize: 9, textAlign: "center", lineHeight: 15 }

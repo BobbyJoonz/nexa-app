@@ -52,9 +52,11 @@ export default function AcademyScreen() {
           <View style={styles.heroCopy}>
             <Text style={styles.eyebrow}>PRODUCT ACADEMY</Text>
             <Text style={[styles.heroTitle, localizedTextStyle(locale)]}>{locale === "fa" ? "سانورترت را بشناس." : "Know your Sunverter."}</Text>
-            <Text style={[styles.heroSubtitle, localizedTextStyle(locale)]}>{locale === "fa" ? "۱۵ درس مستند، از مسیر انرژی تا خطاها." : "15 sourced lessons, from energy flow to faults."}</Text>
+            <Text style={[styles.heroSubtitle, localizedTextStyle(locale)]}>{locale === "fa" ? `${product.lessons.length} درس مستند، از مسیر انرژی تا خطاها.` : `${product.lessons.length} sourced lessons, from energy flow to faults.`}</Text>
           </View>
-          <Image source={require("../../assets/nexa-product-mobile.webp")} style={styles.product} contentFit="contain" />
+          <View style={styles.heroStage}>
+            <Image source={require("../../assets/nexa-product-mobile.webp")} style={styles.product} contentFit="contain" />
+          </View>
         </View>
         <View style={[styles.progressHead, localizedRow(locale)]}><Text style={[styles.progressLabel, localizedTextStyle(locale)]}>{locale === "fa" ? "پیشرفت یادگیری" : "Learning progress"}</Text><Text style={styles.progressValue}>{percent}%</Text></View>
         <View style={styles.progressTrack}><View style={[styles.progressFill, { width: `${percent}%` }]} /></View>
@@ -76,14 +78,14 @@ export default function AcademyScreen() {
         {product.lessons.map((lesson, index) => {
           const done = completed.includes(lesson.id);
           return (
-            <Pressable style={[styles.lesson, localizedRow(locale)]} onPress={() => router.push(`/lesson/${lesson.slug}?model=${product.slug}`)} key={lesson.id}>
+            <Pressable style={[styles.lesson, localizedRow(locale), done && styles.lessonDone]} onPress={() => router.push(`/lesson/${lesson.slug}?model=${product.slug}`)} key={lesson.id}>
               <View style={[styles.lessonIcon, done && styles.lessonIconDone]}><Ionicons name={done ? "checkmark" : lessonIcons[lesson.id] ?? "book-outline"} size={19} color={done ? "white" : theme.colors.brandPrimary} /></View>
               <View style={styles.lessonCopy}>
-                <Text style={[styles.lessonTitle, localizedTextStyle(locale)]}>{localize(lesson.title, locale)}</Text>
+                <Text style={[styles.lessonTitle, localizedTextStyle(locale), done && styles.lessonTitleDone]}>{localize(lesson.title, locale)}</Text>
                 <Text style={[styles.lessonSummary, localizedTextStyle(locale)]} numberOfLines={2}>{localize(lesson.summary, locale)}</Text>
               </View>
               {lesson.safetyCritical ? <View style={styles.safetyDot} /> : null}
-              <Text style={styles.index}>{String(index + 1).padStart(2, "0")}</Text>
+              {done ? <Ionicons name="checkmark-circle" size={20} color={theme.colors.success} /> : <Text style={styles.index}>{String(index + 1).padStart(2, "0")}</Text>}
             </Pressable>
           );
         })}
@@ -94,12 +96,13 @@ export default function AcademyScreen() {
 
 const styles = StyleSheet.create({
   hero: { overflow: "hidden", marginHorizontal: -18, paddingHorizontal: 20, paddingBottom: 25, backgroundColor: theme.colors.brandPrimary },
-  heroGrid: { flexDirection: "row", minHeight: 300, alignItems: "center" },
-  heroCopy: { zIndex: 2, width: "61%" },
+  heroGrid: { flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between", gap: 12, minHeight: 300, paddingTop: 30 },
+  heroCopy: { flex: 1, minWidth: 0, zIndex: 1, paddingBottom: 4, paddingEnd: 4 },
   eyebrow: { marginBottom: 14, color: "#D9A2AB", fontSize: 9, fontWeight: "700", letterSpacing: 1.3 },
   heroTitle: { color: "white", fontSize: 39, lineHeight: 52, fontWeight: "800", fontFamily: "Vazirmatn_700Bold" },
   heroSubtitle: { marginTop: 8, color: "rgba(255,255,255,.68)", fontSize: 12, lineHeight: 20 },
-  product: { position: "absolute", right: -12, bottom: 0, width: "53%", height: "98%" },
+  heroStage: { width: "46%", maxWidth: 232, alignItems: "flex-end", justifyContent: "flex-end" },
+  product: { width: "100%", height: 240 },
   progressHead: { justifyContent: "space-between", marginBottom: 8 },
   progressLabel: { color: "rgba(255,255,255,.72)", fontSize: 10 },
   progressValue: { color: "white", fontSize: 11, fontWeight: "700" },
@@ -111,10 +114,12 @@ const styles = StyleSheet.create({
   sectionTitle: { marginTop: 34, marginBottom: 14, color: theme.colors.brandPrimary, fontSize: 25, fontWeight: "800" },
   lessonList: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors.borderSubtle },
   lesson: { alignItems: "center", gap: 11, minHeight: 88, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.colors.borderSubtle },
+  lessonDone: { backgroundColor: "#F7FBF8" },
   lessonIcon: { width: 42, height: 42, alignItems: "center", justifyContent: "center", borderRadius: 12, backgroundColor: theme.colors.technical },
   lessonIconDone: { backgroundColor: theme.colors.success },
   lessonCopy: { flex: 1 },
   lessonTitle: { color: theme.colors.brandPrimary, fontSize: 14, fontWeight: "700" },
+  lessonTitleDone: { color: theme.colors.success },
   lessonSummary: { marginTop: 2, color: theme.colors.textSecondary, fontSize: 10, lineHeight: 16 },
   safetyDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: theme.colors.warning },
   index: { color: "#9BA6B2", fontSize: 9, fontWeight: "700" },

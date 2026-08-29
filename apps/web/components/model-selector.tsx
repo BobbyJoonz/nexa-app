@@ -58,8 +58,8 @@ export function ModelSelector() {
                     <>
                       <p className="missing-note">
                         {locale === "fa"
-                          ? "تصویر، دفترچه و دیتاشیت اختصاصی این مدل ارائه نشده است. مشخصات تا زمان دریافت منبع معتبر منتشر نمی‌شود."
-                          : "No model-specific image, manual or datasheet was supplied. Specifications remain unpublished until a verified source is available."}
+                          ? "آموزش این مدل در دست آماده‌سازی است؛ به‌محض فراهم شدن اسناد آن، اینجا منتشر می‌شود."
+                          : "Training for this model is being prepared and will appear here as soon as its documents are available."}
                       </p>
                       <button className="button button-secondary button-lg" disabled>
                         {translate("common.verificationRequired")}
