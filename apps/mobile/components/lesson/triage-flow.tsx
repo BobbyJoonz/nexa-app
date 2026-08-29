@@ -83,7 +83,7 @@ function DiagnosisView({ node, locale, onBack, onRestart }: { node: Troubleshoot
       ) : null}
 
       <Text style={[styles.source, localizedTextStyle(locale)]}>
-        {locale === "fa" ? `منبع: دفترچه، صفحه ${toFaDigits(node.source.page)}` : `Source: manual page ${node.source.page}`}
+        {locale === "fa" ? "مرجع: راهنمای آموزشی دستگاه" : "Reference: the device training guide"}
       </Text>
 
       <View style={styles.actions}>
