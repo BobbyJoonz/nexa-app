@@ -161,7 +161,6 @@ const styles = StyleSheet.create({
   chipDetail: { minWidth: "100%", marginTop: 6, padding: 12, borderRadius: theme.radii.control, borderWidth: 1, borderColor: theme.colors.borderSubtle, backgroundColor: theme.colors.raised },
   chipDetailTitle: { color: theme.colors.brandPrimary, fontSize: 12, fontWeight: "700" },
   chipDetailBody: { marginTop: 5, color: theme.colors.textSecondary, fontSize: 10, lineHeight: 17 },
-  chipDetailSource: { marginTop: 8, color: theme.colors.textSecondary, fontSize: 9, opacity: 0.85 },
   results: { marginTop: 22 },
   empty: { color: theme.colors.textSecondary, fontSize: 12, marginTop: 8 },
   resultRow: { overflow: "hidden", alignItems: "center", gap: 10, minHeight: 50, marginTop: 8, paddingHorizontal: 12, borderWidth: 1, borderColor: theme.colors.borderSubtle, borderRadius: theme.radii.control, backgroundColor: theme.colors.raised },
