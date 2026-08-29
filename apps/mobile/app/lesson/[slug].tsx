@@ -238,7 +238,7 @@ export default function LessonScreen() {
       </View>
       <LessonContent slug={slug} locale={locale} model={product.slug} />
       {done ? (
-        <View style={styles.doneBanner}>
+        <View style={[styles.doneBanner, localizedRow(locale)]}>
           <View style={styles.doneBannerIcon}><Ionicons name="trophy-outline" size={24} color={theme.colors.success} /></View>
           <View style={styles.doneBannerCopy}>
             <Text style={[styles.doneBannerTitle, localizedTextStyle(locale)]}>{locale === "fa" ? "این درس را کامل کردی!" : "Lesson complete!"}</Text>

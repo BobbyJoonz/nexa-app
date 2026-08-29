@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { completionPercent } from "@nexa/shared-logic";
+import { completionPercent, toFaDigits } from "@nexa/shared-logic";
 import { getProduct, localize } from "@nexa/product-content";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/screen";
@@ -48,17 +48,17 @@ export default function AcademyScreen() {
   return (
     <Screen title={`${product.brand} ${product.modelName.value}`} back>
       <View style={styles.hero}>
-        <View style={styles.heroGrid}>
+        <View style={[styles.heroGrid, localizedRow(locale)]}>
           <View style={styles.heroCopy}>
             <Text style={styles.eyebrow}>PRODUCT ACADEMY</Text>
             <Text style={[styles.heroTitle, localizedTextStyle(locale)]}>{locale === "fa" ? "سانورترت را بشناس." : "Know your Sunverter."}</Text>
-            <Text style={[styles.heroSubtitle, localizedTextStyle(locale)]}>{locale === "fa" ? `${product.lessons.length} درس مستند، از مسیر انرژی تا خطاها.` : `${product.lessons.length} sourced lessons, from energy flow to faults.`}</Text>
+            <Text style={[styles.heroSubtitle, localizedTextStyle(locale)]}>{locale === "fa" ? `${toFaDigits(product.lessons.length)} درس مستند، از مسیر انرژی تا خطاها.` : `${product.lessons.length} sourced lessons, from energy flow to faults.`}</Text>
           </View>
           <View style={styles.heroStage}>
             <Image source={require("../../assets/nexa-product-mobile.webp")} style={styles.product} contentFit="contain" />
           </View>
         </View>
-        <View style={[styles.progressHead, localizedRow(locale)]}><Text style={[styles.progressLabel, localizedTextStyle(locale)]}>{locale === "fa" ? "پیشرفت یادگیری" : "Learning progress"}</Text><Text style={styles.progressValue}>{percent}%</Text></View>
+        <View style={[styles.progressHead, localizedRow(locale)]}><Text style={[styles.progressLabel, localizedTextStyle(locale)]}>{locale === "fa" ? "پیشرفت یادگیری" : "Learning progress"}</Text><Text style={styles.progressValue}>{locale === "fa" ? `${toFaDigits(percent)}٪` : `${percent}%`}</Text></View>
         <View style={styles.progressTrack}><View style={[styles.progressFill, { width: `${percent}%` }]} /></View>
       </View>
 
