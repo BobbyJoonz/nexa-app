@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet, Text, View } from "react-native";
 import { commissioningSteps, localize } from "@nexa/product-content";
-import { storageKeys, toFaDigits } from "@nexa/shared-logic";
+import { storageKeys } from "@nexa/shared-logic";
 import { Screen } from "@/components/screen";
 import { useAcademy } from "@/providers/academy-provider";
 import { localizedRow, localizedTextStyle, theme } from "@/theme";
@@ -95,7 +95,6 @@ export default function ChecklistScreen() {
               <Text style={[styles.rowText, localizedTextStyle(locale), checked && styles.rowTextDone]}>{localize(step.text, locale)}</Text>
               <Text style={[styles.rowDetail, localizedTextStyle(locale)]}>{localize(step.detail, locale)}</Text>
               <View style={[styles.rowMeta, localizedRow(locale)]}>
-                <Text style={styles.rowSource}>{`${fa ? "منبع" : "Source"}: ${step.source.fileName}, ${fa ? `صفحهٔ ${toFaDigits(step.source.page)}` : `p.${step.source.page}`}`}</Text>
                 {step.safetyCritical ? (
                   <View style={styles.safetyTag}><Ionicons name="shield-checkmark-outline" size={10} color={theme.colors.warning} /><Text style={styles.safetyTagText}>{fa ? "ایمنی" : "Safety"}</Text></View>
                 ) : null}
@@ -130,7 +129,6 @@ const styles = StyleSheet.create({
   rowTextDone: { color: theme.colors.success },
   rowDetail: { marginTop: 3, color: theme.colors.textSecondary, fontSize: 10, lineHeight: 17 },
   rowMeta: { alignItems: "center", gap: 8, marginTop: 7 },
-  rowSource: { color: theme.colors.textSecondary, fontSize: 8, opacity: 0.85 },
   safetyTag: { overflow: "hidden", flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 100, backgroundColor: "#FFF7ED" },
   safetyTagText: { color: theme.colors.warning, fontSize: 8, fontWeight: "700" }
 });

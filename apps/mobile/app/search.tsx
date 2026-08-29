@@ -115,7 +115,6 @@ export default function SearchScreen() {
                 <View style={styles.chipDetail}>
                   <Text style={[styles.chipDetailTitle, localizedTextStyle(locale)]}>{localize(fault.title, locale)}</Text>
                   <Text style={[styles.chipDetailBody, localizedTextStyle(locale)]}>{localize(fault.safeCheck, locale)}</Text>
-                  <Text style={styles.chipDetailSource}>{`${fa ? "منبع" : "Source"}: ${fault.source.fileName}, ${fa ? "ص" : "p"}.${fault.source.page}`}</Text>
                 </View>
               ) : null}
             </View>
