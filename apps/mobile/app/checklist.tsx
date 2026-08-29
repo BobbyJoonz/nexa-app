@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet, Text, View } from "react-native";
 import { commissioningSteps, localize } from "@nexa/product-content";
-import { storageKeys } from "@nexa/shared-logic";
+import { storageKeys, toFaDigits } from "@nexa/shared-logic";
 import { Screen } from "@/components/screen";
 import { useAcademy } from "@/providers/academy-provider";
 import { localizedRow, localizedTextStyle, theme } from "@/theme";
