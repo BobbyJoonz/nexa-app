@@ -64,8 +64,8 @@ export default function CalculatorScreen() {
         </Text>
         <Text style={[styles.note, localizedTextStyle(locale)]}>
           {fa
-            ? "همهٔ حدود سمت دستگاه از جدول مشخصات تأییدشدهٔ دفترچه می‌آیند (صفحهٔ منبع زیر هر بررسی). مقادیر سمت پنل ورودی‌های خود شماست — از دیتاشیت پنل بخوانید."
-            : "Every device-side limit comes from the verified specification table (source page under each check). Panel-side figures are your own inputs — read them from your panel datasheet."}
+            ? "همهٔ حدود سمت دستگاه از جدول مشخصات تأییدشده است؛ مقادیر سمت پنل، ورودی‌های خود شماست — از دیتاشیت پنل بخوانید."
+            : "Every device-side limit comes from the verified specification table. Panel-side figures are your own inputs — read them from your panel datasheet."}
         </Text>
       </View>
 
@@ -139,8 +139,6 @@ export default function CalculatorScreen() {
           {`${fa ? "سامانهٔ باتری باید" : "Battery system must be"} ${limits.batteryNominalVdc} VDC ${fa ? "باشد." : "."}`}
         </Text>
       </View>
-
-      <SourceFooter />
 
       <FeedbackRow context={fa ? "ماشین‌حساب سازگاری" : "Sizing calculator"} />
 
@@ -223,41 +221,6 @@ function CheckCard({ check, title, children }: { check: SizingCheck; title: stri
   );
 }
 
-function SourceFooter() {
-  const { locale } = useAcademy();
-  const sources = [
-    deviceLimits.maxPvVocVdc.source,
-    deviceLimits.mpptRangeVdc.source,
-    deviceLimits.maxPvCurrentA.source,
-    deviceLimits.maxPvPowerW.source,
-    deviceLimits.maxTotalChargeA.source,
-    deviceLimits.maxUtilityChargeA.source,
-    deviceLimits.ratedPowerKw.source,
-    deviceLimits.surgeFactor.source,
-    deviceLimits.minOperatingTempC.source,
-    deviceLimits.batteryNominalVdc.source
-  ];
-  const seen = new Set<string>();
-  const rows = sources.filter((s) => {
-    const key = `${s.fileName}#${s.page}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-  return (
-    <View style={styles.sources}>
-      {rows.map((s) => (
-        <View style={[styles.sourceRow, localizedRow(locale)]} key={`${s.documentId}-${s.page}`}>
-          <Ionicons name="document-text-outline" size={13} color={theme.colors.textSecondary} />
-          <Text style={styles.sourceText}>
-            {locale === "fa" ? `${s.fileName}، ص ${s.page}${s.section ? ` — ${s.section}` : ""}` : `${s.fileName}, p.${s.page}${s.section ? ` — ${s.section}` : ""}`}
-          </Text>
-        </View>
-      ))}
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   header: { paddingVertical: 18 },
   title: { color: theme.colors.brandPrimary, fontSize: 26, lineHeight: 38, fontWeight: "800", fontFamily: "Vazirmatn_700Bold" },
@@ -282,7 +245,4 @@ const styles = StyleSheet.create({
   advisoryText: { flex: 1, color: theme.colors.caution, fontSize: 10, lineHeight: 17 },
   batteryCard: { alignItems: "center", gap: 10, marginTop: 16, padding: 14, borderRadius: theme.radii.control, borderStyle: "dashed", borderWidth: 1, borderColor: theme.colors.borderSubtle, backgroundColor: "rgba(232,237,242,.65)" },
   batteryText: { flex: 1, color: theme.colors.brandPrimary, fontSize: 12, fontWeight: "700" },
-  sources: { marginTop: 24, paddingTop: 14, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors.borderSubtle, gap: 7 },
-  sourceRow: { alignItems: "center", gap: 7 },
-  sourceText: { flex: 1, color: theme.colors.textSecondary, fontSize: 9 }
 });

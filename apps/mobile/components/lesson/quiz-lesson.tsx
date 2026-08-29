@@ -64,7 +64,6 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
   const question = phase.question;
   const answered = phase.state === "answered";
   const picked = answered ? phase.picked : null;
-  const showSource = answered;
 
   return (
     <View>
@@ -103,13 +102,7 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
           </View>
         ) : null}
 
-        {showSource && phase.state === "answered" ? (
-          <View style={styles.sourceRow}>
-            <Ionicons name="document-text-outline" size={12} color={theme.colors.textSecondary} />
-            <Text style={styles.sourceText}>{`${fa ? "منبع" : "Source"}: ${question.source.fileName}, ${fa ? "ص" : "p"}.${question.source.page}`}</Text>
-          </View>
-        ) : null}
-      </View>
+        </View>
 
       {answered && phase.state === "answered" ? (
         <Button variant="secondary" block label={fa ? "سؤال بعدی" : "Next question"} onPress={next} style={{ marginTop: 16 }} />
@@ -117,8 +110,8 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
 
       <Text style={[styles.intro, fa ? styles.rtl : null]}>
         {fa
-          ? "پرسش‌ها از همان منابع تأییدشدهٔ درس‌ها آمده‌اند؛ توضیح هر پاسخ صفحهٔ دفترچه را نشان می‌دهد."
-          : "Questions come from the same verified sources as the lessons; each explanation cites its manual page."}
+          ? "پرسش‌ها بر پایهٔ محتوای تأییدشدهٔ درس‌ها هستند."
+          : "Questions are based on the verified lesson content."}
       </Text>
     </View>
   );
@@ -140,8 +133,6 @@ const styles = StyleSheet.create({
   feedbackGood: { backgroundColor: "#EEF8F2" },
   feedbackBad: { backgroundColor: "#FFF1F0" },
   feedbackText: { flex: 1, color: theme.colors.textPrimary, fontSize: 11, lineHeight: 19 },
-  sourceRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 12 },
-  sourceText: { color: theme.colors.textSecondary, fontSize: 9 },
   doneTitle: { marginTop: 12, color: theme.colors.brandPrimary, fontSize: 18, fontWeight: "800", textAlign: "center" },
   doneBody: { marginTop: 6, color: theme.colors.textSecondary, fontSize: 13, textAlign: "center" },
   doneHint: { marginTop: 8, color: theme.colors.textSecondary, fontSize: 11, lineHeight: 19, textAlign: "center" },

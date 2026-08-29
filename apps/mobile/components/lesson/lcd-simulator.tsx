@@ -182,9 +182,6 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
           </View>
         </View>
         <Text style={[styles.teachSummary, fa ? styles.rtl : null]}>{localize(program.summary, locale)}</Text>
-        <Text style={[styles.teachSource, fa ? styles.rtl : null]}>
-          {fa ? `دفترچهٔ ${program.source.fileName} — ص ${program.source.page}` : `${program.source.fileName} — p.${program.source.page}`}
-        </Text>
       </View>
 
       <PressableSurface
@@ -201,8 +198,8 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
 
       <Text style={[styles.note, { writingDirection: fa ? "rtl" : "ltr" }]}>
         {fa
-          ? "شبیه‌ساز آموزشی، بدون اتصال به سخت‌افزار — همان چیدمان منوی دفترچه (صفحهٔ ۱۱)."
-          : "Teaching simulator, not connected to hardware — same menu flow as the manual (p.11)."}
+          ? "شبیه‌ساز آموزشی، بدون اتصال به سخت‌افزار — چیدمان منوی همان تنظیمات دستگاه."
+          : "Teaching simulator, not connected to hardware — the same device settings menu layout."}
       </Text>
     </View>
   );
@@ -240,7 +237,6 @@ const styles = StyleSheet.create({
   teachCategoryTag: { overflow: "hidden", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 100, backgroundColor: theme.colors.technical },
   teachCategoryText: { color: theme.colors.brandPrimary, fontSize: 9, fontWeight: "700" },
   teachSummary: { marginTop: 9, color: theme.colors.textPrimary, fontSize: 12, lineHeight: 20 },
-  teachSource: { marginTop: 8, color: theme.colors.textSecondary, fontSize: 9, opacity: 0.85 },
   reset: { overflow: "hidden", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 7, minHeight: 40, borderRadius: theme.radii.pill, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.borderSubtle, backgroundColor: theme.colors.raised },
   resetText: { color: theme.colors.brandPrimary, fontSize: 11, fontWeight: "700" },
   note: { color: theme.colors.textSecondary, fontSize: 9, textAlign: "center", lineHeight: 15 }

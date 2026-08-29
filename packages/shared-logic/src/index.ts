@@ -8,6 +8,19 @@ export const storageKeys = {
   commissioningChecklist: "nexa:checklist-cm3500-24s"
 } as const;
 
+const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
+
+/**
+ * Transcribes Latin digits (ASCII 0-9) inside a string/number to Persian
+ * digits, leaving all other characters untouched. Arabic-Indic and existing
+ * Persian digits pass through unchanged; decimals, signs and units keep their
+ * original separators (the formatter is a digit transcribe, not a locale
+ * number formatter).
+ */
+export function toFaDigits(value: string | number): string {
+  return String(value).replace(/[0-9]/g, (digit) => FA_DIGITS.charAt(Number(digit)));
+}
+
 export function toggleCompletedLesson(current: string[], lessonId: string): string[] {
   return current.includes(lessonId)
     ? current.filter((id) => id !== lessonId)
@@ -15,8 +28,13 @@ export function toggleCompletedLesson(current: string[], lessonId: string): stri
 }
 
 export function completionPercent(completed: string[], total: number): number {
-  if (total <= 0) return 0;
-  return Math.round((new Set(completed).size / total) * 100);
+  if (!Number.isFinite(total) || total <= 0) return 0;
+  // Clamp defensively: a completed list that exceeds the lesson set (e.g.
+  // leftovers from another model) must never render >100% progress, and a
+  // hostile total (NaN/Infinity) must collapse to 0 instead of NaN.
+  const raw = (new Set(completed).size / total) * 100;
+  if (!Number.isFinite(raw)) return 0;
+  return Math.min(100, Math.max(0, Math.round(raw)));
 }
 
 export function parseStoredList(value: string | null): string[] {

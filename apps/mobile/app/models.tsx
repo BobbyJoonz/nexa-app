@@ -20,7 +20,7 @@ export default function ModelsScreen() {
       <View style={styles.top}><MobileBrand /></View>
       <Text style={[styles.eyebrow, localizedTextStyle(locale)]}>MODEL / 02</Text>
       <Text style={[styles.title, localizedTextStyle(locale)]}>{locale === "fa" ? "سانورتر خود را انتخاب کنید" : "Choose your Sunverter"}</Text>
-      <Text style={[styles.subtitle, localizedTextStyle(locale)]}>{locale === "fa" ? "فقط مدل دارای منبع معتبر قابل انتخاب است." : "Only a model with a verified source is selectable."}</Text>
+      <Text style={[styles.subtitle, localizedTextStyle(locale)]}>{locale === "fa" ? "فقط مدل‌های تأییدشده قابل انتخاب هستند." : "Only verified models are selectable."}</Text>
 
       <PressableSurface style={styles.featured} onPress={() => router.push(`/academy/${verified.slug}`)} accessibilityRole="button" accessibilityLabel={verified.modelName.value ?? undefined}>
         <View style={styles.imageStage}>
