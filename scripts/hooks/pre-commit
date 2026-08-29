@@ -1,0 +1,27 @@
+#!/bin/sh
+# Pre-commit guard — see docs/DEFINITION_OF_DONE.md
+# 1) Blocks audit/builder scratch files from ever being committed.
+# 2) Warns when committing on master with unexpected content (defense-in-depth,
+#    the concurrent writer never merges here by construction — pinned merges).
+set -u
+
+BAD_FILES=$(git diff --cached --name-only | grep -E '^\.(qa|e|off|d|final|pre|gral|env|c|t)\.txt$|^\.zombie|\.bar$|^C:\\' || true)
+if [ -n "$BAD_FILES" ]; then
+  echo "commit aborted (DoD): scratch/audit files must not be committed:"
+  echo "$BAD_FILES"
+  exit 1
+fi
+
+BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo unknown)
+if [ "$BRANCH" = "master" ]; then
+  # Master only ever receives pinned merges. A direct commit with a WIP-style
+  # message here is almost certainly a rogue writer — block the obvious ones.
+  MSG=$(git log -1 --format=%s 2>/dev/null || echo "")
+  case "$MSG" in
+    absorb*|triage*|concurrent*|RTL-first*)
+      echo "commit aborted (DoD): WIP-style message on master: $MSG"
+      exit 1
+      ;;
+  esac
+fi
+exit 0
