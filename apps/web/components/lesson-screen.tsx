@@ -34,8 +34,11 @@ import {
   localize,
   settings,
   specifications,
-  troubleshooting
+  troubleshootTree,
+  type TroubleshootDiagnosis,
+  type TroubleshootQuestion
 } from "@nexa/product-content";
+import { toFaDigits } from "@nexa/shared-logic";
 import { illustrationAssets } from "@nexa/illustrations";
 import { AppShell } from "./app-shell";
 import { useAcademy } from "./academy-provider";
@@ -373,32 +376,74 @@ function FaultFinder({ locale }: { locale: "en" | "fa" }) {
   );
 }
 
+const triageSeverity: Record<TroubleshootDiagnosis["severity"], { tone: "verified" | "warning" | "missing"; fa: string; en: string }> = {
+  safe: { tone: "verified", fa: "بررسی ایمن کاربر", en: "Safe user check" },
+  caution: { tone: "warning", fa: "نیازمند بررسی نصاب", en: "Installer check required" },
+  danger: { tone: "missing", fa: "توقف — خطر", en: "Stop — hazard" }
+};
+
+function TriageQuestion({ node, locale, onChoose }: { node: TroubleshootQuestion; locale: "en" | "fa"; onChoose: (id: string) => void }) {
+  const fa = locale === "fa";
+  return (
+    <div className="troubleshoot-panel">
+      <Wrench size={32} />
+      <h3>{localize(node.question, locale)}</h3>
+      {node.hint ? <p className="triage-hint">{localize(node.hint, locale)}</p> : null}
+      <div className="decision-list">{node.choices.map((choice) => (
+        <button key={choice.id} onClick={() => onChoose(choice.next)} type="button">{localize(choice.label, locale)}{fa ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}</button>
+      ))}</div>
+    </div>
+  );
+}
+
+function TriageDiagnosis({ node, locale, onBack, onRestart }: { node: TroubleshootDiagnosis; locale: "en" | "fa"; onBack: () => void; onRestart: () => void }) {
+  const fa = locale === "fa";
+  const meta = triageSeverity[node.severity];
+  return (
+    <div className="troubleshoot-panel result">
+      <div className="triage-severity">
+        <Badge tone={meta.tone}>{fa ? meta.fa : meta.en}</Badge>
+      </div>
+      <h3>{localize(node.problem, locale)}</h3>
+      <p className="triage-section-title">{fa ? "علت‌های محتمل" : "Likely causes"}</p>
+      <ul className="triage-causes">{node.causes.map((cause, index) => <li key={index}>{localize(cause, locale)}</li>)}</ul>
+      <p className="triage-section-title">{fa ? "اقدام‌ها" : "Actions"}</p>
+      <ol className="triage-actions">{node.solution.map((sol, index) => <li key={index}><strong>{fa ? toFaDigits(index + 1) : index + 1}</strong><span>{localize(sol, locale)}</span></li>)}</ol>
+      {node.escalation ? <p className="triage-escalation">{fa ? "ارجاع به نصاب: " : "Escalation: "}{localize(node.escalation, locale)}</p> : null}
+      <SourceNote source={node.source} locale={locale} />
+      <div className="triage-actions-row">
+        <Button variant="secondary" onClick={onBack}>{fa ? "گام قبل" : "Previous step"}</Button>
+        <Button onClick={onRestart}>{fa ? "شروع دوباره" : "Start again"}</Button>
+      </div>
+    </div>
+  );
+}
+
 function Troubleshooting({ locale }: { locale: "en" | "fa" }) {
-  const [node, setNode] = useState<"start" | "no-response" | "utility-battery" | "fault-code">("start");
-  const current = troubleshooting[node];
-  if (node === "start" && "choices" in current) {
-    return (
-      <div className="troubleshoot-panel">
-        <Wrench size={32} />
-        <h3>{localize(current.question, locale)}</h3>
-        <div className="decision-list">{current.choices.map((choice) => (
-          <button key={choice.next} onClick={() => setNode(choice.next)}>{localize(choice.label, locale)}<ChevronRight size={18} /></button>
-        ))}</div>
-      </div>
-    );
-  }
-  if ("result" in current && "source" in current) {
-    return (
-      <div className="troubleshoot-panel result">
-        <AlertTriangle size={32} />
-        <h3>{localize(current.question, locale)}</h3>
-        <p>{localize(current.result, locale)}</p>
-        <SourceNote source={current.source} locale={locale} />
-        <Button variant="secondary" onClick={() => setNode("start")}>{locale === "fa" ? "شروع دوباره" : "Start again"}</Button>
-      </div>
-    );
-  }
-  return null;
+  const [path, setPath] = useState<string[]>([troubleshootTree.start]);
+  const node = troubleshootTree.nodes[path[path.length - 1] ?? troubleshootTree.start];
+  const fa = locale === "fa";
+
+  const go = (id: string) => setPath((previous) => [...previous, id]);
+  const back = () => setPath((previous) => (previous.length > 1 ? previous.slice(0, -1) : previous));
+  const restart = () => setPath([troubleshootTree.start]);
+
+  if (!node) return null;
+
+  return (
+    <div className="lesson-stack">
+      <p className="triage-crumb">
+        {node.kind === "diagnosis"
+          ? (fa ? "نتیجهٔ تشخیص" : "Diagnosis")
+          : (fa ? `مرحله ${toFaDigits(path.length)} از درخت` : `Step ${path.length} of the tree`)}
+      </p>
+      {node.kind === "question" ? (
+        <TriageQuestion node={node} locale={locale} onChoose={go} />
+      ) : (
+        <TriageDiagnosis node={node} locale={locale} onBack={back} onRestart={restart} />
+      )}
+    </div>
+  );
 }
 
 function Specifications({ locale }: { locale: "en" | "fa" }) {
