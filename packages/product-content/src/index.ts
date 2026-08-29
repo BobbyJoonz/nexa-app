@@ -538,7 +538,7 @@ export const anatomy: AnatomyPart[] = [
   }
 ];
 
-export * from "./troubleshooting";
+export * from "./triage-tree";
 
 const verifiedProduct: ProductModel = {
   id: "cm3500-24s",
