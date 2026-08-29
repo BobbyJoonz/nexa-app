@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet, Text, View } from "react-native";
 import { commissioningSteps, localize } from "@nexa/product-content";
-import { storageKeys } from "@nexa/shared-logic";
+import { storageKeys, toFaDigits } from "@nexa/shared-logic";
 import { Screen } from "@/components/screen";
 import { useAcademy } from "@/providers/academy-provider";
 import { localizedRow, localizedTextStyle, theme } from "@/theme";
@@ -69,7 +69,7 @@ export default function ChecklistScreen() {
     <Screen back title={fa ? "چک‌لیست راه‌اندازی" : "Commissioning checklist"}>
       <View style={styles.header}>
         <Text style={[styles.title, localizedTextStyle(locale)]}>
-          {fa ? `${done.size} از ${commissioningSteps.length} گام تیک خورد · ${percent}٪` : `${done.size} of ${commissioningSteps.length} done · ${percent}%`}
+          {fa ? `${toFaDigits(done.size)} از ${toFaDigits(commissioningSteps.length)} گام تیک خورد · ${toFaDigits(percent)}٪` : `${done.size} of ${commissioningSteps.length} done · ${percent}%`}
         </Text>
         <View style={styles.track}>
           <View style={[styles.fill, { width: `${Math.max(percent, 3)}%` }]} />
@@ -84,7 +84,7 @@ export default function ChecklistScreen() {
             onPress={() => toggle(step.id)}
             accessibilityRole="checkbox"
             accessibilityState={{ checked }}
-            style={[styles.row, checked && styles.rowDone]}
+            style={[styles.row, localizedRow(locale), checked && styles.rowDone]}
           >
             <Ionicons
               name={checked ? "checkmark-circle" : "ellipse-outline"}
@@ -95,7 +95,7 @@ export default function ChecklistScreen() {
               <Text style={[styles.rowText, localizedTextStyle(locale), checked && styles.rowTextDone]}>{localize(step.text, locale)}</Text>
               <Text style={[styles.rowDetail, localizedTextStyle(locale)]}>{localize(step.detail, locale)}</Text>
               <View style={[styles.rowMeta, localizedRow(locale)]}>
-                <Text style={styles.rowSource}>{`${fa ? "منبع" : "Source"}: ${step.source.fileName}, ${fa ? "ص" : "p"}.${step.source.page}`}</Text>
+                <Text style={styles.rowSource}>{`${fa ? "منبع" : "Source"}: ${step.source.fileName}, ${fa ? `صفحهٔ ${toFaDigits(step.source.page)}` : `p.${step.source.page}`}`}</Text>
                 {step.safetyCritical ? (
                   <View style={styles.safetyTag}><Ionicons name="shield-checkmark-outline" size={10} color={theme.colors.warning} /><Text style={styles.safetyTagText}>{fa ? "ایمنی" : "Safety"}</Text></View>
                 ) : null}

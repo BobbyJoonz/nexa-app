@@ -2,7 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { localize, quizBank, type QuizQuestion } from "@nexa/product-content";
-import { theme } from "@/theme";
+import { toFaDigits } from "@nexa/shared-logic";
+import { localizedRow, localizedTextStyle, theme } from "@/theme";
 import { Button } from "@/src/ui/button/Button";
 import { PressableSurface } from "@/src/ui/pressable-surface";
 
@@ -11,6 +12,10 @@ import { PressableSurface } from "@/src/ui/pressable-surface";
  * Answering reveals an explanation with its manual page; the concept of
  * "safe answer first, escalate" stays central (docs/ARCHITECTURE safety).
  * No score persistence: review is for learning, not for gamification.
+ *
+ * RTL contract (user requirement): when the locale is Persian every option
+ * row, feedback row, progress counter and result line mirrors and numerals
+ * become Persian digits — the LTR leftover layout is gone in fa.
  */
 
 type Phase = { state: "question"; question: QuizQuestion } | { state: "answered"; question: QuizQuestion; picked: number } | { state: "done"; correct: number; total: number };
@@ -49,9 +54,11 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
     return (
       <View style={styles.card}>
         <Ionicons name={passed ? "trophy-outline" : "book-outline"} size={30} color={passed ? theme.colors.success : theme.colors.brandAccent} />
-        <Text style={[styles.doneTitle, fa ? styles.rtl : null]}>{fa ? "نتیجهٔ مرور" : "Review result"}</Text>
-        <Text style={[styles.doneBody, fa ? styles.rtl : null]}>{`${fa ? `${phase.correct} از ${phase.total} پاسخ درست` : `${phase.correct} of ${phase.total} correct`}`}</Text>
-        <Text style={[styles.doneHint, fa ? styles.rtl : null]}>
+        <Text style={[styles.doneTitle, localizedTextStyle(locale)]}>{fa ? "نتیجهٔ مرور" : "Review result"}</Text>
+        <Text style={[styles.doneBody, localizedTextStyle(locale)]}>
+          {fa ? `${toFaDigits(phase.correct)} از ${toFaDigits(phase.total)} پاسخ درست` : `${phase.correct} of ${phase.total} correct`}
+        </Text>
+        <Text style={[styles.doneHint, localizedTextStyle(locale)]}>
           {passed
             ? (fa ? "درک خوبی داری؛ مرور دوره‌ای فراموشی را کم می‌کند." : "Solid understanding — periodic review keeps it sharp.")
             : (fa ? "چند درس ایمنی/نصب را دوباره مرور کن، سپس دوباره امتحان کن." : "Revisit the safety/installation lessons, then try again.")}
@@ -68,12 +75,12 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
 
   return (
     <View>
-      <Text style={[styles.progress, fa ? styles.rtl : null]}>{`${cursor + 1} / ${quizBank.length}`}</Text>
+      <Text style={[styles.progress, localizedTextStyle(locale)]}>{fa ? `${toFaDigits(cursor + 1)} / ${toFaDigits(quizBank.length)}` : `${cursor + 1} / ${quizBank.length}`}</Text>
       <View style={[styles.card, question.safetyCritical && styles.cardSafety]}>
         {question.safetyCritical ? (
-          <View style={styles.safetyBadge}><Ionicons name="shield-checkmark-outline" size={12} color={theme.colors.warning} /><Text style={styles.safetyBadgeText}>{fa ? "ایمنی‌حیاتی" : "Safety critical"}</Text></View>
+          <View style={[styles.safetyBadge, localizedRow(locale)]}><Ionicons name="shield-checkmark-outline" size={12} color={theme.colors.warning} /><Text style={styles.safetyBadgeText}>{fa ? "ایمنی‌حیاتی" : "Safety critical"}</Text></View>
         ) : null}
-        <Text style={[styles.question, fa ? styles.rtl : null]}>{localize(question.question, locale)}</Text>
+        <Text style={[styles.question, localizedTextStyle(locale)]}>{localize(question.question, locale)}</Text>
 
         {question.choices.map((choice, i) => {
           const isCorrect = i === question.correctIndex;
@@ -85,9 +92,9 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
               onPress={() => pick(i)}
               disabled={answered}
               accessibilityRole="button"
-              style={[styles.choice, tone !== "idle" && styles[tone]]}
+              style={[styles.choice, localizedRow(locale), tone !== "idle" && styles[tone]]}
             >
-              <Text style={[styles.choiceText, fa ? styles.rtl : null, tone !== "idle" && styles.choiceTextStrong]}>{localize(choice, locale)}</Text>
+              <Text style={[styles.choiceText, localizedTextStyle(locale), tone !== "idle" && styles.choiceTextStrong]}>{localize(choice, locale)}</Text>
               {answered && isCorrect ? <Ionicons name="checkmark-circle" size={17} color={theme.colors.success} /> : null}
               {answered && isPicked && !isCorrect ? <Ionicons name="close-circle" size={17} color={theme.colors.danger} /> : null}
             </PressableSurface>
@@ -95,18 +102,18 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
         })}
 
         {answered && phase.state === "answered" ? (
-          <View style={[styles.feedback, picked === question.correctIndex ? styles.feedbackGood : styles.feedbackBad]}>
+          <View style={[styles.feedback, localizedRow(locale), picked === question.correctIndex ? styles.feedbackGood : styles.feedbackBad]}>
             <Ionicons name={picked === question.correctIndex ? "checkmark-circle-outline" : "alert-circle-outline"} size={17} color={picked === question.correctIndex ? theme.colors.success : theme.colors.danger} />
-            <Text style={[styles.feedbackText, fa ? styles.rtl : null]}>
+            <Text style={[styles.feedbackText, localizedTextStyle(locale)]}>
               {localize(question.explanation, locale)}
             </Text>
           </View>
         ) : null}
 
         {showSource && phase.state === "answered" ? (
-          <View style={styles.sourceRow}>
+          <View style={[styles.sourceRow, localizedRow(locale)]}>
             <Ionicons name="document-text-outline" size={12} color={theme.colors.textSecondary} />
-            <Text style={styles.sourceText}>{`${fa ? "منبع" : "Source"}: ${question.source.fileName}, ${fa ? "ص" : "p"}.${question.source.page}`}</Text>
+            <Text style={[styles.sourceText, localizedTextStyle(locale)]}>{`${fa ? "منبع" : "Source"}: ${question.source.fileName}, ${fa ? `صفحهٔ ${toFaDigits(question.source.page)}` : `p.${question.source.page}`}`}</Text>
           </View>
         ) : null}
       </View>
@@ -115,7 +122,7 @@ export function QuizLesson({ locale }: { locale: "fa" | "en" }) {
         <Button variant="secondary" block label={fa ? "سؤال بعدی" : "Next question"} onPress={next} style={{ marginTop: 16 }} />
       ) : null}
 
-      <Text style={[styles.intro, fa ? styles.rtl : null]}>
+      <Text style={[styles.intro, localizedTextStyle(locale)]}>
         {fa
           ? "پرسش‌ها از همان منابع تأییدشدهٔ درس‌ها آمده‌اند؛ توضیح هر پاسخ صفحهٔ دفترچه را نشان می‌دهد."
           : "Questions come from the same verified sources as the lessons; each explanation cites its manual page."}
@@ -128,23 +135,22 @@ const styles = StyleSheet.create({
   progress: { color: theme.colors.brandAccent, fontSize: 11, fontWeight: "800", letterSpacing: 1, marginBottom: 8 },
   card: { padding: 18, borderWidth: 1, borderColor: theme.colors.borderSubtle, borderRadius: theme.radii.panel, backgroundColor: theme.colors.raised, ...theme.shadow },
   cardSafety: { borderTopWidth: 3, borderTopColor: theme.colors.warning },
-  safetyBadge: { alignSelf: "flex-start", flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 10, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 100, backgroundColor: "#FFF7ED" },
+  safetyBadge: { alignSelf: "flex-start", alignItems: "center", gap: 5, marginBottom: 10, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 100, backgroundColor: "#FFF7ED" },
   safetyBadgeText: { color: theme.colors.warning, fontSize: 9, fontWeight: "700" },
   question: { color: theme.colors.brandPrimary, fontSize: 16, lineHeight: 27, fontWeight: "800" },
-  choice: { overflow: "hidden", flexDirection: "row", alignItems: "center", gap: 9, minHeight: 48, marginTop: 10, paddingHorizontal: 14, borderRadius: theme.radii.control, borderWidth: 1, borderColor: theme.colors.borderSubtle, backgroundColor: theme.colors.raised },
+  choice: { overflow: "hidden", alignItems: "center", gap: 9, minHeight: 48, marginTop: 10, paddingHorizontal: 14, borderRadius: theme.radii.control, borderWidth: 1, borderColor: theme.colors.borderSubtle, backgroundColor: theme.colors.raised },
   choiceText: { flex: 1, color: theme.colors.textPrimary, fontSize: 12, lineHeight: 20 },
   choiceTextStrong: { fontWeight: "700" },
   correct: { borderColor: theme.colors.success, backgroundColor: "#EEF8F2" },
   wrong: { borderColor: theme.colors.danger, backgroundColor: "#FFF1F0" },
-  feedback: { flexDirection: "row", alignItems: "flex-start", gap: 8, marginTop: 14, padding: 12, borderRadius: 8 },
+  feedback: { alignItems: "flex-start", gap: 8, marginTop: 14, padding: 12, borderRadius: 8 },
   feedbackGood: { backgroundColor: "#EEF8F2" },
   feedbackBad: { backgroundColor: "#FFF1F0" },
   feedbackText: { flex: 1, color: theme.colors.textPrimary, fontSize: 11, lineHeight: 19 },
-  sourceRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 12 },
+  sourceRow: { alignItems: "center", gap: 6, marginTop: 12 },
   sourceText: { color: theme.colors.textSecondary, fontSize: 9 },
   doneTitle: { marginTop: 12, color: theme.colors.brandPrimary, fontSize: 18, fontWeight: "800", textAlign: "center" },
   doneBody: { marginTop: 6, color: theme.colors.textSecondary, fontSize: 13, textAlign: "center" },
   doneHint: { marginTop: 8, color: theme.colors.textSecondary, fontSize: 11, lineHeight: 19, textAlign: "center" },
-  intro: { marginTop: 16, color: theme.colors.textSecondary, fontSize: 10, lineHeight: 17, textAlign: "center" },
-  rtl: { writingDirection: "rtl" }
+  intro: { marginTop: 16, color: theme.colors.textSecondary, fontSize: 10, lineHeight: 17, textAlign: "center" }
 });

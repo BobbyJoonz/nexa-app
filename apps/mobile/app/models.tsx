@@ -25,7 +25,7 @@ export default function ModelsScreen() {
       <PressableSurface style={styles.featured} onPress={() => router.push(`/academy/${verified.slug}`)} accessibilityRole="button" accessibilityLabel={verified.modelName.value ?? undefined}>
         <View style={styles.imageStage}>
           <Image source={require("../assets/nexa-product-mobile.webp")} style={styles.product} contentFit="contain" />
-          <View style={styles.verifiedBadge}><Ionicons name="shield-checkmark" size={14} color={theme.colors.success} /><Text style={styles.verifiedText}>{locale === "fa" ? "تأییدشده" : "Verified"}</Text></View>
+          <View style={[styles.verifiedBadge, locale === "fa" && styles.verifiedBadgeEnd]}><Ionicons name="shield-checkmark" size={14} color={theme.colors.success} /><Text style={styles.verifiedText}>{locale === "fa" ? "تأییدشده" : "Verified"}</Text></View>
         </View>
         <View style={styles.cardCopy}>
           <Text style={styles.kicker}>NEXA HYBRID SOLAR INVERTER</Text>
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
   imageStage: { height: 360, alignItems: "center", justifyContent: "flex-end", backgroundColor: theme.colors.technical },
   product: { width: "75%", height: "94%" },
   verifiedBadge: { position: "absolute", top: 16, left: 16, flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 9, paddingVertical: 5, borderRadius: 100, backgroundColor: "#EEF8F2" },
+  verifiedBadgeEnd: { left: undefined, right: 16 },
   verifiedText: { color: theme.colors.success, fontSize: 10, fontWeight: "700" },
   cardCopy: { padding: 22 },
   kicker: { color: theme.colors.textSecondary, fontSize: 8, fontWeight: "700", letterSpacing: 1.2 },

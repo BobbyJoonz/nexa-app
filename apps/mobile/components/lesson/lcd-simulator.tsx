@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { localize, settings } from "@nexa/product-content";
+import { toFaDigits } from "@nexa/shared-logic";
 import { localizedRow, theme } from "@/theme";
 import { PressableSurface } from "@/src/ui/pressable-surface";
 
@@ -183,7 +184,7 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
         </View>
         <Text style={[styles.teachSummary, fa ? styles.rtl : null]}>{localize(program.summary, locale)}</Text>
         <Text style={[styles.teachSource, fa ? styles.rtl : null]}>
-          {fa ? `دفترچهٔ ${program.source.fileName} — ص ${program.source.page}` : `${program.source.fileName} — p.${program.source.page}`}
+          {fa ? `دفترچهٔ ${program.source.fileName} — صفحهٔ ${toFaDigits(program.source.page)}` : `${program.source.fileName} — p.${program.source.page}`}
         </Text>
       </View>
 
@@ -193,7 +194,7 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
           setMode("home");
         }}
         accessibilityRole="button"
-        style={styles.reset}
+        style={[styles.reset, localizedRow(locale)]}
       >
         <Ionicons name="refresh-outline" size={14} color={theme.colors.brandPrimary} />
         <Text style={styles.resetText}>{fa ? "بازنشانی به پیش‌فرض" : "Reset to defaults"}</Text>
