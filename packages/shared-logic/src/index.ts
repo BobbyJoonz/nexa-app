@@ -28,10 +28,13 @@ export function toggleCompletedLesson(current: string[], lessonId: string): stri
 }
 
 export function completionPercent(completed: string[], total: number): number {
-  if (total <= 0) return 0;
+  if (!Number.isFinite(total) || total <= 0) return 0;
   // Clamp defensively: a completed list that exceeds the lesson set (e.g.
-  // leftovers from another model) must never render >100% progress.
-  return Math.min(100, Math.max(0, Math.round((new Set(completed).size / total) * 100)));
+  // leftovers from another model) must never render >100% progress, and a
+  // hostile total (NaN/Infinity) must collapse to 0 instead of NaN.
+  const raw = (new Set(completed).size / total) * 100;
+  if (!Number.isFinite(raw)) return 0;
+  return Math.min(100, Math.max(0, Math.round(raw)));
 }
 
 export function parseStoredList(value: string | null): string[] {
