@@ -88,7 +88,7 @@ function DiagnosisView({ node, locale, onBack, onRestart }: { node: Troubleshoot
 
       <View style={styles.actions}>
         <Button variant="secondary" block label={locale === "fa" ? "گام قبل" : "Previous step"} onPress={onBack} style={{ marginTop: 18 }} />
-        <Button variant="technical" block label={locale === "fa" ? "شروع دوباره" : "Start again"} onPress={onRestart} style={{ marginTop: 10 }} />
+        <Button variant="filled" block label={locale === "fa" ? "شروع دوباره" : "Start again"} onPress={onRestart} style={{ marginTop: 10 }} />
       </View>
     </View>
   );
@@ -99,15 +99,15 @@ export function TroubleshootingFlow({ locale }: { locale: "fa" | "en" }) {
   const node = troubleshootTree.nodes[path[path.length - 1] ?? troubleshootTree.start];
 
   const go = (next: string) => {
-    haptics.impact();
+    haptics.tap();
     setPath((previous) => [...previous, next]);
   };
   const back = () => {
-    haptics.impact();
+    haptics.tap();
     setPath((previous) => (previous.length > 1 ? previous.slice(0, -1) : previous));
   };
   const restart = () => {
-    haptics.selection();
+    haptics.tap();
     setPath([troubleshootTree.start]);
   };
 
