@@ -133,7 +133,7 @@ export const settings: SettingProgram[] = [
     bilingual("Appliance: 90-280 VAC", "لوازم خانگی: ۹۰ تا ۲۸۰ ولت AC"),
     bilingual("UPS: 170-280 VAC", "UPS: ۱۷۰ تا ۲۸۰ ولت AC"),
     bilingual("Generator: 90-280 VAC", "ژنراتور: ۹۰ تا ۲۸۰ ولت AC")
-  ], bilingual("Appliance", "لوازم خانگی"), "power", true, 13),
+  ], bilingual("Appliance: 90-280 VAC", "لوازم خانگی: ۹۰ تا ۲۸۰ ولت AC"), "power", true, 13),
   setting("05", "Battery type", "نوع باتری", "Selects the charging profile and exposes dependent voltage programs.", "پروفایل شارژ را انتخاب و برنامه‌های وابسته ولتاژ را فعال می‌کند.", [
     bilingual("AGM", "AGM"),
     bilingual("Flooded", "اسیدی"),
