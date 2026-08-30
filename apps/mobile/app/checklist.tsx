@@ -1,13 +1,13 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StyleSheet, Text, View } from "react-native";
+import { Circle, CircleCheck, RefreshCw, ShieldCheck } from "lucide-react-native";
+import { Text, View } from "react-native";
 import { commissioningSteps, localize } from "@nexa/product-content";
 import { storageKeys } from "@nexa/shared-logic";
 import { Screen } from "@/components/screen";
 import { useAcademy } from "@/providers/academy-provider";
-import { localizedRow, localizedTextStyle, theme } from "@/theme";
 import { Button } from "@/src/ui/button/Button";
+import { cn } from "@/src/ui/cn";
 import { FeedbackRow } from "@/src/ui/feedback";
 import { PressableSurface } from "@/src/ui/pressable-surface";
 
@@ -19,7 +19,7 @@ import { PressableSurface } from "@/src/ui/pressable-surface";
 
 export default function ChecklistScreen() {
   const { locale } = useAcademy();
-  const fa = locale === "fa";
+  const isFa = locale === "fa";
   const [done, setDone] = useState<Set<string>>(new Set());
   const [hydrated, setHydrated] = useState(false);
 
@@ -48,8 +48,6 @@ export default function ChecklistScreen() {
   };
 
   const toggle = (id: string) => {
-    // Never mutate before hydration: a tap during the read window would be
-    // overwritten by the stored state and silently lost.
     if (!hydrated) return;
     const next = new Set(done);
     if (next.has(id)) next.delete(id);
@@ -66,13 +64,13 @@ export default function ChecklistScreen() {
   const percent = championCount(Math.round((done.size / commissioningSteps.length) * 100));
 
   return (
-    <Screen back title={fa ? "چک‌لیست راه‌اندازی" : "Commissioning checklist"}>
-      <View style={styles.header}>
-        <Text style={[styles.title, localizedTextStyle(locale)]}>
-          {fa ? `${done.size} از ${commissioningSteps.length} گام تیک خورد · ${percent}٪` : `${done.size} of ${commissioningSteps.length} done · ${percent}%`}
+    <Screen back title={isFa ? "چک‌لیست راه‌اندازی" : "Commissioning checklist"}>
+      <View className="py-4">
+        <Text className="text-[16px] font-bold text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+          {isFa ? `${done.size} از ${commissioningSteps.length} گام تیک خورد · ${percent}٪` : `${done.size} of ${commissioningSteps.length} done · ${percent}%`}
         </Text>
-        <View style={styles.track}>
-          <View style={[styles.fill, { width: `${Math.max(percent, 3)}%` }]} />
+        <View className="mt-3 h-[5px] overflow-hidden rounded-full bg-secondary">
+          <View className="h-full rounded-full bg-success" style={{ width: `${Math.max(percent, 3)}%` }} />
         </View>
       </View>
 
@@ -84,19 +82,25 @@ export default function ChecklistScreen() {
             onPress={() => toggle(step.id)}
             accessibilityRole="checkbox"
             accessibilityState={{ checked }}
-            style={[styles.row, checked && styles.rowDone]}
+            className={cn(
+              "mt-2.5 min-h-[72px] flex-row items-start gap-[11px] overflow-hidden rounded-control border border-border bg-card p-3.5",
+              checked && "border-[#2F6F55]/40 bg-[#F7FBF8]"
+            )}
           >
-            <Ionicons
-              name={checked ? "checkmark-circle" : "ellipse-outline"}
-              size={22}
-              color={checked ? theme.colors.success : theme.colors.borderSubtle}
-            />
-            <View style={styles.rowCopy}>
-              <Text style={[styles.rowText, localizedTextStyle(locale), checked && styles.rowTextDone]}>{localize(step.text, locale)}</Text>
-              <Text style={[styles.rowDetail, localizedTextStyle(locale)]}>{localize(step.detail, locale)}</Text>
-              <View style={[styles.rowMeta, localizedRow(locale)]}>
+            {checked ? <CircleCheck size={22} color="#2F6F55" /> : <Circle size={22} color="#CCD5DE" />}
+            <View className="flex-1">
+              <Text className={cn("text-[12px] font-bold leading-5 text-primary", checked && "text-success")} style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+                {localize(step.text, locale)}
+              </Text>
+              <Text className="mt-[3px] text-[10px] leading-[17px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+                {localize(step.detail, locale)}
+              </Text>
+              <View className={cn("mt-[7px] flex-row items-center gap-2", isFa && "flex-row-reverse")}>
                 {step.safetyCritical ? (
-                  <View style={styles.safetyTag}><Ionicons name="shield-checkmark-outline" size={10} color={theme.colors.warning} /><Text style={styles.safetyTagText}>{fa ? "ایمنی" : "Safety"}</Text></View>
+                  <View className="flex-row items-center gap-1 overflow-hidden rounded-full bg-[#FFF7ED] px-[7px] py-[3px]">
+                    <ShieldCheck size={10} color="#B54708" />
+                    <Text className="text-[8px] font-bold text-warning">{isFa ? "ایمنی" : "Safety"}</Text>
+                  </View>
                 ) : null}
               </View>
             </View>
@@ -105,10 +109,10 @@ export default function ChecklistScreen() {
       })}
 
       {hydrated && done.size > 0 ? (
-        <Button variant="ghost" block label={fa ? "پاک‌کردن تمام تیک‌ها" : "Clear all ticks"} onPress={reset} style={{ marginTop: 18 }} trailing={<Ionicons name="refresh-outline" size={15} color={theme.colors.brandPrimary} />} />
+        <Button variant="ghost" block label={isFa ? "پاک‌کردن تمام تیک‌ها" : "Clear all ticks"} onPress={reset} style={{ marginTop: 18 }} trailing={<RefreshCw size={15} color="#122C4F" />} />
       ) : null}
 
-      <FeedbackRow context={fa ? "چک‌لیست راه‌اندازی" : "Commissioning checklist"} />
+      <FeedbackRow context={isFa ? "چک‌لیست راه‌اندازی" : "Commissioning checklist"} />
     </Screen>
   );
 }
@@ -116,19 +120,3 @@ export default function ChecklistScreen() {
 function championCount(n: number): number {
   return Number.isFinite(n) ? Math.min(100, Math.max(0, n)) : 0;
 }
-
-const styles = StyleSheet.create({
-  header: { paddingVertical: 16 },
-  title: { color: theme.colors.brandPrimary, fontSize: 16, fontWeight: "800" },
-  track: { height: 5, marginTop: 12, borderRadius: 99, backgroundColor: theme.colors.technical, overflow: "hidden" },
-  fill: { height: "100%", borderRadius: 99, backgroundColor: theme.colors.success },
-  row: { overflow: "hidden", flexDirection: "row", alignItems: "flex-start", gap: 11, minHeight: 72, marginTop: 10, padding: 14, borderWidth: 1, borderColor: theme.colors.borderSubtle, borderRadius: theme.radii.control, backgroundColor: theme.colors.raised },
-  rowDone: { borderColor: "rgba(47,111,85,.4)", backgroundColor: "#F7FBF8" },
-  rowCopy: { flex: 1 },
-  rowText: { color: theme.colors.brandPrimary, fontSize: 12, fontWeight: "700", lineHeight: 20 },
-  rowTextDone: { color: theme.colors.success },
-  rowDetail: { marginTop: 3, color: theme.colors.textSecondary, fontSize: 10, lineHeight: 17 },
-  rowMeta: { alignItems: "center", gap: 8, marginTop: 7 },
-  safetyTag: { overflow: "hidden", flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 100, backgroundColor: "#FFF7ED" },
-  safetyTagText: { color: theme.colors.warning, fontSize: 8, fontWeight: "700" }
-});

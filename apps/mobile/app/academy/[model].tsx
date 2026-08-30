@@ -1,44 +1,50 @@
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { completionPercent, toFaDigits } from "@nexa/shared-logic";
+import { ChevronLeft, ChevronRight, CircleCheck, CircleAlert, Scan, ShieldCheck, Wrench, Zap, Power, Calculator, SlidersHorizontal, ArrowLeftRight, BatteryCharging, TriangleAlert, Hammer, List, BookOpen, Network } from "lucide-react-native";
+import { Pressable, Text, View } from "react-native";
+import { completionPercent } from "@nexa/shared-logic";
 import { getProduct, localize } from "@nexa/product-content";
-import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/screen";
 import { useAcademy } from "@/providers/academy-provider";
-import { localizedRow, localizedTextStyle, theme } from "@/theme";
+import { cn } from "@/src/ui/cn";
+import { dirIcon } from "@/src/ui/direction";
 
-const lessonIcons: Record<string, keyof typeof Ionicons.glyphMap> = {
-  overview: "git-network-outline",
-  anatomy: "scan-outline",
-  safety: "shield-checkmark-outline",
-  installation: "construct-outline",
-  connections: "flash-outline",
-  "power-on": "power-outline",
-  lcd: "calculator-outline",
-  settings: "options-outline",
-  modes: "swap-horizontal-outline",
-  battery: "battery-charging-outline",
-  faults: "warning-outline",
-  troubleshooting: "build-outline",
-  specifications: "list-outline",
-  manuals: "book-outline",
-  quiz: "checkmark-circle-outline"
+const lessonIcons: Record<string, React.ComponentType<{ size?: number; color?: string }>> = {
+  overview: Network,
+  anatomy: Scan,
+  safety: ShieldCheck,
+  installation: Wrench,
+  connections: Zap,
+  "power-on": Power,
+  lcd: Calculator,
+  settings: SlidersHorizontal,
+  modes: ArrowLeftRight,
+  battery: BatteryCharging,
+  faults: TriangleAlert,
+  troubleshooting: Hammer,
+  specifications: List,
+  manuals: BookOpen,
+  quiz: CircleCheck
 };
 
 export default function AcademyScreen() {
   const { model } = useLocalSearchParams<{ model: string }>();
   const product = getProduct(model);
   const { locale, completed } = useAcademy();
-  // Anti-shock: an unknown/unverified model must never render a blank screen
-  // (deep links, stale tabs). Fall back to a recoverable not-found state.
+  const isFa = locale === "fa";
+  const ChevronIcon = dirIcon(locale, ChevronRight, ChevronLeft);
+
   if (!product || product.modelName.verificationStatus !== "verified") {
     return (
       <Screen back>
-        <View style={styles.missing}>
-          <Ionicons name="alert-circle-outline" size={34} color={theme.colors.textSecondary} />
-          <Text style={[styles.missingTitle, localizedTextStyle(locale)]}>{locale === "fa" ? "این مدل پیدا نشد" : "Model not found"}</Text>
-          <Text style={[styles.missingBody, localizedTextStyle(locale)]}>{locale === "fa" ? "از فهرست مدل‌ها انتخاب کنید." : "Choose from the model list."}</Text>
+        <View className="items-center gap-2 pt-24 px-7">
+          <CircleAlert size={34} color="#5C6878" />
+          <Text className="text-[17px] font-bold text-primary" style={{ fontFamily: "Vazirmatn_700Bold", writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {isFa ? "این مدل پیدا نشد" : "Model not found"}
+          </Text>
+          <Text className="text-[12px] leading-5 text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {isFa ? "از فهرست مدل‌ها انتخاب کنید." : "Choose from the model list."}
+          </Text>
         </View>
       </Screen>
     );
@@ -47,45 +53,87 @@ export default function AcademyScreen() {
 
   return (
     <Screen title={`${product.brand} ${product.modelName.value}`} back>
-      <View style={styles.hero}>
-        <View style={[styles.heroGrid, localizedRow(locale)]}>
-          <View style={styles.heroCopy}>
-            <Text style={styles.eyebrow}>PRODUCT ACADEMY</Text>
-            <Text style={[styles.heroTitle, localizedTextStyle(locale)]}>{locale === "fa" ? "سانورترت را بشناس." : "Know your Sunverter."}</Text>
-            <Text style={[styles.heroSubtitle, localizedTextStyle(locale)]}>{locale === "fa" ? `${toFaDigits(product.lessons.length)} درس مستند، از مسیر انرژی تا خطاها.` : `${product.lessons.length} sourced lessons, from energy flow to faults.`}</Text>
+      <View className="rounded-panel bg-primary-strong">
+        <View className="flex-row">
+          <View className="flex-1 pt-5 pl-4 pr-4">
+            <Text className="text-[9px] font-bold tracking-[1.5px] text-white/58">PRODUCT ACADEMY</Text>
+            <Text className="mt-1 text-[22px] font-bold leading-7 text-white" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+              {isFa ? "سانورترت را بشناس." : "Know your Sunverter."}
+            </Text>
+            <Text className="mt-1 text-[11px] leading-[17px] text-white/65" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+              {isFa ? "۱۵ درس مستند، از مسیر انرژی تا خطاها." : "15 sourced lessons, from energy flow to faults."}
+            </Text>
           </View>
-          <View style={styles.heroStage}>
-            <Image source={require("../../assets/nexa-product-mobile.webp")} style={styles.product} contentFit="contain" />
-          </View>
+          <Image source={require("../../assets/nexa-product-mobile.webp")} className="w-[45%] h-[180px]" contentFit="contain" />
         </View>
-        <View style={[styles.progressHead, localizedRow(locale)]}><Text style={[styles.progressLabel, localizedTextStyle(locale)]}>{locale === "fa" ? "پیشرفت یادگیری" : "Learning progress"}</Text><Text style={styles.progressValue}>{locale === "fa" ? `${toFaDigits(percent)}٪` : `${percent}%`}</Text></View>
-        <View style={styles.progressTrack}><View style={[styles.progressFill, { width: `${percent}%` }]} /></View>
+        <View className={cn("flex-row items-center justify-between px-4 pb-1", isFa && "flex-row-reverse")}>
+          <Text className="text-[11px] text-white/65" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {isFa ? "پیشرفت یادگیری" : "Learning progress"}
+          </Text>
+          <Text className="text-[13px] font-bold text-white">{percent}%</Text>
+        </View>
+        <View className="mx-4 mb-4 h-[5px] overflow-hidden rounded-full bg-white/20">
+          <View className="h-full rounded-full bg-success" style={{ width: `${percent}%` }} />
+        </View>
       </View>
 
-      <View style={[styles.quickActions, localizedRow(locale)]}>
-        <Pressable style={styles.quickAction} onPress={() => router.push(`/lesson/anatomy?model=${product.slug}`)}>
-          <Ionicons name="scan-outline" size={21} color={theme.colors.brandPrimary} />
-          <Text style={[styles.quickText, localizedTextStyle(locale)]}>{locale === "fa" ? "آناتومی" : "Anatomy"}</Text>
+      <View className={cn("mt-4 flex-row", isFa && "flex-row-reverse")}>
+        <Pressable
+          className="flex-1 items-center py-3 rounded-control bg-secondary mr-1"
+          onPress={() => router.push(`/lesson/anatomy?model=${product.slug}`)}
+        >
+          <Scan size={21} color="#122C4F" />
+          <Text className="mt-1 text-[11px] text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {isFa ? "آناتومی" : "Anatomy"}
+          </Text>
         </Pressable>
-        <Pressable style={styles.quickAction} onPress={() => router.push(`/lesson/troubleshooting?model=${product.slug}`)}>
-          <Ionicons name="build-outline" size={21} color={theme.colors.brandPrimary} />
-          <Text style={[styles.quickText, localizedTextStyle(locale)]}>{locale === "fa" ? "عیب‌یابی" : "Troubleshoot"}</Text>
+        <Pressable
+          className="flex-1 items-center py-3 rounded-control bg-secondary mx-1"
+          onPress={() => router.push(`/lesson/troubleshooting?model=${product.slug}`)}
+        >
+          <Hammer size={21} color="#122C4F" />
+          <Text className="mt-1 text-[11px] text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {isFa ? "رفع خطا" : "Troubleshoot"}
+          </Text>
+        </Pressable>
+        <Pressable
+          className="flex-1 items-center py-3 rounded-control bg-secondary ml-1"
+          onPress={() => router.push(`/lesson/quiz?model=${product.slug}`)}
+        >
+          <CircleCheck size={21} color="#122C4F" />
+          <Text className="mt-1 text-[11px] text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {isFa ? "مرور" : "Review"}
+          </Text>
         </Pressable>
       </View>
 
-      <Text style={[styles.sectionTitle, localizedTextStyle(locale)]}>{locale === "fa" ? "مسیر یادگیری" : "Learning path"}</Text>
-      <View style={styles.lessonList}>
-        {product.lessons.map((lesson, index) => {
-          const done = completed.includes(lesson.id);
+      <View className="mt-6">
+        {product.lessons.map((item, index) => {
+          const done = completed.includes(item.id);
+          const LessonIcon = lessonIcons[item.slug] ?? BookOpen;
           return (
-            <Pressable style={[styles.lesson, localizedRow(locale), done && styles.lessonDone]} onPress={() => router.push(`/lesson/${lesson.slug}?model=${product.slug}`)} key={lesson.id}>
-              <View style={[styles.lessonIcon, done && styles.lessonIconDone]}><Ionicons name={done ? "checkmark" : lessonIcons[lesson.id] ?? "book-outline"} size={19} color={done ? "white" : theme.colors.brandPrimary} /></View>
-              <View style={styles.lessonCopy}>
-                <Text style={[styles.lessonTitle, localizedTextStyle(locale), done && styles.lessonTitleDone]}>{localize(lesson.title, locale)}</Text>
-                <Text style={[styles.lessonSummary, localizedTextStyle(locale)]} numberOfLines={2}>{localize(lesson.summary, locale)}</Text>
+            <Pressable
+              key={item.id}
+              onPress={() => router.push(`/lesson/${item.slug}?model=${product.slug}`)}
+              className={cn(
+                "flex-row items-center gap-3 py-3.5 border-b border-border",
+                isFa && "flex-row-reverse"
+              )}
+            >
+              <View className={cn("h-[42px] w-[42px] items-center justify-center rounded-[12px]", done ? "bg-success" : "bg-secondary")}>
+                <LessonIcon size={20} color={done ? "#FFFFFF" : "#122C4F"} />
               </View>
-              {lesson.safetyCritical ? <View style={styles.safetyDot} /> : null}
-              {done ? <Ionicons name="checkmark-circle" size={20} color={theme.colors.success} /> : <Text style={styles.index}>{String(index + 1).padStart(2, "0")}</Text>}
+              <View className="flex-1">
+                <Text className="text-[14px] font-bold text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+                  {localize(item.title, locale)}
+                </Text>
+                <Text className="mt-0.5 text-[10px] leading-4 text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+                  {localize(item.summary, locale)}
+                </Text>
+              </View>
+              {item.safetyCritical ? <View className="h-[7px] w-[7px] rounded-full bg-warning" /> : null}
+              <Text className="text-[9px] font-bold text-[#9BA6B2]">{String(index + 1).padStart(2, "0")}</Text>
+              <ChevronIcon size={16} color="#CCD5DE" />
             </Pressable>
           );
         })}
@@ -93,37 +141,3 @@ export default function AcademyScreen() {
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  hero: { overflow: "hidden", marginHorizontal: -18, paddingHorizontal: 20, paddingBottom: 25, backgroundColor: theme.colors.brandPrimary },
-  heroGrid: { flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between", gap: 12, minHeight: 300, paddingTop: 30 },
-  heroCopy: { flex: 1, minWidth: 0, zIndex: 1, paddingBottom: 4, paddingEnd: 4 },
-  eyebrow: { marginBottom: 14, color: "#D9A2AB", fontSize: 9, fontWeight: "700", letterSpacing: 1.3 },
-  heroTitle: { color: "white", fontSize: 39, lineHeight: 52, fontWeight: "800", fontFamily: "Vazirmatn_700Bold" },
-  heroSubtitle: { marginTop: 8, color: "rgba(255,255,255,.68)", fontSize: 12, lineHeight: 20 },
-  heroStage: { width: "46%", maxWidth: 232, alignItems: "flex-end", justifyContent: "flex-end" },
-  product: { width: "100%", height: 240 },
-  progressHead: { justifyContent: "space-between", marginBottom: 8 },
-  progressLabel: { color: "rgba(255,255,255,.72)", fontSize: 10 },
-  progressValue: { color: "white", fontSize: 11, fontWeight: "700" },
-  progressTrack: { height: 5, overflow: "hidden", borderRadius: 10, backgroundColor: "rgba(255,255,255,.18)" },
-  progressFill: { height: "100%", borderRadius: 10, backgroundColor: theme.colors.brandAccent },
-  quickActions: { gap: 10, marginTop: 16 },
-  quickAction: { flex: 1, minHeight: 70, alignItems: "center", justifyContent: "center", gap: 7, borderWidth: 1, borderColor: theme.colors.borderSubtle, borderRadius: theme.radii.control, backgroundColor: theme.colors.raised },
-  quickText: { color: theme.colors.brandPrimary, fontSize: 11, fontWeight: "700" },
-  sectionTitle: { marginTop: 34, marginBottom: 14, color: theme.colors.brandPrimary, fontSize: 25, fontWeight: "800" },
-  lessonList: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors.borderSubtle },
-  lesson: { alignItems: "center", gap: 11, minHeight: 88, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.colors.borderSubtle },
-  lessonDone: { backgroundColor: "#F7FBF8" },
-  lessonIcon: { width: 42, height: 42, alignItems: "center", justifyContent: "center", borderRadius: 12, backgroundColor: theme.colors.technical },
-  lessonIconDone: { backgroundColor: theme.colors.success },
-  lessonCopy: { flex: 1 },
-  lessonTitle: { color: theme.colors.brandPrimary, fontSize: 14, fontWeight: "700" },
-  lessonTitleDone: { color: theme.colors.success },
-  lessonSummary: { marginTop: 2, color: theme.colors.textSecondary, fontSize: 10, lineHeight: 16 },
-  safetyDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: theme.colors.warning },
-  index: { color: "#9BA6B2", fontSize: 9, fontWeight: "700" },
-  missing: { alignItems: "center", gap: 8, paddingTop: 96, paddingHorizontal: 28 },
-  missingTitle: { color: theme.colors.brandPrimary, fontSize: 17, fontWeight: "800", fontFamily: "Vazirmatn_700Bold" },
-  missingBody: { color: theme.colors.textSecondary, fontSize: 12, lineHeight: 20 }
-});

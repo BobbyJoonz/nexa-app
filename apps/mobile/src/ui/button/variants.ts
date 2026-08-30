@@ -1,22 +1,39 @@
-import { theme } from "@/theme";
-import type { ButtonVariant } from "./types";
+import { selectUI } from "../platform";
+import { normalizeVariant, type ButtonVariant, type ButtonSize } from "./types";
 
-/** Brand colors are shared across platforms; only shape/type/feedback diverge per OS. */
-export interface VariantChrome {
-  background: string;
-  content: string;
-  ripple: string;
+export interface VariantClasses {
+  container: string;  // bg, border, etc.
+  label: string;      // text color + weight family
+  ripple: string;     // hex/ARGB for Android foreground ripple
 }
 
-export function variantChrome(variant: ButtonVariant): VariantChrome {
-  switch (variant) {
-    case "filled":
-      return { background: theme.colors.brandPrimary, content: "#FFFFFF", ripple: "rgba(255,255,255,.24)" };
+export function variantClasses(variant: ButtonVariant): VariantClasses {
+  switch (normalizeVariant(variant)) {
+    case "default":
+      return { container: "bg-primary", label: "text-primary-foreground font-medium", ripple: "#FFFFFF3D" };
     case "secondary":
-      return { background: theme.colors.technical, content: theme.colors.brandPrimary, ripple: "rgba(13,34,62,.10)" };
+      return { container: "bg-secondary", label: "text-secondary-foreground font-medium", ripple: "#0D223E1A" };
+    case "outline":
+      return { container: "bg-transparent border border-input", label: "text-primary font-medium", ripple: "#0D223E14" };
     case "ghost":
-      return { background: "transparent", content: theme.colors.brandPrimary, ripple: "rgba(13,34,62,.08)" };
-    case "danger":
-      return { background: theme.colors.danger, content: "#FFFFFF", ripple: "rgba(255,255,255,.22)" };
+      return { container: "bg-transparent", label: "text-primary font-medium", ripple: "#0D223E14" };
+    case "destructive":
+      return { container: "bg-destructive", label: "text-white font-medium", ripple: "#FFFFFF38" };
+  }
+}
+
+/**
+ * Button size → literal NativeWind classes (must remain literal strings so the
+ * Tailwind JIT scanner picks them up). Platform touch-target divergence lives
+ * in selectUI: iOS 44pt+ / Android 48dp+.
+ */
+export function sizeClasses(size: ButtonSize): { container: string; label: string } {
+  switch (size) {
+    case "sm":
+      return { container: selectUI("min-h-10 px-3 py-1.5", "min-h-11 px-3.5 py-1.5"), label: "text-button" };
+    case "md":
+      return { container: selectUI("min-h-11 px-4 py-2", "min-h-12 px-5 py-2.5"), label: "text-button" };
+    case "lg":
+      return { container: "min-h-14 px-6 py-3", label: "text-button" };
   }
 }

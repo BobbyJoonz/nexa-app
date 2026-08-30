@@ -1,12 +1,12 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
 import { router } from "expo-router";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { ChevronLeft, ChevronRight, CircleX, Search } from "lucide-react-native";
+import { Text, TextInput, View } from "react-native";
 import { faultCodes, localize, productModels, settings } from "@nexa/product-content";
 import { Screen } from "@/components/screen";
 import { useAcademy } from "@/providers/academy-provider";
-import { localizedRow, localizedTextStyle, theme } from "@/theme";
-import { dirIconName } from "@/src/ui/direction";
+import { cn } from "@/src/ui/cn";
+import { dirIcon } from "@/src/ui/direction";
 import { PressableSurface } from "@/src/ui/pressable-surface";
 
 /**
@@ -33,17 +33,17 @@ function normalizeKey(value: string): string {
 
 export default function SearchScreen() {
   const { locale } = useAcademy();
-  const fa = locale === "fa";
+  const isFa = locale === "fa";
   const [query, setQuery] = useState("");
   const [expandedFault, setExpandedFault] = useState<string | null>(null);
   const product = productModels.find((model) => model.modelName.verificationStatus === "verified");
   const lessons = product?.lessons ?? [];
 
+  const ChevronIcon = dirIcon(locale, ChevronRight, ChevronLeft);
+
   const results = useMemo<Result[]>(() => {
     const raw = query.trim();
     if (!raw || !product) return [];
-    // Match against the normalized key for code/number hits; use the raw
-    // lower-cased query for plain text titles.
     const key = normalizeKey(raw);
     const text = raw.toLowerCase();
     const found: Result[] = [];
@@ -51,7 +51,7 @@ export default function SearchScreen() {
       const title = localize(lesson.title, locale);
       const summary = localize(lesson.summary, locale);
       if (title.toLowerCase().includes(text) || summary.toLowerCase().includes(text)) {
-        found.push({ kind: "lesson", id: `lesson-${lesson.id}`, title, extra: fa ? "درس" : "Lesson", slug: lesson.slug });
+        found.push({ kind: "lesson", id: `lesson-${lesson.id}`, title, extra: isFa ? "درس" : "Lesson", slug: lesson.slug });
       }
     }
     for (const program of settings) {
@@ -78,43 +78,53 @@ export default function SearchScreen() {
   };
 
   return (
-    <Screen back title={fa ? "جست‌وجوی همهٔ بخش‌ها" : "Global search"}>
-      <View style={styles.search}>
-        <Ionicons name="search" size={18} color={theme.colors.textSecondary} />
+    <Screen back title={isFa ? "جست‌وجوی همهٔ بخش‌ها" : "Global search"}>
+      <View className="mt-1.5 min-h-[50px] flex-row items-center gap-[9px] rounded-control border border-border bg-card px-3.5">
+        <Search size={18} color="#5C6878" />
         <TextInput
-          style={[styles.input, { writingDirection: fa ? "rtl" : "ltr" }]}
+          className="flex-1 text-[13px] text-foreground"
+          style={{ writingDirection: isFa ? "rtl" : "ltr" }}
           value={query}
           onChangeText={setQuery}
-          placeholder={fa ? "کد خطا، شماره برنامه یا عنوان…" : "Fault code, program number or title…"}
-          placeholderTextColor={theme.colors.borderSubtle}
+          placeholder={isFa ? "کد خطا، شماره برنامه یا عنوان…" : "Fault code, program number or title…"}
+          placeholderTextColor="#CCD5DE"
           autoCapitalize="none"
           autoCorrect={false}
         />
         {query.length > 0 ? (
-          <PressableSurface onPress={() => setQuery("")} accessibilityRole="button" accessibilityLabel="Clear" style={styles.clear}>
-            <Ionicons name="close-circle" size={17} color={theme.colors.textSecondary} />
+          <PressableSurface onPress={() => setQuery("")} accessibilityRole="button" accessibilityLabel="Clear" className="overflow-hidden rounded-full p-[3px]">
+            <CircleX size={17} color="#5C6878" />
           </PressableSurface>
         ) : null}
       </View>
 
-      <Text style={[styles.sectionLabel, localizedTextStyle(locale)]}>{fa ? "مرجع سریع کد خطا" : "Fault code quick reference"}</Text>
-      <View style={[styles.chips, localizedRow(locale)]}>
+      <Text className="mt-[22px] mb-2 text-[11px] font-bold text-accent" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+        {isFa ? "مرجع سریع کد خطا" : "Fault code quick reference"}
+      </Text>
+      <View className={cn("flex-row flex-wrap gap-2", isFa && "flex-row-reverse")}>
         {faultCodes.map((fault) => {
           const expanded = expandedFault === fault.code;
           return (
-            <View key={fault.code} style={styles.chipWrap}>
+            <View key={fault.code} className="max-w-full">
               <PressableSurface
                 onPress={() => setExpandedFault(expanded ? null : fault.code)}
                 accessibilityRole="button"
                 accessibilityLabel={fault.code}
-                style={[styles.chip, expanded && styles.chipActive]}
+                className={cn(
+                  "min-w-[52px] min-h-[38px] items-center justify-center overflow-hidden rounded-full border border-border bg-card px-2.5",
+                  expanded && "border-primary bg-primary"
+                )}
               >
-                <Text style={[styles.chipText, expanded && styles.chipTextActive]}>{fault.code}</Text>
+                <Text className={cn("text-[11px] font-bold text-primary", expanded && "text-white")}>{fault.code}</Text>
               </PressableSurface>
               {expanded ? (
-                <View style={styles.chipDetail}>
-                  <Text style={[styles.chipDetailTitle, localizedTextStyle(locale)]}>{localize(fault.title, locale)}</Text>
-                  <Text style={[styles.chipDetailBody, localizedTextStyle(locale)]}>{localize(fault.safeCheck, locale)}</Text>
+                <View className="mt-1.5 min-w-full rounded-control border border-border bg-card p-3">
+                  <Text className="text-[12px] font-bold text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+                    {localize(fault.title, locale)}
+                  </Text>
+                  <Text className="mt-[5px] text-[10px] leading-[17px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+                    {localize(fault.safeCheck, locale)}
+                  </Text>
                 </View>
               ) : null}
             </View>
@@ -123,22 +133,28 @@ export default function SearchScreen() {
       </View>
 
       {query.trim().length > 0 ? (
-        <View style={styles.results}>
-          <Text style={[styles.sectionLabel, localizedTextStyle(locale)]}>
-            {fa ? `نتایج (${results.length})` : `Results (${results.length})`}
+        <View className="mt-[22px]">
+          <Text className="mb-2 text-[11px] font-bold text-accent" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {isFa ? `نتایج (${results.length})` : `Results (${results.length})`}
           </Text>
           {results.length === 0 ? (
-            <Text style={[styles.empty, localizedTextStyle(locale)]}>{fa ? "چیزی پیدا نشد — املای فارسی یا شماره را چک کنید." : "Nothing found — check Persian spelling or the number."}</Text>
+            <Text className="mt-2 text-[12px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+              {isFa ? "چیزی پیدا نشد — املای فارسی یا شماره را چک کنید." : "Nothing found — check Persian spelling or the number."}
+            </Text>
           ) : results.map((result) => (
             <PressableSurface
               key={result.id}
               onPress={() => open(result)}
               accessibilityRole="button"
-              style={styles.resultRow}
+              className="mt-2 min-h-[50px] flex-row items-center gap-2.5 overflow-hidden rounded-control border border-border bg-card px-3"
             >
-              <View style={styles.resultTag}><Text style={styles.resultTagText}>{result.extra}</Text></View>
-              <Text style={[styles.resultTitle, localizedTextStyle(locale)]} numberOfLines={1}>{result.title}</Text>
-              <Ionicons name={dirIconName(locale, "chevron-forward", "chevron-back")} size={16} color={theme.colors.borderSubtle} />
+              <View className="min-w-[44px] flex-row items-center justify-center rounded-[6px] bg-secondary px-1.5 py-1">
+                <Text className="text-[9px] font-bold text-primary">{result.extra}</Text>
+              </View>
+              <Text className="flex-1 text-[12px] font-semibold text-foreground" numberOfLines={1} style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+                {result.title}
+              </Text>
+              <ChevronIcon size={16} color="#CCD5DE" />
             </PressableSurface>
           ))}
         </View>
@@ -146,25 +162,3 @@ export default function SearchScreen() {
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  search: { alignItems: "center", gap: 9, minHeight: 50, paddingHorizontal: 14, marginTop: 6, borderWidth: 1, borderColor: theme.colors.borderSubtle, borderRadius: theme.radii.control, backgroundColor: theme.colors.raised },
-  input: { flex: 1, color: theme.colors.textPrimary, fontSize: 13 },
-  clear: { overflow: "hidden", padding: 3, borderRadius: 99 },
-  sectionLabel: { marginTop: 22, marginBottom: 8, color: theme.colors.brandAccent, fontSize: 11, fontWeight: "800" },
-  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  chipWrap: { maxWidth: "100%" },
-  chip: { overflow: "hidden", minWidth: 52, minHeight: 38, alignItems: "center", justifyContent: "center", paddingHorizontal: 10, borderRadius: 99, borderWidth: 1, borderColor: theme.colors.borderSubtle, backgroundColor: theme.colors.raised },
-  chipActive: { borderColor: theme.colors.brandPrimary, backgroundColor: theme.colors.brandPrimary },
-  chipText: { color: theme.colors.brandPrimary, fontSize: 11, fontWeight: "800" },
-  chipTextActive: { color: "white" },
-  chipDetail: { minWidth: "100%", marginTop: 6, padding: 12, borderRadius: theme.radii.control, borderWidth: 1, borderColor: theme.colors.borderSubtle, backgroundColor: theme.colors.raised },
-  chipDetailTitle: { color: theme.colors.brandPrimary, fontSize: 12, fontWeight: "700" },
-  chipDetailBody: { marginTop: 5, color: theme.colors.textSecondary, fontSize: 10, lineHeight: 17 },
-  results: { marginTop: 22 },
-  empty: { color: theme.colors.textSecondary, fontSize: 12, marginTop: 8 },
-  resultRow: { overflow: "hidden", alignItems: "center", gap: 10, minHeight: 50, marginTop: 8, paddingHorizontal: 12, borderWidth: 1, borderColor: theme.colors.borderSubtle, borderRadius: theme.radii.control, backgroundColor: theme.colors.raised },
-  resultTag: { flexDirection: "row", alignItems: "center", justifyContent: "center", minWidth: 44, paddingHorizontal: 6, paddingVertical: 4, borderRadius: 6, backgroundColor: theme.colors.technical },
-  resultTagText: { color: theme.colors.brandPrimary, fontSize: 9, fontWeight: "800" },
-  resultTitle: { flex: 1, color: theme.colors.textPrimary, fontSize: 12, fontWeight: "600" }
-});

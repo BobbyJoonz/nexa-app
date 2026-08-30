@@ -1,47 +1,32 @@
 import type { ReactNode } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { useAcademy } from "@/providers/academy-provider";
+import { Text, View } from "react-native";
+import { cn } from "../cn";
+import { Row } from "../row";
 
 /**
  * Shared label + icon-slot layout for every Button implementation.
- * Slot order mirrors automatically under fa (row-reverse), so callers pass
+ * Slot order mirrors automatically under fa (via Row), so callers pass
  * leading/trailing logically and never think about RTL.
+ * Label styling is driven by the variant/size class strings from the caller.
  */
 export function ButtonContent({
   label,
-  contentColor,
-  fontWeight,
-  fontSize,
+  labelClass,
   leading,
   trailing
 }: {
   label: string;
-  contentColor: string;
-  fontWeight: "600" | "500" | "700";
-  fontSize: number;
+  labelClass: string;
   leading?: ReactNode;
   trailing?: ReactNode;
 }) {
-  const { locale } = useAcademy();
   return (
-    <View style={[styles.row, locale === "fa" ? styles.rtl : null]}>
-      {leading ? <View style={styles.slot}>{leading}</View> : null}
-      <Text numberOfLines={1} style={{ color: contentColor, fontWeight, fontSize, flexShrink: 1 }}>
+    <Row className="w-full gap-2">
+      {leading ? <View className="items-center justify-center">{leading}</View> : null}
+      <Text className={cn("flex-shrink", labelClass)} numberOfLines={1}>
         {label}
       </Text>
-      {trailing ? <View style={styles.slot}>{trailing}</View> : null}
-    </View>
+      {trailing ? <View className="items-center justify-center">{trailing}</View> : null}
+    </Row>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    width: "100%"
-  },
-  rtl: { flexDirection: "row-reverse" },
-  slot: { alignItems: "center", justifyContent: "center" }
-});

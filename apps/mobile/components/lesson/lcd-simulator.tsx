@@ -1,8 +1,7 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { localize, settings } from "@nexa/product-content";
-import { localizedRow, theme } from "@/theme";
+import { cn } from "@/src/ui/cn";
 import { PressableSurface } from "@/src/ui/pressable-surface";
 
 /**
@@ -51,7 +50,7 @@ const categoryLabel = (category: string, fa: boolean) => {
 };
 
 export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
-  const fa = locale === "fa";
+  const isFa = locale === "fa";
   const [mode, setMode] = useState<Mode>("home");
   const [index, setIndex] = useState(0);
   const [editIndex, setEditIndex] = useState(0);
@@ -63,8 +62,6 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
   if (!program) return null;
   const optionIndex = values[program.number] ?? 0;
   const hasDiscreteOptions = program.options.length > 1;
-  // A range-type program (e.g. 02 "10-100 A") is adjusted in steps on the
-  // device itself; its defaultValue is the honest current value to show.
   const currentValue = hasDiscreteOptions
     ? program.options[optionIndex] ?? program.defaultValue
     : program.defaultValue ?? program.options[0] ?? null;
@@ -78,19 +75,9 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
     if (mode === "edit") setEditIndex((i) => (i - 1 + program.options.length) % program.options.length);
   };
   const enter = () => {
-    if (mode === "home") {
-      setMode("browse");
-      return;
-    }
-    if (mode === "browse") {
-      setEditIndex(values[program.number] ?? 0);
-      setMode("edit");
-      return;
-    }
-    if (mode === "edit") {
-      setValues((current) => ({ ...current, [program.number]: editIndex }));
-      setMode("browse");
-    }
+    if (mode === "home") { setMode("browse"); return; }
+    if (mode === "browse") { setEditIndex(values[program.number] ?? 0); setMode("edit"); return; }
+    if (mode === "edit") { setValues((current) => ({ ...current, [program.number]: editIndex })); setMode("browse"); }
   };
   const esc = () => {
     if (mode === "edit") setMode("browse");
@@ -98,90 +85,96 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
   };
 
   return (
-    <View style={styles.wrap}>
+    <View className="gap-3 mt-2">
       {/* device frame — the teaching simulator uses the same key layout as the unit */}
-      <View style={styles.device}>
-        <View style={styles.screen}>
+      <View className="overflow-hidden rounded-panel bg-[#E4E6E8] p-[22px] shadow-card">
+        <View className="min-h-[230px] rounded-[8px] border-[8px] border-[#28323A] bg-[#B9D6A8] p-[18px]">
           {mode === "home" ? (
-            <View style={styles.homeGrid}>
+            <View className="flex-row flex-wrap content-center gap-2.5">
               {HOME_TILES.map(([value, unit]) => (
-                <View style={styles.homeTile} key={unit}>
-                  <Text style={styles.homeValue}>{value}</Text>
-                  <Text style={styles.homeUnit}>{unit}</Text>
+                <View key={unit} className="w-[47%] items-center justify-center py-2.5">
+                  <Text className="text-[40px] font-bold text-[#13231D]">{value}</Text>
+                  <Text className="text-[11px] font-bold text-[#13231D]">{unit}</Text>
                 </View>
               ))}
             </View>
           ) : null}
 
           {mode === "browse" ? (
-            <View style={styles.menu}>
-              <Text style={styles.programCode}>P{program.number}</Text>
-              <Text style={[styles.programLabel, fa ? styles.rtl : null]} numberOfLines={2}>{localize(program.label, locale)}</Text>
-              <View style={styles.valueLine}>
-                <Text style={[styles.programValue, fa ? styles.rtl : null]} numberOfLines={1}>{currentValue ? localize(currentValue, locale) : "—"}</Text>
+            <View className="gap-2.5">
+              <Text className="text-[13px] font-bold tracking-[1px] text-[#13231D]">P{program.number}</Text>
+              <Text className="min-h-[44px] text-[17px] font-bold text-[#13231D]" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }} numberOfLines={2}>
+                {localize(program.label, locale)}
+              </Text>
+              <View className="mt-1 pt-2 border-t border-[#13231D]/50">
+                <Text className="text-[15px] font-semibold text-[#13231D]" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }} numberOfLines={1}>
+                  {currentValue ? localize(currentValue, locale) : "—"}
+                </Text>
               </View>
             </View>
           ) : null}
 
           {mode === "edit" ? (
-            <View style={styles.menu}>
-              <Text style={styles.programCode}>SET P{program.number}</Text>
+            <View className="gap-2.5">
+              <Text className="text-[13px] font-bold tracking-[1px] text-[#13231D]">SET P{program.number}</Text>
               {hasDiscreteOptions ? (
-                <View style={styles.options}>
+                <View className="gap-1 mt-0.5">
                   {program.options.map((option, i) => (
-                    <View style={[styles.optionLine, i === editIndex && styles.optionActive]} key={`${program.number}-${i}`}>
-                      <Text style={[styles.optionText, i === editIndex && styles.optionTextActive, fa ? styles.rtl : null]} numberOfLines={1}>
-                        {`${i === editIndex ? (fa ? "❮ " : "▸ ") : ""}${localize(option, locale)}`}
+                    <View key={`${program.number}-${i}`} className={cn("py-[5px] px-2 rounded-[4px]", i === editIndex && "bg-[#13231D]")}>
+                      <Text className={cn("text-[12px] font-semibold text-[#13231D]", i === editIndex && "text-[#B9D6A8]")} style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }} numberOfLines={1}>
+                        {`${i === editIndex ? (isFa ? "❮ " : "▸ ") : ""}${localize(option, locale)}`}
                       </Text>
                     </View>
                   ))}
                 </View>
               ) : (
-                <View style={styles.rangePanel}>
-                  <Text style={[styles.rangeText, fa ? styles.rtl : null]} numberOfLines={2}>
+                <View className="mt-1.5 p-3 rounded-[6px] border border-[#13231D]/28 bg-[#13231D]/6">
+                  <Text className="text-[15px] font-bold text-[#13231D]" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }} numberOfLines={2}>
                     {program.options[0] ? localize(program.options[0], locale) : "—"}
                   </Text>
-                  <Text style={[styles.rangeNote, fa ? styles.rtl : null]}>
-                    {fa ? "روی دستگاه با گام تنظیم می‌شود؛ اینجا فقط مرجع است." : "Adjusted in steps on the device; shown here for reference only."}
+                  <Text className="mt-1.5 text-[10px] leading-[15px] text-[#13231D]/66" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+                    {isFa ? "روی دستگاه با گام تنظیم می‌شود؛ اینجا فقط مرجع است." : "Adjusted in steps on the device; shown here for reference only."}
                   </Text>
                 </View>
               )}
             </View>
           ) : null}
 
-          <Text style={styles.modeHint}>
-            {mode === "home" ? (fa ? "ESC/▲/▼/ENTER — منو" : "ESC/▲/▼/ENTER — menu")
-              : mode === "browse" ? (fa ? "▲▼: جابه‌جایی · ENTER: ویرایش · ESC: خروج" : "▲▼ browse · ENTER edit · ESC back")
-              : (fa ? "▲▼: انتخاب · ENTER: ثبت · ESC: انصراف" : "▲▼ choose · ENTER save · ESC cancel")}
+          <Text className="mt-2.5 text-[10px] text-[#13231D]/72">
+            {mode === "home" ? (isFa ? "ESC/▲/▼/ENTER — منو" : "ESC/▲/▼/ENTER — menu")
+              : mode === "browse" ? (isFa ? "▲▼: جابه‌جایی · ENTER: ویرایش · ESC: خروج" : "▲▼ browse · ENTER edit · ESC back")
+              : (isFa ? "▲▼: انتخاب · ENTER: ثبت · ESC: انصراف" : "▲▼ choose · ENTER save · ESC cancel")}
           </Text>
         </View>
 
-        <View style={styles.keys}>
+        <View className="flex-row gap-[7px] mt-4">
           {(["ESC", "▲", "▼", "ENTER"] as const).map((key) => (
             <Pressable
               key={key}
-              style={styles.key}
+              className="flex-1 min-h-[42px] items-center justify-center rounded-[6px] bg-[#273743]"
               onPress={key === "ESC" ? esc : key === "▲" ? up : key === "▼" ? down : enter}
               accessibilityRole="button"
               accessibilityLabel={key}
             >
-              <Text style={styles.keyText}>{key}</Text>
+              <Text className="text-[9px] font-bold text-white">{key}</Text>
             </Pressable>
           ))}
         </View>
       </View>
 
       {/* Teaching panel — the manual's own line for the program under the cursor. */}
-      <View style={styles.teach}>
-        <View style={[styles.teachHead, localizedRow(locale)]}>
-          <Text style={styles.teachCode}>
-            P{program.number} · {program.basic ? (fa ? "پایه" : "Basic") : (fa ? "پیش‌رفته" : "Advanced")}
+      <View className="rounded-panel border border-border bg-card p-3.5">
+        <View className={cn("flex-row items-center justify-between gap-2", isFa && "flex-row-reverse")}>
+          <Text className="text-[10px] font-bold tracking-[0.6px] text-accent">
+            P{program.number} · {program.basic ? (isFa ? "پایه" : "Basic") : (isFa ? "پیش‌رفته" : "Advanced")}
           </Text>
-          <View style={styles.teachCategoryTag}>
-            <Text style={styles.teachCategoryText}>{categoryLabel(program.category, fa)}</Text>
+          <View className="overflow-hidden rounded-full bg-secondary px-2 py-[3px]">
+            <Text className="text-[9px] font-bold text-primary">{categoryLabel(program.category, isFa)}</Text>
           </View>
         </View>
-        <Text style={[styles.teachSummary, fa ? styles.rtl : null]}>{localize(program.summary, locale)}</Text>
+        <Text className="mt-[9px] text-[12px] leading-5 text-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+          {localize(program.summary, locale)}
+        </Text>
       </View>
 
       <PressableSurface
@@ -190,54 +183,16 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
           setMode("home");
         }}
         accessibilityRole="button"
-        style={styles.reset}
+        className="flex-row items-center justify-center gap-[7px] min-h-[40px] overflow-hidden rounded-pill border border-border bg-card"
       >
-        <Ionicons name="refresh-outline" size={14} color={theme.colors.brandPrimary} />
-        <Text style={styles.resetText}>{fa ? "بازنشانی به پیش‌فرض" : "Reset to defaults"}</Text>
+        <Text className="text-[11px] font-bold text-primary">{isFa ? "بازنشانی به پیش‌فرض" : "Reset to defaults"}</Text>
       </PressableSurface>
 
-      <Text style={[styles.note, { writingDirection: fa ? "rtl" : "ltr" }]}>
-        {fa
+      <Text className="text-[9px] text-center leading-[15px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr" }}>
+        {isFa
           ? "شبیه‌ساز آموزشی، بدون اتصال به سخت‌افزار — چیدمان منوی همان تنظیمات دستگاه."
           : "Teaching simulator, not connected to hardware — the same device settings menu layout."}
       </Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  wrap: { gap: 12, marginTop: 8 },
-  device: { overflow: "hidden", padding: 22, borderRadius: theme.radii.panel, backgroundColor: "#E4E6E8", ...theme.shadow },
-  screen: { minHeight: 230, padding: 18, borderWidth: 8, borderColor: "#28323A", borderRadius: 8, backgroundColor: "#B9D6A8" },
-  homeGrid: { flexDirection: "row", flexWrap: "wrap", alignContent: "center", gap: 10 },
-  homeTile: { width: "47%", alignItems: "center", justifyContent: "center", paddingVertical: 10 },
-  homeValue: { color: "#13231D", fontSize: 40, fontWeight: "700" },
-  homeUnit: { color: "#13231D", fontSize: 11, fontWeight: "700" },
-  menu: { gap: 10 },
-  programCode: { color: "#13231D", fontSize: 13, fontWeight: "800", letterSpacing: 1 },
-  programLabel: { color: "#13231D", fontSize: 17, fontWeight: "700", minHeight: 44 },
-  rtl: { textAlign: "right", writingDirection: "rtl" },
-  valueLine: { marginTop: 4, paddingTop: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(19,35,29,.5)" },
-  programValue: { color: "#13231D", fontSize: 15, fontWeight: "600" },
-  options: { gap: 4, marginTop: 2 },
-  optionLine: { paddingVertical: 5, paddingHorizontal: 8, borderRadius: 4 },
-  optionActive: { backgroundColor: "#13231D" },
-  optionText: { color: "#13231D", fontSize: 12, fontWeight: "600" },
-  optionTextActive: { color: "#B9D6A8" },
-  rangePanel: { marginTop: 6, padding: 12, borderWidth: 1, borderColor: "rgba(19,35,29,.28)", borderRadius: 6, backgroundColor: "rgba(19,35,29,.06)" },
-  rangeText: { color: "#13231D", fontSize: 15, fontWeight: "700" },
-  rangeNote: { marginTop: 6, color: "rgba(19,35,29,.66)", fontSize: 10, lineHeight: 15 },
-  modeHint: { marginTop: 10, color: "rgba(19,35,29,.72)", fontSize: 10 },
-  keys: { flexDirection: "row", gap: 7, marginTop: 16 },
-  key: { flex: 1, minHeight: 42, alignItems: "center", justifyContent: "center", borderRadius: 6, backgroundColor: "#273743" },
-  keyText: { color: "white", fontSize: 9, fontWeight: "700" },
-  teach: { padding: 14, borderWidth: 1, borderColor: theme.colors.borderSubtle, borderRadius: theme.radii.panel, backgroundColor: theme.colors.raised },
-  teachHead: { alignItems: "center", justifyContent: "space-between", gap: 8 },
-  teachCode: { color: theme.colors.brandAccent, fontSize: 10, fontWeight: "800", letterSpacing: 0.6 },
-  teachCategoryTag: { overflow: "hidden", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 100, backgroundColor: theme.colors.technical },
-  teachCategoryText: { color: theme.colors.brandPrimary, fontSize: 9, fontWeight: "700" },
-  teachSummary: { marginTop: 9, color: theme.colors.textPrimary, fontSize: 12, lineHeight: 20 },
-  reset: { overflow: "hidden", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 7, minHeight: 40, borderRadius: theme.radii.pill, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.borderSubtle, backgroundColor: theme.colors.raised },
-  resetText: { color: theme.colors.brandPrimary, fontSize: 11, fontWeight: "700" },
-  note: { color: theme.colors.textSecondary, fontSize: 9, textAlign: "center", lineHeight: 15 }
-});

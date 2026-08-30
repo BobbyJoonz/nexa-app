@@ -1,3 +1,4 @@
+import "../global.css";
 import {
   Vazirmatn_400Regular,
   Vazirmatn_500Medium,
@@ -9,12 +10,11 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef, useState } from "react";
 import { Image } from "expo-image";
-import { BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
+import { BackHandler, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "@nexa/i18n";
 import { NexaLoader } from "@/components/nexa-loader";
 import { AcademyProvider, useAcademy } from "@/providers/academy-provider";
-import { theme } from "@/theme";
 import { captureException, initTelemetry } from "@/src/lib/telemetry";
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
@@ -56,14 +56,16 @@ function AppBootstrap() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: theme.colors.canvas },
+          contentStyle: { backgroundColor: "#F4F6F8" },
           animation: "slide_from_right"
         }}
       />
       {showExitHint ? (
-        <View pointerEvents="none" style={exitHintStyles.wrap}>
-          <View style={exitHintStyles.pill}>
-            <Text style={exitHintStyles.text}>{t(locale, "common.exitHint")}</Text>
+        <View pointerEvents="none" className="absolute inset-x-0 bottom-16 z-[999] items-center">
+          <View className="rounded-pill px-[18px] py-[11px] bg-[rgba(13,34,62,0.92)] shadow-card">
+            <Text className="font-medium text-[13px] text-white" style={{ writingDirection: "rtl" }}>
+              {t(locale, "common.exitHint")}
+            </Text>
           </View>
         </View>
       ) : null}
@@ -106,45 +108,29 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   // behavior shipped today (localized boundary remains a backlog item).
   const locale = "fa" as const;
   return (
-    <SafeAreaView style={errorStyles.safe}>
-      <View style={errorStyles.card}>
-        <Image source={require("../assets/nexa-logo.png")} style={errorStyles.logo} contentFit="contain" />
-        <View style={errorStyles.rule} />
-        <Text style={errorStyles.title}>{t(locale, "error.title")}</Text>
-        <Text style={errorStyles.body}>{t(locale, "error.body")}</Text>
-        {__DEV__ ? <Text selectable style={errorStyles.debug}>{error.message}</Text> : null}
-        <Pressable style={errorStyles.button} onPress={retry} accessibilityRole="button">
-          <Text style={errorStyles.buttonText}>{t(locale, "error.retry")}</Text>
+    <SafeAreaView className="flex-1 items-center justify-center bg-background p-5">
+      <View className="w-full max-w-[430px] items-center rounded-panel border border-border bg-card p-7 shadow-card">
+        <Image source={require("../assets/nexa-logo.png")} style={{ width: 156, height: 58 }} contentFit="contain" />
+        <View className="my-6 h-[3px] w-[34px] rounded-full bg-accent" />
+        <Text className="text-center text-[22px] font-bold text-primary" style={{ writingDirection: "rtl" }}>
+          {t(locale, "error.title")}
+        </Text>
+        <Text className="mt-3 text-center font-medium text-[13px] leading-[23px] text-muted-foreground" style={{ writingDirection: "rtl" }}>
+          {t(locale, "error.body")}
+        </Text>
+        {__DEV__ ? (
+          <Text selectable className="mt-4 w-full rounded-lg bg-[#FFF1F0] p-2.5 text-[10px] text-destructive">
+            {error.message}
+          </Text>
+        ) : null}
+        <Pressable
+          className="mt-6 h-[50px] w-full items-center justify-center rounded-control bg-primary"
+          onPress={retry}
+          accessibilityRole="button"
+        >
+          <Text className="font-medium text-[14px] text-white">{t(locale, "error.retry")}</Text>
         </Pressable>
       </View>
     </SafeAreaView>
   );
 }
-
-const errorStyles = StyleSheet.create({
-  safe: { flex: 1, alignItems: "center", justifyContent: "center", padding: 22, backgroundColor: theme.colors.canvas },
-  card: {
-    width: "100%",
-    maxWidth: 430,
-    alignItems: "center",
-    padding: 28,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.colors.borderSubtle,
-    borderRadius: theme.radii.panel,
-    backgroundColor: theme.colors.raised,
-    ...theme.shadow
-  },
-  logo: { width: 156, height: 58 },
-  rule: { width: 34, height: 3, marginVertical: 24, borderRadius: 99, backgroundColor: theme.colors.brandAccent },
-  title: { color: theme.colors.brandPrimary, fontFamily: "Vazirmatn_700Bold", fontSize: 22, textAlign: "center", writingDirection: "rtl" },
-  body: { marginTop: 12, color: theme.colors.textSecondary, fontFamily: "Vazirmatn_400Regular", fontSize: 13, lineHeight: 23, textAlign: "center", writingDirection: "rtl" },
-  debug: { width: "100%", marginTop: 16, padding: 10, color: theme.colors.danger, borderRadius: 8, backgroundColor: "#FFF1F0", fontSize: 10 },
-  button: { width: "100%", minHeight: 50, alignItems: "center", justifyContent: "center", marginTop: 24, borderRadius: theme.radii.control, backgroundColor: theme.colors.brandPrimary },
-  buttonText: { color: "white", fontFamily: "Vazirmatn_500Medium", fontSize: 14 }
-});
-
-const exitHintStyles = StyleSheet.create({
-  wrap: { position: "absolute", left: 0, right: 0, bottom: 64, alignItems: "center", zIndex: 999 },
-  pill: { paddingHorizontal: 18, paddingVertical: 11, borderRadius: 999, backgroundColor: "rgba(13,34,62,.92)", ...theme.shadow },
-  text: { color: "#FFFFFF", fontFamily: "Vazirmatn_500Medium", fontSize: 13, writingDirection: "rtl" }
-});
