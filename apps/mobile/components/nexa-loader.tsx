@@ -37,7 +37,7 @@ export function NexaLoader() {
 
     Animated.timing(progress, {
       toValue: 1,
-      duration: 1150,
+      duration: 4500,
       easing: Easing.bezier(0.16, 1, 0.3, 1),
       useNativeDriver: false
     }).start();

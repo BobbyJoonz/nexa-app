@@ -4,12 +4,13 @@ import {
   Vazirmatn_700Bold,
   useFonts
 } from "@expo-google-fonts/vazirmatn";
-import { Stack, type ErrorBoundaryProps } from "expo-router";
+import { Stack, router, type ErrorBoundaryProps } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Image } from "expo-image";
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "@nexa/i18n";
 import { NexaLoader } from "@/components/nexa-loader";
 import { AcademyProvider, useAcademy } from "@/providers/academy-provider";
@@ -19,12 +20,32 @@ import { captureException, initTelemetry } from "@/src/lib/telemetry";
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 function AppBootstrap() {
-  const { ready } = useAcademy();
+  const { ready, locale } = useAcademy();
   const [minimumElapsed, setMinimumElapsed] = useState(false);
+  const [showExitHint, setShowExitHint] = useState(false);
+  const lastBackAt = useRef(0);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setMinimumElapsed(true), 700);
+    const timeout = setTimeout(() => setMinimumElapsed(true), 5000);
     return () => clearTimeout(timeout);
+  }, []);
+
+  // Android hardware back: one press navigates one step back; at the root
+  // screen a second press (within 2s) exits the app.
+  useEffect(() => {
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (router.canGoBack()) return false; // let the native stack pop one screen
+      const now = Date.now();
+      if (now - lastBackAt.current < 2000) {
+        BackHandler.exitApp();
+        return true;
+      }
+      lastBackAt.current = now;
+      setShowExitHint(true);
+      setTimeout(() => setShowExitHint(false), 2000);
+      return true;
+    });
+    return () => sub.remove();
   }, []);
 
   if (!ready || !minimumElapsed) return <NexaLoader />;
@@ -39,6 +60,13 @@ function AppBootstrap() {
           animation: "slide_from_right"
         }}
       />
+      {showExitHint ? (
+        <View pointerEvents="none" style={exitHintStyles.wrap}>
+          <View style={exitHintStyles.pill}>
+            <Text style={exitHintStyles.text}>{t(locale, "common.exitHint")}</Text>
+          </View>
+        </View>
+      ) : null}
     </>
   );
 }
@@ -113,4 +141,10 @@ const errorStyles = StyleSheet.create({
   debug: { width: "100%", marginTop: 16, padding: 10, color: theme.colors.danger, borderRadius: 8, backgroundColor: "#FFF1F0", fontSize: 10 },
   button: { width: "100%", minHeight: 50, alignItems: "center", justifyContent: "center", marginTop: 24, borderRadius: theme.radii.control, backgroundColor: theme.colors.brandPrimary },
   buttonText: { color: "white", fontFamily: "Vazirmatn_500Medium", fontSize: 14 }
+});
+
+const exitHintStyles = StyleSheet.create({
+  wrap: { position: "absolute", left: 0, right: 0, bottom: 64, alignItems: "center", zIndex: 999 },
+  pill: { paddingHorizontal: 18, paddingVertical: 11, borderRadius: 999, backgroundColor: "rgba(13,34,62,.92)", ...theme.shadow },
+  text: { color: "#FFFFFF", fontFamily: "Vazirmatn_500Medium", fontSize: 13, writingDirection: "rtl" }
 });
