@@ -1,74 +1,79 @@
-import { StyleSheet } from "react-native";
+import { ActivityIndicator } from "react-native";
+import { cn } from "../cn";
 import { haptics } from "../haptics";
-import { selectUI, ui } from "../platform";
+import { selectUI } from "../platform";
 import { PressableSurface } from "../pressable-surface";
 import { ButtonContent } from "./button-content";
-import { variantChrome } from "./variants";
+import { sizeClasses, variantClasses } from "./variants";
 import type { ButtonProps } from "./types";
 
 /**
- * NEUTRAL DEFAULT implementation.
- * Metro resolves Button.ios.tsx / Button.android.tsx ahead of this file at
- * bundle time; TypeScript and vitest always see this one. Metrics follow the
- * active platform via selectUI so a resolution miss still renders correctly.
+ * Unified Button (single implementation across platforms).
+ *
+ * Visual contract (shadcn-inspired, brand-mapped):
+ *   default · secondary · outline · ghost · destructive  ×  sm · md · lg
+ * Touch-target metrics follow each platform's guidance via selectUI
+ * (iOS 44pt+ / 12pt radius · Android 48dp+ / stadium pill).
+ * All styling is NativeWind; platform divergence is confined to selectUI.
  */
 export function Button({
   label,
   onPress,
-  variant = "filled",
+  variant = "default",
+  size = "md",
   block,
   leading,
   trailing,
   contentColor,
-  disabled,
+  loading = false,
+  disabled = false,
   hapticFeedback = true,
   accessibilityLabel,
   style
 }: ButtonProps) {
-  const chrome = variantChrome(variant);
+  const chrome = variantClasses(variant);
+  const sizing = sizeClasses(size);
+  const pressed = disabled || loading;
+
   return (
     <PressableSurface
       onPress={() => {
         if (hapticFeedback) haptics.tap();
         onPress();
       }}
-      disabled={disabled}
+      disabled={pressed}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
-      accessibilityState={{ disabled: Boolean(disabled) }}
+      accessibilityState={{ disabled: pressed, busy: loading }}
       rippleColor={chrome.ripple}
       style={[
-        styles.base,
         {
-          backgroundColor: chrome.background,
-          minHeight: ui.buttonHeight,
-          borderRadius: ui.buttonRadius,
+          borderRadius: selectUI(12, 999),
           overflow: "hidden"
         },
-        variant === "ghost" && styles.ghostOutline,
-        block && styles.block,
-        disabled && styles.disabled,
         style
       ]}
+      className={cn(
+        "flex-row items-center justify-center",
+        chrome.container,
+        sizing.container,
+        block && "w-full",
+        pressed && "opacity-45"
+      )}
     >
-      <ButtonContent
-        label={label}
-        contentColor={contentColor ?? chrome.content}
-        fontWeight={ui.labelWeight}
-        fontSize={selectUI(15, 14)}
-        leading={leading}
-        trailing={trailing}
-      />
+      {loading ? (
+        <ActivityIndicator
+          size="small"
+          color={contentColor ?? (variant === "default" || variant === "destructive" ? "#FFFFFF" : undefined)}
+        />
+      ) : (
+        <ButtonContent
+          label={label}
+          labelClass={cn(sizing.label, contentColor ? undefined : chrome.label, "text-center")}
+          leading={leading}
+          trailing={trailing}
+        />
+      )}
     </PressableSurface>
   );
 }
-
-const styles = StyleSheet.create({
-  base: { alignItems: "center", paddingHorizontal: 22, paddingVertical: 10 },
-  ghostOutline: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#CCD5DE"
-  },
-  block: { width: "100%" },
-  disabled: { opacity: 0.45 }
-});
