@@ -1,29 +1,27 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { CircleCheck, CircleAlert, TriangleAlert, Wrench, ShieldCheck, ChevronLeft, ChevronRight, ArrowLeft, ArrowRight, GitBranch, Ellipsis } from "lucide-react-native";
+import { Text, View } from "react-native";
 import { localize, troubleshootTree, type TroubleshootDiagnosis, type TroubleshootQuestion } from "@nexa/product-content";
-import { localizedRow, localizedTextStyle, theme } from "@/theme";
+import { cn } from "@/src/ui/cn";
 import { Button } from "@/src/ui/button/Button";
 import { haptics } from "@/src/ui/haptics";
-import { dirIconName } from "@/src/ui/direction";
+import { dirIcon } from "@/src/ui/direction";
 import { PressableSurface } from "@/src/ui/pressable-surface";
 
 const severityMeta = {
-  safe: { color: theme.colors.success, en: "Safe user check", fa: "بررسی ایمن کاربر" },
-  caution: { color: theme.colors.caution, en: "Installer check required", fa: "نیازمند بررسی نصاب" },
-  danger: { color: theme.colors.danger, en: "Stop — hazard", fa: "توقف — خطر" }
+  safe: { color: "#2F6F55", en: "Safe user check", fa: "بررسی ایمن کاربر" },
+  caution: { color: "#B54708", en: "Installer check required", fa: "نیازمند بررسی نصاب" },
+  danger: { color: "#B42318", en: "Stop — hazard", fa: "توقف — خطر" }
 } as const;
 
 export function TroubleshootingFlow({ locale }: { locale: "fa" | "en" }) {
+  const isFa = locale === "fa";
   const [path, setPath] = useState<string[]>([troubleshootTree.start]);
   const nodeId = path[path.length - 1] ?? troubleshootTree.start;
-  // Defensive: if the tree data ever breaks, fall back to the root question
-  // instead of rendering a blank screen under the header.
   const node = troubleshootTree.nodes[nodeId] ?? troubleshootTree.nodes[troubleshootTree.start];
 
   const go = (next: string) => {
     haptics.tap();
-    // Defensive: a stale/future data error must never dead-end the flow.
     if (!troubleshootTree.nodes[next]) return;
     setPath((prev) => [...prev, next]);
   };
@@ -36,46 +34,65 @@ export function TroubleshootingFlow({ locale }: { locale: "fa" | "en" }) {
     setPath([troubleshootTree.start]);
   };
 
+  const BackArrow = dirIcon(locale, ArrowLeft, ArrowRight);
+  const ChevronIcon = dirIcon(locale, ChevronRight, ChevronLeft);
+
   if (!node) return null;
   return (
-    <View style={styles.root}>
-      <View style={[styles.crumb, localizedRow(locale)]}>
-        <Ionicons name="git-branch-outline" size={13} color={theme.colors.brandAccent} />
-        <Text style={[styles.crumbText, localizedTextStyle(locale)]}>
+    <View className="gap-3">
+      <View className={cn("flex-row items-center gap-1.5", isFa && "flex-row-reverse")}>
+        <GitBranch size={13} color="#891525" />
+        <Text className="text-[11px] tracking-[0.3px] text-accent" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
           {node.kind === "diagnosis"
-            ? locale === "fa" ? "نتیجهٔ تشخیص" : "Diagnosis"
-            : locale === "fa" ? `مرحله ${path.length} از درخت` : `Step ${path.length} of the tree`}
+            ? isFa ? "نتیجهٔ تشخیص" : "Diagnosis"
+            : isFa ? `مرحله ${path.length} از درخت` : `Step ${path.length} of the tree`}
         </Text>
       </View>
 
-      {node.kind === "question" ? <QuestionView node={node} locale={locale} onChoose={go} /> : <DiagnosisView node={node} locale={locale} onBack={back} onRestart={restart} />}
+      {node.kind === "question" ? <QuestionView node={node} locale={locale} onChoose={go} ChevronIcon={ChevronIcon} /> : <DiagnosisView node={node} locale={locale} onBack={back} onRestart={restart} />}
 
       {node.kind === "question" && path.length > 1 ? (
-        <PressableSurface style={[styles.backRow, localizedRow(locale)]} onPress={back} accessibilityRole="button" rippleColor="rgba(18,44,79,0.10)">
-          <Ionicons name={dirIconName(locale, "arrow-back", "arrow-forward")} size={15} color={theme.colors.textSecondary} />
-          <Text style={[styles.backRowText, localizedTextStyle(locale)]}>{locale === "fa" ? "گام قبل" : "Previous step"}</Text>
+        <PressableSurface
+          onPress={back}
+          accessibilityRole="button"
+          rippleColor="rgba(18,44,79,0.10)"
+          className={cn("flex-row items-center justify-center gap-1.5 min-h-[44px] rounded-control border border-border bg-transparent", isFa && "flex-row-reverse")}
+        >
+          <BackArrow size={15} color="#5C6878" />
+          <Text className="text-[13px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {isFa ? "گام قبل" : "Previous step"}
+          </Text>
         </PressableSurface>
       ) : null}
     </View>
   );
 }
 
-function QuestionView({ node, locale, onChoose }: { node: TroubleshootQuestion; locale: "fa" | "en"; onChoose: (next: string) => void }) {
+function QuestionView({ node, locale, onChoose, ChevronIcon }: { node: TroubleshootQuestion; locale: "fa" | "en"; onChoose: (next: string) => void; ChevronIcon: React.ComponentType<{ size?: number; color?: string }> }) {
+  const isFa = locale === "fa";
   return (
-    <View style={styles.card}>
-      <Text style={[styles.question, localizedTextStyle(locale)]}>{localize(node.question, locale)}</Text>
-      {node.hint ? <Text style={[styles.hint, localizedTextStyle(locale)]}>{localize(node.hint, locale)}</Text> : null}
-      <View style={styles.choices}>
+    <View className="rounded-panel border border-border bg-card p-4 gap-3">
+      <Text className="text-[15px] font-semibold leading-[26px] text-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+        {localize(node.question, locale)}
+      </Text>
+      {node.hint ? (
+        <Text className="text-[12px] leading-[21px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+          {localize(node.hint, locale)}
+        </Text>
+      ) : null}
+      <View className="gap-2 mt-0.5">
         {node.choices.map((choice) => (
           <PressableSurface
-            style={[styles.choice, localizedRow(locale)]}
-            onPress={() => onChoose(choice.next)}
             key={choice.id}
+            onPress={() => onChoose(choice.next)}
             accessibilityRole="button"
             rippleColor="rgba(18,44,79,0.10)"
+            className={cn("flex-row items-center min-h-[50px] overflow-hidden rounded-control border border-border bg-background px-3.5 py-3", isFa && "flex-row-reverse")}
           >
-            <Text style={[styles.choiceText, localizedTextStyle(locale)]}>{localize(choice.label, locale)}</Text>
-            <Ionicons name={dirIconName(locale, "chevron-forward", "chevron-back")} size={17} color={theme.colors.brandAccent} />
+            <Text className="flex-1 text-[13px] leading-[21px] text-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+              {localize(choice.label, locale)}
+            </Text>
+            <ChevronIcon size={17} color="#891525" />
           </PressableSurface>
         ))}
       </View>
@@ -84,77 +101,63 @@ function QuestionView({ node, locale, onChoose }: { node: TroubleshootQuestion; 
 }
 
 function DiagnosisView({ node, locale, onBack, onRestart }: { node: TroubleshootDiagnosis; locale: "fa" | "en"; onBack: () => void; onRestart: () => void }) {
+  const isFa = locale === "fa";
   const meta = severityMeta[node.severity];
+  const SeverityIcon = node.severity === "safe" ? CircleCheck : node.severity === "caution" ? CircleAlert : TriangleAlert;
+
   return (
-    <View style={styles.card}>
-      <View style={[styles.severity, localizedRow(locale)]}>
-        <Ionicons name={node.severity === "safe" ? "checkmark-circle" : node.severity === "caution" ? "alert-circle" : "warning"} size={16} color={meta.color} />
-        <Text style={[styles.severityText, { color: meta.color }, localizedTextStyle(locale)]}>{locale === "fa" ? meta.fa : meta.en}</Text>
+    <View className="rounded-panel border border-border bg-card p-4 gap-3">
+      <View className={cn("flex-row items-center gap-1.5 self-start rounded-full border border-border bg-background px-2.5 py-[5px]", isFa && "flex-row-reverse")}>
+        <SeverityIcon size={16} color={meta.color} />
+        <Text className="text-[11px] font-bold tracking-[0.2px]" style={{ color: meta.color }}>
+          {isFa ? meta.fa : meta.en}
+        </Text>
       </View>
-      <Text style={[styles.problemTitle, localizedTextStyle(locale)]}>{localize(node.problem, locale)}</Text>
+      <Text className="text-[16px] font-bold leading-[26px] text-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+        {localize(node.problem, locale)}
+      </Text>
 
       {node.causes.map((cause, index) => (
-        <View style={[styles.row, localizedRow(locale)]} key={`cause-${index}`}>
-          <Ionicons name="ellipse" size={7} color={theme.colors.textSecondary} />
-          <Text style={[styles.rowText, localizedTextStyle(locale)]}>{localize(cause, locale)}</Text>
+        <View key={`cause-${index}`} className={cn("flex-row items-start gap-2", isFa && "flex-row-reverse")}>
+          <View className="w-[7px] h-[7px] rounded-full bg-muted-foreground mt-1.5" />
+          <Text className="flex-1 text-[12px] leading-[21px] text-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {localize(cause, locale)}
+          </Text>
         </View>
       ))}
 
-      <View style={styles.divider} />
+      <View className="h-px bg-border" />
 
-      <View style={[styles.sectionLabel, localizedRow(locale)]}>
-        <Ionicons name="construct-outline" size={14} color={theme.colors.brandAccent} />
-        <Text style={[styles.sectionLabelText, localizedTextStyle(locale)]}>{locale === "fa" ? "راه‌حل گام‌به‌گام" : "Step-by-step solution"}</Text>
+      <View className={cn("flex-row items-center gap-1.5", isFa && "flex-row-reverse")}>
+        <Wrench size={14} color="#891525" />
+        <Text className="text-[13px] font-bold text-accent" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+          {isFa ? "راه‌حل گام‌به‌گام" : "Step-by-step solution"}
+        </Text>
       </View>
       {node.solution.map((step, index) => (
-        <View style={[styles.row, localizedRow(locale), styles.stepRow]} key={`sol-${index}`}>
-          <View style={styles.stepBadge}>
-            <Text style={styles.stepBadgeText}>{String(index + 1).padStart(2, "0")}</Text>
+        <View key={`sol-${index}`} className={cn("flex-row items-start gap-2.5", isFa && "flex-row-reverse")}>
+          <View className="h-[28px] w-[28px] items-center justify-center rounded-full bg-secondary">
+            <Text className="text-[10px] font-bold text-primary">{String(index + 1).padStart(2, "0")}</Text>
           </View>
-          <Text style={[styles.rowText, localizedTextStyle(locale)]}>{localize(step, locale)}</Text>
+          <Text className="flex-1 text-[12px] leading-[21px] text-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {localize(step, locale)}
+          </Text>
         </View>
       ))}
 
       {node.escalation ? (
-        <View style={[styles.escalation, localizedRow(locale)]}>
-          <Ionicons name="shield-checkmark-outline" size={16} color={theme.colors.warning} />
-          <Text style={[styles.escalationText, localizedTextStyle(locale)]}>{localize(node.escalation, locale)}</Text>
+        <View className={cn("flex-row items-start gap-2 p-3 rounded-control border border-[#B54708]/35 bg-[#B54708]/7", isFa && "flex-row-reverse")}>
+          <ShieldCheck size={16} color="#B54708" />
+          <Text className="flex-1 text-[12px] leading-[21px] text-warning" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+            {localize(node.escalation, locale)}
+          </Text>
         </View>
       ) : null}
 
-      <View style={[styles.actions, localizedRow(locale)]}>
-        <Button variant="secondary" block label={locale === "fa" ? "گام قبل" : "Back"} onPress={onBack} style={{ flex: 1 }} />
-        <View style={{ width: 10 }} />
-        <Button variant="filled" block label={locale === "fa" ? "شروع دوباره" : "Start again"} onPress={onRestart} style={{ flex: 1 }} />
+      <View className={cn("flex-row mt-1 gap-2.5", isFa && "flex-row-reverse")}>
+        <Button variant="secondary" block label={isFa ? "گام قبل" : "Back"} onPress={onBack} style={{ flex: 1 }} />
+        <Button variant="filled" block label={isFa ? "شروع دوباره" : "Start again"} onPress={onRestart} style={{ flex: 1 }} />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  root: { gap: 12 },
-  crumb: { alignItems: "center", gap: 6 },
-  crumbText: { color: theme.colors.brandAccent, fontSize: 11, letterSpacing: 0.3 },
-  card: { backgroundColor: theme.colors.raised, borderRadius: theme.radii.panel, padding: 16, gap: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.borderSubtle },
-  question: { color: theme.colors.textPrimary, fontSize: 15, lineHeight: 26, fontWeight: "600" },
-  hint: { color: theme.colors.textSecondary, fontSize: 12, lineHeight: 21 },
-  choices: { gap: 8, marginTop: 2 },
-  choice: { alignItems: "center", minHeight: 50, paddingHorizontal: 14, paddingVertical: 12, borderRadius: theme.radii.control, backgroundColor: theme.colors.canvas, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.borderSubtle, overflow: "hidden" },
-  choiceText: { flex: 1, color: theme.colors.textPrimary, fontSize: 13, lineHeight: 21 },
-  backRow: { alignItems: "center", justifyContent: "center", gap: 6, minHeight: 44, borderRadius: theme.radii.control, backgroundColor: "transparent", borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.borderSubtle },
-  backRowText: { color: theme.colors.textSecondary, fontSize: 13 },
-  severity: { alignItems: "center", gap: 6, alignSelf: "flex-start", paddingHorizontal: 10, paddingVertical: 5, borderRadius: theme.radii.pill, backgroundColor: theme.colors.canvas, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.borderSubtle },
-  severityText: { fontSize: 11, fontWeight: "700", letterSpacing: 0.2 },
-  problemTitle: { color: theme.colors.textPrimary, fontSize: 16, lineHeight: 26, fontWeight: "700" },
-  row: { alignItems: "flex-start", gap: 8 },
-  rowText: { flex: 1, color: theme.colors.textPrimary, fontSize: 12, lineHeight: 21 },
-  divider: { height: StyleSheet.hairlineWidth, backgroundColor: theme.colors.borderSubtle },
-  sectionLabel: { alignItems: "center", gap: 6 },
-  sectionLabelText: { color: theme.colors.brandAccent, fontSize: 13, fontWeight: "700" },
-  stepRow: { gap: 10 },
-  stepBadge: { width: 28, height: 28, alignItems: "center", justifyContent: "center", borderRadius: 14, backgroundColor: theme.colors.technical },
-  stepBadgeText: { color: theme.colors.brandPrimary, fontSize: 10, fontWeight: "700" },
-  escalation: { alignItems: "flex-start", gap: 8, padding: 12, borderRadius: theme.radii.control, backgroundColor: "rgba(181,71,8,0.07)", borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(181,71,8,0.35)" },
-  escalationText: { flex: 1, color: theme.colors.warning, fontSize: 12, lineHeight: 21 },
-  actions: { marginTop: 4 }
-});

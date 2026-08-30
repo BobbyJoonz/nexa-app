@@ -4,8 +4,16 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
-  "include": [".expo/types/**/*.ts", "expo-env.d.ts", "**/*.ts", "**/*.tsx"]
+  "include": [
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "nativewind-env.d.ts"
+  ]
 }
