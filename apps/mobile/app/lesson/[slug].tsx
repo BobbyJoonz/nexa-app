@@ -194,14 +194,16 @@ function AnatomyList({ locale }: { locale: "fa" | "en" }) {
   const active = anatomy.find((item) => item.id === activeId);
   return (
     <>
-      <View className="flex-row flex-wrap gap-2.5">
+      <View className="flex-row flex-wrap justify-between">
         {anatomy.map((item, index) => (
           <PressableSurface
             key={item.id}
             onPress={() => setActiveId(item.id)}
             accessibilityRole="button"
             accessibilityLabel={localize(item.label, locale)}
-            className="w-[48.5%] min-h-[115px] justify-between border-t-2 border-t-primary bg-card p-3.5"
+            rippleColor="#0D223E14"
+            className="mb-2.5 w-[48.5%] border border-border bg-card p-3.5"
+            style={{ borderRadius: 14, overflow: "hidden", minHeight: 115, justifyContent: "space-between", width: "48.5%" }}
           >
             <Text className="text-[10px] font-bold text-accent">{String(index + 1).padStart(2, "0")}</Text>
             <Text className="text-[13px] font-bold text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>{localize(item.label, locale)}</Text>
