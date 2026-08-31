@@ -3,7 +3,7 @@
     "name": "NEXA Sunverter Academy",
     "slug": "nexa-sunverter-academy",
     "scheme": "nexaacademy",
-    "version": "1.2.3",
+    "version": "1.2.6",
     "orientation": "portrait",
     "icon": "./assets/app-icon.png",
     "userInterfaceStyle": "light",
@@ -25,7 +25,7 @@
     },
     "android": {
       "package": "com.nexa.sunverteracademy",
-      "versionCode": 6,
+      "versionCode": 7,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F4F6F8"
