@@ -83,9 +83,10 @@ export default function ChecklistScreen() {
             accessibilityRole="checkbox"
             accessibilityState={{ checked }}
             className={cn(
-              "mt-2.5 min-h-[72px] flex-row items-start gap-[11px] overflow-hidden rounded-control border border-border bg-card p-3.5",
+              "mt-2.5 min-h-[72px] flex-row items-start gap-[11px] rounded-control border border-border bg-card p-3.5",
               checked && "border-[#2F6F55]/40 bg-[#F7FBF8]"
             )}
+            style={{ borderRadius: 14 }}
           >
             {checked ? <CircleCheck size={22} color="#2F6F55" /> : <Circle size={22} color="#CCD5DE" />}
             <View className="flex-1">

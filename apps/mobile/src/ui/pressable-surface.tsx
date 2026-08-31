@@ -7,8 +7,9 @@ type NativePressableProps = ComponentProps<typeof Pressable>;
 
 /**
  * The one touch primitive every interactive surface builds on.
- * - Android: Material foreground ripple (drawn over children, so opaque
- *   backgrounds cannot hide it) — callers add `overflow: "hidden"` when rounded.
+ * - Android: Material foreground ripple (foreground:true clips to the view's
+ *   own rounded outline — do NOT add overflow:hidden, it breaks rounded
+ *   corners under the new architecture).
  * - iOS: pressed-state opacity dim per HIG (no ripple).
  *
  * NativeWind compatibility (critical): this component forwards `className`

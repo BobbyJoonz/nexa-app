@@ -1,7 +1,6 @@
 import { ActivityIndicator } from "react-native";
 import { cn } from "../cn";
 import { haptics } from "../haptics";
-import { selectUI } from "../platform";
 import { PressableSurface } from "../pressable-surface";
 import { ButtonContent } from "./button-content";
 import { sizeClasses, variantClasses } from "./variants";
@@ -66,8 +65,7 @@ export function Button({
       style={[
         {
           backgroundColor: variantClasses(variant).container.includes("bg-transparent") ? undefined : inlineFill[variant]?.backgroundColor ?? "#122C4F",
-          borderRadius: selectUI(12, 999),
-          overflow: "hidden"
+          borderRadius: 14
         },
         style
       ]}

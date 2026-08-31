@@ -92,7 +92,7 @@ export default function SearchScreen() {
           autoCorrect={false}
         />
         {query.length > 0 ? (
-          <PressableSurface onPress={() => setQuery("")} accessibilityRole="button" accessibilityLabel="Clear" className="overflow-hidden rounded-full p-[3px]">
+          <PressableSurface onPress={() => setQuery("")} accessibilityRole="button" accessibilityLabel="Clear" className="rounded-full p-[3px]" style={{ borderRadius: 999 }}>
             <CircleX size={17} color="#5C6878" />
           </PressableSurface>
         ) : null}
@@ -111,9 +111,10 @@ export default function SearchScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={fault.code}
                 className={cn(
-                  "min-w-[52px] min-h-[38px] items-center justify-center overflow-hidden rounded-full border border-border bg-card px-2.5",
+                  "min-w-[52px] min-h-[38px] items-center justify-center rounded-full border border-border bg-card px-2.5",
                   expanded && "border-primary bg-primary"
                 )}
+                style={{ borderRadius: 999 }}
               >
                 <Text className={cn("text-[11px] font-bold text-primary", expanded && "text-white")}>{fault.code}</Text>
               </PressableSurface>
@@ -146,7 +147,8 @@ export default function SearchScreen() {
               key={result.id}
               onPress={() => open(result)}
               accessibilityRole="button"
-              className="mt-2 min-h-[50px] flex-row items-center gap-2.5 overflow-hidden rounded-control border border-border bg-card px-3"
+              className="mt-2 min-h-[50px] flex-row items-center gap-2.5 rounded-control border border-border bg-card px-3"
+              style={{ borderRadius: 12 }}
             >
               <View className="min-w-[44px] flex-row items-center justify-center rounded-[6px] bg-secondary px-1.5 py-1">
                 <Text className="text-[9px] font-bold text-primary">{result.extra}</Text>

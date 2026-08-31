@@ -49,7 +49,7 @@ export function IconButton({
         },
         style
       ]}
-      className={cn("items-center justify-center overflow-hidden", tone === "raised" ? "bg-card" : "bg-secondary", disabled && "opacity-45")}
+      className={cn("items-center justify-center", tone === "raised" ? "bg-card" : "bg-secondary", disabled && "opacity-45")}
     >
       {children}
     </PressableSurface>

@@ -49,8 +49,8 @@ export default function LanguageScreen() {
         >
           {t(locale, "language.subtitle")}
         </Text>
-        <Button variant="filled" block label={t(locale, "language.selfFa")} trailing={<ForwardIcon size={isIOS ? 20 : 19} color="#FFFFFF" />} onPress={() => choose("fa")} accessibilityLabel={t(locale, "language.ctaFa")} style={{ backgroundColor: "#122C4F", borderRadius: 12, overflow: "hidden" }} />
-        <Button variant="secondary" block label={t(locale, "language.selfEn")} trailing={<ForwardIcon size={isIOS ? 20 : 19} color="#122C4F" />} onPress={() => choose("en")} accessibilityLabel={t(locale, "language.ctaEn")} style={{ backgroundColor: "#E8EDF2", borderRadius: 12, overflow: "hidden" }} />
+        <Button variant="filled" block label={t(locale, "language.selfFa")} trailing={<ForwardIcon size={isIOS ? 20 : 19} color="#FFFFFF" />} onPress={() => choose("fa")} accessibilityLabel={t(locale, "language.ctaFa")} style={{ backgroundColor: "#122C4F", borderRadius: 14 }} />
+        <Button variant="secondary" block label={t(locale, "language.selfEn")} trailing={<ForwardIcon size={isIOS ? 20 : 19} color="#122C4F" />} onPress={() => choose("en")} accessibilityLabel={t(locale, "language.ctaEn")} style={{ backgroundColor: "#E8EDF2", borderRadius: 14 }} />
       </View>
     </View>
   );

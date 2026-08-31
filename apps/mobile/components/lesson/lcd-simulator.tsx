@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { localize, settings } from "@nexa/product-content";
 import { cn } from "@/src/ui/cn";
@@ -6,11 +6,11 @@ import { PressableSurface } from "@/src/ui/pressable-surface";
 
 /**
  * Teaching LCD simulator driven by the REAL documented program table.
- * Mirrors the physical key flow: ESC, UP, DOWN, ENTER â€” exactly like the
+ * Mirrors the physical key flow: ESC, UP, DOWN, ENTER — exactly like the
  * device's "Operation and display panel" chapter (manual p.11).
  *
  * Key behaviour is a faithful simulation, NOT app UI, so the four keys stay
- * raw Pressables on purpose (see docs/PLATFORM_UI.md â€” LCD keys exception).
+ * raw Pressables on purpose (see docs/PLATFORM_UI.md — LCD keys exception).
  *
  * Deliberately session-only: this is a learn-by-doing toy, it never persists
  * to device storage and is never connected to hardware.
@@ -37,11 +37,11 @@ const optionIndexOfDefault = (programNumber: string) => {
 };
 
 const CATEGORY_LABELS: Record<string, [string, string]> = {
-  power: ["Power", "ØªÙˆØ§Ù†"],
-  battery: ["Battery", "Ø¨Ø§ØªØ±ÛŒ"],
-  safety: ["Safety", "Ø§ÛŒÙ…Ù†ÛŒ"],
-  display: ["Display", "Ù†Ù…Ø§ÛŒØ´"],
-  advanced: ["Advanced", "Ù¾ÛŒØ´â€ŒØ±ÙØªÙ‡"]
+  power: ["Power", "توان"],
+  battery: ["Battery", "باتری"],
+  safety: ["Safety", "ایمنی"],
+  display: ["Display", "نمایش"],
+  advanced: ["Advanced", "پیش‌رفته"]
 };
 
 const categoryLabel = (category: string, fa: boolean) => {
@@ -86,7 +86,7 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
 
   return (
     <View className="gap-3 mt-2">
-      {/* device frame â€” the teaching simulator uses the same key layout as the unit */}
+      {/* device frame — the teaching simulator uses the same key layout as the unit */}
       <View className="overflow-hidden rounded-panel bg-[#E4E6E8] p-[22px] shadow-card">
         <View className="min-h-[230px] rounded-[8px] border-[8px] border-[#28323A] bg-[#B9D6A8] p-[18px]">
           {mode === "home" ? (
@@ -108,7 +108,7 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
               </Text>
               <View className="mt-1 pt-2 border-t border-[#13231D]/50">
                 <Text className="text-[15px] font-semibold text-[#13231D]" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }} numberOfLines={1}>
-                  {currentValue ? localize(currentValue, locale) : "â€”"}
+                  {currentValue ? localize(currentValue, locale) : "—"}
                 </Text>
               </View>
             </View>
@@ -122,18 +122,18 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
                   {program.options.map((option, i) => (
                     <View key={`${program.number}-${i}`} className={cn("py-[5px] px-2 rounded-[4px]", i === editIndex && "bg-[#13231D]")}>
                       <Text className={cn("text-[12px] font-semibold text-[#13231D]", i === editIndex && "text-[#B9D6A8]")} style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }} numberOfLines={1}>
-                        {`${i === editIndex ? (isFa ? "â® " : "â–¸ ") : ""}${localize(option, locale)}`}
+                        {`${i === editIndex ? (isFa ? "❮ " : "▸ ") : ""}${localize(option, locale)}`}
                       </Text>
                     </View>
                   ))}
                 </View>
               ) : (
-                <View className="mt-1.5 p-3 rounded-[6px] border border-[#13231D]/28 bg-[#13231D]/7">
+                <View className="mt-1.5 p-3 rounded-[6px] border border-[#13231D]/28 bg-[#13231D]/6">
                   <Text className="text-[15px] font-bold text-[#13231D]" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }} numberOfLines={2}>
-                    {program.options[0] ? localize(program.options[0], locale) : "â€”"}
+                    {program.options[0] ? localize(program.options[0], locale) : "—"}
                   </Text>
                   <Text className="mt-1.5 text-[10px] leading-[15px] text-[#13231D]/66" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
-                    {isFa ? "Ø±ÙˆÛŒ Ø¯Ø³ØªÚ¯Ø§Ù‡ Ø¨Ø§ Ú¯Ø§Ù… ØªÙ†Ø¸ÛŒÙ… Ù…ÛŒâ€ŒØ´ÙˆØ¯Ø› Ø§ÛŒÙ†Ø¬Ø§ ÙÙ‚Ø· Ù…Ø±Ø¬Ø¹ Ø§Ø³Øª." : "Adjusted in steps on the device; shown here for reference only."}
+                    {isFa ? "روی دستگاه با گام تنظیم می‌شود؛ اینجا فقط مرجع است." : "Adjusted in steps on the device; shown here for reference only."}
                   </Text>
                 </View>
               )}
@@ -141,18 +141,18 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
           ) : null}
 
           <Text className="mt-2.5 text-[10px] text-[#13231D]/72">
-            {mode === "home" ? (isFa ? "ESC/â–²/â–¼/ENTER â€” Ù…Ù†Ùˆ" : "ESC/â–²/â–¼/ENTER â€” menu")
-              : mode === "browse" ? (isFa ? "â–²â–¼: Ø¬Ø§Ø¨Ù‡â€ŒØ¬Ø§ÛŒÛŒ Â· ENTER: ÙˆÛŒØ±Ø§ÛŒØ´ Â· ESC: Ø®Ø±ÙˆØ¬" : "â–²â–¼ browse Â· ENTER edit Â· ESC back")
-              : (isFa ? "â–²â–¼: Ø§Ù†ØªØ®Ø§Ø¨ Â· ENTER: Ø«Ø¨Øª Â· ESC: Ø§Ù†ØµØ±Ø§Ù" : "â–²â–¼ choose Â· ENTER save Â· ESC cancel")}
+            {mode === "home" ? (isFa ? "ESC/▲/▼/ENTER — منو" : "ESC/▲/▼/ENTER — menu")
+              : mode === "browse" ? (isFa ? "▲▼: جابه‌جایی · ENTER: ویرایش · ESC: خروج" : "▲▼ browse · ENTER edit · ESC back")
+              : (isFa ? "▲▼: انتخاب · ENTER: ثبت · ESC: انصراف" : "▲▼ choose · ENTER save · ESC cancel")}
           </Text>
         </View>
 
         <View className="flex-row gap-[7px] mt-4">
-          {(["ESC", "â–²", "â–¼", "ENTER"] as const).map((key) => (
+          {(["ESC", "▲", "▼", "ENTER"] as const).map((key) => (
             <Pressable
               key={key}
               className="flex-1 min-h-[42px] items-center justify-center rounded-[6px] bg-[#273743]"
-              onPress={key === "ESC" ? esc : key === "â–²" ? up : key === "â–¼" ? down : enter}
+              onPress={key === "ESC" ? esc : key === "▲" ? up : key === "▼" ? down : enter}
               accessibilityRole="button"
               accessibilityLabel={key}
             >
@@ -162,11 +162,11 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
         </View>
       </View>
 
-      {/* Teaching panel â€” the manual's own line for the program under the cursor. */}
+      {/* Teaching panel — the manual's own line for the program under the cursor. */}
       <View className="rounded-panel border border-border bg-card p-3.5">
         <View className={cn("flex-row items-center justify-between gap-2", isFa && "flex-row-reverse")}>
           <Text className="text-[10px] font-bold tracking-[0.6px] text-accent">
-            P{program.number} Â· {program.basic ? (isFa ? "Ù¾Ø§ÛŒÙ‡" : "Basic") : (isFa ? "Ù¾ÛŒØ´â€ŒØ±ÙØªÙ‡" : "Advanced")}
+            P{program.number} · {program.basic ? (isFa ? "پایه" : "Basic") : (isFa ? "پیش‌رفته" : "Advanced")}
           </Text>
           <View className="overflow-hidden rounded-full bg-secondary px-2 py-[3px]">
             <Text className="text-[9px] font-bold text-primary">{categoryLabel(program.category, isFa)}</Text>
@@ -183,15 +183,16 @@ export function LcdSimulator({ locale }: { locale: "fa" | "en" }) {
           setMode("home");
         }}
         accessibilityRole="button"
-        className="flex-row items-center justify-center gap-[7px] min-h-[40px] overflow-hidden rounded-pill border border-border bg-card"
+        className="flex-row items-center justify-center gap-[7px] min-h-[40px] rounded-pill border border-border bg-card"
+        style={{ borderRadius: 999 }}
       >
-        <Text className="text-[11px] font-bold text-primary">{isFa ? "Ø¨Ø§Ø²Ù†Ø´Ø§Ù†ÛŒ Ø¨Ù‡ Ù¾ÛŒØ´â€ŒÙØ±Ø¶" : "Reset to defaults"}</Text>
+        <Text className="text-[11px] font-bold text-primary">{isFa ? "بازنشانی به پیش‌فرض" : "Reset to defaults"}</Text>
       </PressableSurface>
 
       <Text className="text-[9px] text-center leading-[15px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr" }}>
         {isFa
-          ? "Ø´Ø¨ÛŒÙ‡â€ŒØ³Ø§Ø² Ø¢Ù…ÙˆØ²Ø´ÛŒØŒ Ø¨Ø¯ÙˆÙ† Ø§ØªØµØ§Ù„ Ø¨Ù‡ Ø³Ø®Øªâ€ŒØ§ÙØ²Ø§Ø± â€” Ú†ÛŒØ¯Ù…Ø§Ù† Ù…Ù†ÙˆÛŒ Ù‡Ù…Ø§Ù† ØªÙ†Ø¸ÛŒÙ…Ø§Øª Ø¯Ø³ØªÚ¯Ø§Ù‡."
-          : "Teaching simulator, not connected to hardware â€” the same device settings menu layout."}
+          ? "شبیه‌ساز آموزشی، بدون اتصال به سخت‌افزار — چیدمان منوی همان تنظیمات دستگاه."
+          : "Teaching simulator, not connected to hardware — the same device settings menu layout."}
       </Text>
     </View>
   );

@@ -38,8 +38,8 @@ export default function ModelsScreen() {
         onPress={() => router.push(`/academy/${verified.slug}`)}
         accessibilityRole="button"
         accessibilityLabel={verified.modelName.value ?? undefined}
-        className="overflow-hidden rounded-panel border border-border bg-card shadow-card"
-        style={{ borderRadius: 20, overflow: "hidden" }}
+        className="rounded-panel border border-border bg-card shadow-card"
+        style={{ borderRadius: 20 }}
       >
         <View className="h-[360px] items-center justify-end bg-secondary">
           <Image source={require("../assets/nexa-product-mobile.webp")} className="w-[75%] h-[94%]" contentFit="contain" />
@@ -63,7 +63,7 @@ export default function ModelsScreen() {
             label={isFa ? "مشاهده این مدل" : "Explore this model"}
             trailing={<ExploreIcon size={18} color="#FFFFFF" />}
             onPress={() => router.push(`/academy/${verified.slug}`)}
-            style={{ marginTop: 22, borderRadius: 12, overflow: "hidden" }}
+            style={{ marginTop: 22, borderRadius: 14 }}
           />
         </View>
       </PressableSurface>
@@ -96,7 +96,7 @@ export default function ModelsScreen() {
             accessibilityLabel={label}
             rippleColor="#0D223E14"
             className="mt-2.5 flex-row items-center gap-3 rounded-panel border border-border bg-card px-4 py-3.5"
-            style={{ borderRadius: 16, overflow: "hidden" }}
+            style={{ borderRadius: 16 }}
           >
             <View className="h-10 w-10 items-center justify-center rounded-[12px] bg-secondary">
               <Icon size={19} color="#122C4F" />

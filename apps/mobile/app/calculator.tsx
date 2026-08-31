@@ -74,6 +74,7 @@ export default function CalculatorScreen() {
             onPress={() => { setBetaPreset(preset.value); setBetaCustom(""); }}
             accessibilityRole="button"
             className={cn("flex-1 min-h-[40px] items-center justify-center rounded-control border", betaPreset === preset.value && !betaCustom.trim() ? "border-primary bg-primary" : "border-border bg-card")}
+            style={{ borderRadius: 10 }}
           >
             <Text className={cn("text-[11px] font-bold", betaPreset === preset.value && !betaCustom.trim() ? "text-white" : "text-primary")}>
               {isFa ? preset.fa : preset.en}
