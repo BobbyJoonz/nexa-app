@@ -1,4 +1,7 @@
 import "../global.css";
+// MUST be imported before any screen renders: registers expo-image with
+// NativeWind cssInterop so className-based sizing/colors apply to expo-image.
+import "@/src/ui/nativewind-setup";
 import {
   Vazirmatn_400Regular,
   Vazirmatn_500Medium,
@@ -62,7 +65,7 @@ function AppBootstrap() {
       />
       {showExitHint ? (
         <View pointerEvents="none" className="absolute inset-x-0 bottom-16 z-[999] items-center">
-          <View className="rounded-pill px-[18px] py-[11px] bg-[rgba(13,34,62,0.92)] shadow-card">
+          <View className="rounded-pill px-[18px] py-[11px] bg-primary-strong/92 shadow-card">
             <Text className="font-medium text-[13px] text-white" style={{ writingDirection: "rtl" }}>
               {t(locale, "common.exitHint")}
             </Text>

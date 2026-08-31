@@ -38,8 +38,9 @@ export function Button({
   return (
     <PressableSurface
       onPress={() => {
-        if (hapticFeedback) haptics.tap();
+        // Interaction FIRST — a haptics failure must never block the action.
         onPress();
+        if (hapticFeedback) haptics.tap();
       }}
       disabled={pressed}
       accessibilityRole="button"

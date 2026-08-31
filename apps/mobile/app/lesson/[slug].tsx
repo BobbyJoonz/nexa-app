@@ -62,7 +62,7 @@ function EnergyFlow({ locale }: { locale: "fa" | "en" }) {
       <View className="mt-6 flex-row flex-wrap">
         {nodes.map(({ Icon, label, color }) => (
           <View className="w-1/2 items-center p-2.5" key={label}>
-            <View className="h-12 w-12 items-center justify-center rounded-full border border-white/6" style={{ borderColor: color }}>
+            <View className="h-12 w-12 items-center justify-center rounded-full border border-white/7" style={{ borderColor: color }}>
               <Icon size={22} color={color} />
             </View>
             <Text className="mt-1.5 text-[11px] text-white" style={{ writingDirection: isFa ? "rtl" : "ltr" }}>{label}</Text>
@@ -210,7 +210,7 @@ function AnatomyList({ locale }: { locale: "fa" | "en" }) {
         ))}
       </View>
       <Modal visible={Boolean(active)} transparent animationType="slide" onRequestClose={() => setActiveId(null)}>
-        <Pressable className="flex-1 justify-end bg-[#0D223E]/58" onPress={() => setActiveId(null)}>
+        <Pressable className="flex-1 justify-end bg-primary-strong/58" onPress={() => setActiveId(null)}>
           <Pressable className="min-h-[330px] rounded-t-[24px] bg-background p-[22px] pb-[38px]" onPress={(event) => event.stopPropagation()}>
             <View className="mb-5 h-1 w-[46px] self-center rounded bg-border" />
             <View className={cn("flex-row items-center justify-between gap-3", isFa && "flex-row-reverse")}>

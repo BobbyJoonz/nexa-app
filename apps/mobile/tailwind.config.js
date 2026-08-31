@@ -27,6 +27,7 @@ export default {
         card: "#FBFCFD", // raised
         "card-foreground": "#172338",
         primary: "#122C4F", // brandPrimary
+        "primary-strong": "#0D223E", // hero / deep header
         "primary-foreground": "#FFFFFF",
         secondary: "#E8EDF2", // technical
         "secondary-foreground": "#172338",
@@ -96,6 +97,21 @@ export default {
         card: "0 1px 2px rgba(18,44,79,0.06), 0 4px 12px rgba(18,44,79,0.06)",
         raised: "0 2px 6px rgba(18,44,79,0.10)",
         pop: "0 8px 24px rgba(18,44,79,0.16)"
+      },
+      opacity: {
+        // NEXA overlay steps used with /N modifiers (white/28, #0D223E/82,
+        // #13231D/66 …). Tailwind's default scale skips these values, so
+        // without this block the classes are never generated.
+        6: "0.06",
+        7: "0.07",
+        22: "0.22",
+        28: "0.28",
+        32: "0.32",
+        58: "0.58",
+        66: "0.66",
+        72: "0.72",
+        82: "0.82",
+        92: "0.92"
       }
     }
   },

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { CircleCheck, CircleAlert, TriangleAlert, Wrench, ShieldCheck, ChevronLeft, ChevronRight, ArrowLeft, ArrowRight, GitBranch, Ellipsis } from "lucide-react-native";
 import { Text, View } from "react-native";
 import { localize, troubleshootTree, type TroubleshootDiagnosis, type TroubleshootQuestion } from "@nexa/product-content";
@@ -9,9 +9,9 @@ import { dirIcon } from "@/src/ui/direction";
 import { PressableSurface } from "@/src/ui/pressable-surface";
 
 const severityMeta = {
-  safe: { color: "#2F6F55", en: "Safe user check", fa: "بررسی ایمن کاربر" },
-  caution: { color: "#B54708", en: "Installer check required", fa: "نیازمند بررسی نصاب" },
-  danger: { color: "#B42318", en: "Stop — hazard", fa: "توقف — خطر" }
+  safe: { color: "#2F6F55", en: "Safe user check", fa: "Ø¨Ø±Ø±Ø³ÛŒ Ø§ÛŒÙ…Ù† Ú©Ø§Ø±Ø¨Ø±" },
+  caution: { color: "#B54708", en: "Installer check required", fa: "Ù†ÛŒØ§Ø²Ù…Ù†Ø¯ Ø¨Ø±Ø±Ø³ÛŒ Ù†ØµØ§Ø¨" },
+  danger: { color: "#B42318", en: "Stop â€” hazard", fa: "ØªÙˆÙ‚Ù â€” Ø®Ø·Ø±" }
 } as const;
 
 export function TroubleshootingFlow({ locale }: { locale: "fa" | "en" }) {
@@ -44,8 +44,8 @@ export function TroubleshootingFlow({ locale }: { locale: "fa" | "en" }) {
         <GitBranch size={13} color="#891525" />
         <Text className="text-[11px] tracking-[0.3px] text-accent" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
           {node.kind === "diagnosis"
-            ? isFa ? "نتیجهٔ تشخیص" : "Diagnosis"
-            : isFa ? `مرحله ${path.length} از درخت` : `Step ${path.length} of the tree`}
+            ? isFa ? "Ù†ØªÛŒØ¬Ù‡Ù” ØªØ´Ø®ÛŒØµ" : "Diagnosis"
+            : isFa ? `Ù…Ø±Ø­Ù„Ù‡ ${path.length} Ø§Ø² Ø¯Ø±Ø®Øª` : `Step ${path.length} of the tree`}
         </Text>
       </View>
 
@@ -60,7 +60,7 @@ export function TroubleshootingFlow({ locale }: { locale: "fa" | "en" }) {
         >
           <BackArrow size={15} color="#5C6878" />
           <Text className="text-[13px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
-            {isFa ? "گام قبل" : "Previous step"}
+            {isFa ? "Ú¯Ø§Ù… Ù‚Ø¨Ù„" : "Previous step"}
           </Text>
         </PressableSurface>
       ) : null}
@@ -131,7 +131,7 @@ function DiagnosisView({ node, locale, onBack, onRestart }: { node: Troubleshoot
       <View className={cn("flex-row items-center gap-1.5", isFa && "flex-row-reverse")}>
         <Wrench size={14} color="#891525" />
         <Text className="text-[13px] font-bold text-accent" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
-          {isFa ? "راه‌حل گام‌به‌گام" : "Step-by-step solution"}
+          {isFa ? "Ø±Ø§Ù‡â€ŒØ­Ù„ Ú¯Ø§Ù…â€ŒØ¨Ù‡â€ŒÚ¯Ø§Ù…" : "Step-by-step solution"}
         </Text>
       </View>
       {node.solution.map((step, index) => (
@@ -155,8 +155,8 @@ function DiagnosisView({ node, locale, onBack, onRestart }: { node: Troubleshoot
       ) : null}
 
       <View className={cn("flex-row mt-1 gap-2.5", isFa && "flex-row-reverse")}>
-        <Button variant="secondary" block label={isFa ? "گام قبل" : "Back"} onPress={onBack} style={{ flex: 1 }} />
-        <Button variant="filled" block label={isFa ? "شروع دوباره" : "Start again"} onPress={onRestart} style={{ flex: 1 }} />
+        <Button variant="secondary" block label={isFa ? "Ú¯Ø§Ù… Ù‚Ø¨Ù„" : "Back"} onPress={onBack} style={{ flex: 1 }} />
+        <Button variant="filled" block label={isFa ? "Ø´Ø±ÙˆØ¹ Ø¯ÙˆØ¨Ø§Ø±Ù‡" : "Start again"} onPress={onRestart} style={{ flex: 1 }} />
       </View>
     </View>
   );

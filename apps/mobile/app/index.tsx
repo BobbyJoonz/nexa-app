@@ -14,7 +14,11 @@ export default function LanguageScreen() {
   const { locale, setLocale } = useAcademy();
   const isFa = locale === "fa";
   const choose = (target: "fa" | "en") => {
-    void setLocale(target);
+    try {
+      void setLocale(target);
+    } catch {
+      // Never let a storage hiccup block navigation.
+    }
     router.push("/models");
   };
 
@@ -25,7 +29,7 @@ export default function LanguageScreen() {
       <View className="flex-[1.08] items-center justify-center overflow-hidden bg-primary-strong">
         <View className="absolute h-[340px] w-[340px] rounded-full border border-dashed border-white/28" />
         <Image source={require("../assets/nexa-product-mobile.webp")} className="w-[66%] h-[88%]" contentFit="contain" />
-        <View className="absolute bottom-6 right-5 min-w-[110px] rounded-[10px] border border-white/22 bg-[#0D223E]/82 p-3">
+        <View className="absolute bottom-6 right-5 min-w-[110px] rounded-[10px] border border-white/22 bg-primary-strong/82 p-3">
           <Text className="text-[8px] font-bold tracking-[1.5px] text-white/58">POWER</Text>
           <Text className="text-[18px] font-bold text-white">3.5 kW</Text>
         </View>
