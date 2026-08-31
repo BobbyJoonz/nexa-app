@@ -7,33 +7,24 @@ import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
-  Battery,
   BatteryCharging,
   BookOpen,
   Check,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
-  Circle,
   CircleStop,
   ExternalLink,
+  FileText,
   Grid3X3,
   Home,
   Info,
-  Keyboard,
-  Lightbulb,
-  Monitor,
-  Power,
   Search,
   ShieldAlert,
-  ShieldCheck,
   Sun,
-  TriangleAlert,
-  Wifi,
-  Wrench,
-  Zap
+  Wrench
 } from "lucide-react";
-import { useMemo, useState, type CSSProperties } from "react";
+import { useMemo, useState } from "react";
 import {
   anatomy,
   connectionFacts,
@@ -43,11 +34,8 @@ import {
   localize,
   settings,
   specifications,
-  troubleshootTree,
-  type TroubleshootDiagnosis,
-  type TroubleshootQuestion
+  troubleshootTree
 } from "@nexa/product-content";
-import { toFaDigits } from "@nexa/shared-logic";
 import { illustrationAssets } from "@nexa/illustrations";
 import { AppShell } from "./app-shell";
 import { useAcademy } from "./academy-provider";
@@ -57,8 +45,27 @@ import { Button } from "./ui/button";
 import { Dialog } from "./ui/dialog";
 import { Tabs } from "./ui/tabs";
 
+const sourceLabel = (fileName: string, page: number, locale: "en" | "fa") =>
+  locale === "fa" ? `${fileName}، صفحه ${page}` : `${fileName}, page ${page}`;
+
 function Diagram({ src, alt }: { src: string; alt: string }) {
   return <Image className="technical-diagram" src={src} alt={alt} width={1200} height={700} />;
+}
+
+function SourceNote({
+  source,
+  locale
+}: {
+  source: { fileName: string; page: number; section?: string };
+  locale: "en" | "fa";
+}) {
+  return (
+    <div className="source-note">
+      <FileText size={16} />
+      <span>{sourceLabel(source.fileName, source.page, locale)}</span>
+      {source.section && <small>{source.section}</small>}
+    </div>
+  );
 }
 
 function Overview({ locale }: { locale: "en" | "fa" }) {
@@ -99,99 +106,43 @@ function Overview({ locale }: { locale: "en" | "fa" }) {
   );
 }
 
-const anatomyIcons = {
-  lcd: Monitor,
-  status: Circle,
-  charge: BatteryCharging,
-  fault: TriangleAlert,
-  buttons: Keyboard,
-  earth: ShieldCheck,
-  "ac-in": Zap,
-  "ac-out": Zap,
-  battery: Battery,
-  pv: Sun,
-  wifi: Wifi,
-  power: Power
-} as const;
-
-function Anatomy({ locale, model }: { locale: "en" | "fa"; model: string }) {
+function Anatomy({ locale }: { locale: "en" | "fa" }) {
   return (
     <div className="anatomy-view">
       <div className="anatomy-product">
-        <div className="anatomy-host">
-          <Image
-            className="anatomy-image"
-            src="/assets/products/nexa-product-hotspots.webp"
-            alt="NEXA CM3500-24S front view"
-            width={820}
-            height={1050}
-          />
-          {anatomy.map((point, index) => {
-            const Icon = anatomyIcons[point.icon] ?? Info;
-            return (
-              <Dialog
-                key={point.id}
-                title={localize(point.label, locale)}
-                trigger={
-                  <button
-                    className="hotspot"
-                    style={{ left: `${point.x}%`, top: `${point.y}%` }}
-                    aria-label={`${index + 1}. ${localize(point.label, locale)}`}
-                  >
-                    {index + 1}
-                  </button>
-                }
+        <Image
+          src="/assets/products/nexa-product-hotspots.webp"
+          alt="NEXA CM3500-24S front view"
+          width={820}
+          height={1050}
+        />
+        {anatomy.map((point, index) => (
+          <Dialog
+            key={point.id}
+            title={localize(point.label, locale)}
+            trigger={
+              <button
+                className="hotspot"
+                style={{ left: `${point.x}%`, top: `${point.y}%` }}
+                aria-label={localize(point.label, locale)}
               >
-                <div className="anatomy-part">
-                  <div className="anatomy-zoom" style={{ "--x": point.x, "--y": point.y } as CSSProperties}>
-                    <Image
-                      className="anatomy-zoom-image"
-                      src="/assets/products/nexa-product-hotspots.webp"
-                      alt={`${localize(point.label, locale)} close-up`}
-                      width={820}
-                      height={1050}
-                    />
-                    <span className="anatomy-zoom-dot" aria-hidden="true" />
-                    <small>{locale === "fa" ? "نمای بزرگ‌شدهٔ همین نقطه روی دستگاه" : "Zoomed view of this exact point on the unit"}</small>
-                  </div>
-                  <div className="anatomy-head">
-                    <span className="anatomy-icon"><Icon size={26} /></span>
-                    <h3 className="anatomy-role">{localize(point.role, locale)}</h3>
-                  </div>
-                  {point.safety ? (
-                    <p className="anatomy-safety"><ShieldAlert size={17} />{localize(point.safety, locale)}</p>
-                  ) : null}
-                  <ol className="anatomy-inspect">
-                    {point.inspect.map((step, stepIndex) => (
-                      <li key={stepIndex}>
-                        <span>{String(stepIndex + 1).padStart(2, "0")}</span>
-                        <p>{localize(step, locale)}</p>
-                      </li>
-                    ))}
-                  </ol>
-                  <p className="anatomy-stat">{localize(point.stat, locale)}</p>
-                  <p className="anatomy-guide"><Lightbulb size={17} />{localize(point.guide, locale)}</p>
-                  <Link className="anatomy-cta" href={`/academy/${model}/${point.relatedLesson}`}>
-                    {localize(point.relatedLabel, locale)}
-                    {locale === "fa" ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
-                  </Link>
-                </div>
-              </Dialog>
-            );
-          })}
-        </div>
+                {index + 1}
+              </button>
+            }
+          >
+            <p>
+              {locale === "fa"
+                ? "این بخش از روی نمای کلی محصول در دفترچه شناسایی شده است. پیش از لمس ترمینال‌ها، همه منابع انرژی باید توسط متخصص ایمن‌سازی شوند."
+                : "This part is identified from the product overview. A qualified installer must isolate every energy source before terminals are touched."}
+            </p>
+            <SourceNote source={point.source} locale={locale} />
+          </Dialog>
+        ))}
       </div>
       <ol className="anatomy-key">
-        {anatomy.map((point, index) => {
-          const Icon = anatomyIcons[point.icon] ?? Info;
-          return (
-            <li key={point.id}>
-              <span>{index + 1}</span>
-              <Icon size={15} />
-              <em>{localize(point.label, locale)}</em>
-            </li>
-          );
-        })}
+        {anatomy.map((point, index) => (
+          <li key={point.id}><span>{index + 1}</span>{localize(point.label, locale)}</li>
+        ))}
       </ol>
     </div>
   );
@@ -363,6 +314,7 @@ function SettingsExplorer({ locale }: { locale: "en" | "fa" }) {
               <div className="option-chips">{setting.options.map((option) => <span key={option.en}>{localize(option, locale)}</span>)}</div>
               <div className="setting-meta">
                 <span>{locale === "fa" ? "پیش‌فرض" : "Default"}: {setting.defaultValue ? localize(setting.defaultValue, locale) : (locale === "fa" ? "در منبع مشخص نشده" : "Not stated")}</span>
+                <span>{sourceLabel(setting.source.fileName, setting.source.page, locale)}</span>
               </div>
             </div>
             <Badge tone={setting.basic ? "verified" : "neutral"}>{setting.basic ? (locale === "fa" ? "پایه" : "Basic") : (locale === "fa" ? "پیشرفته" : "Advanced")}</Badge>
@@ -421,71 +373,70 @@ function FaultFinder({ locale }: { locale: "en" | "fa" }) {
   );
 }
 
-const triageSeverity: Record<TroubleshootDiagnosis["severity"], { tone: "verified" | "warning" | "missing"; fa: string; en: string }> = {
-  safe: { tone: "verified", fa: "بررسی ایمن کاربر", en: "Safe user check" },
-  caution: { tone: "warning", fa: "نیازمند بررسی نصاب", en: "Installer check required" },
-  danger: { tone: "missing", fa: "توقف — خطر", en: "Stop — hazard" }
+const severityStyle: Record<string, { color: string; background: string }> = {
+  safe: { color: "#2F6F55", background: "#EEF8F2" },
+  caution: { color: "#B54708", background: "#FFF7ED" },
+  danger: { color: "#B42318", background: "#FFF1F0" }
 };
 
-function TriageQuestion({ node, locale, onChoose }: { node: TroubleshootQuestion; locale: "en" | "fa"; onChoose: (id: string) => void }) {
-  const fa = locale === "fa";
-  return (
-    <div className="troubleshoot-panel">
-      <Wrench size={32} />
-      <h3>{localize(node.question, locale)}</h3>
-      {node.hint ? <p className="triage-hint">{localize(node.hint, locale)}</p> : null}
-      <div className="decision-list">{node.choices.map((choice) => (
-        <button key={choice.id} onClick={() => onChoose(choice.next)} type="button">{localize(choice.label, locale)}{fa ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}</button>
-      ))}</div>
-    </div>
-  );
-}
-
-function TriageDiagnosis({ node, locale, onBack, onRestart }: { node: TroubleshootDiagnosis; locale: "en" | "fa"; onBack: () => void; onRestart: () => void }) {
-  const fa = locale === "fa";
-  const meta = triageSeverity[node.severity];
-  return (
-    <div className="troubleshoot-panel result">
-      <div className="triage-severity">
-        <Badge tone={meta.tone}>{fa ? meta.fa : meta.en}</Badge>
-      </div>
-      <h3>{localize(node.problem, locale)}</h3>
-      <p className="triage-section-title">{fa ? "علت‌های محتمل" : "Likely causes"}</p>
-      <ul className="triage-causes">{node.causes.map((cause, index) => <li key={index}>{localize(cause, locale)}</li>)}</ul>
-      <p className="triage-section-title">{fa ? "اقدام‌ها" : "Actions"}</p>
-      <ol className="triage-actions">{node.solution.map((sol, index) => <li key={index}><strong>{fa ? toFaDigits(index + 1) : index + 1}</strong><span>{localize(sol, locale)}</span></li>)}</ol>
-      {node.escalation ? <p className="triage-escalation">{fa ? "ارجاع به نصاب: " : "Escalation: "}{localize(node.escalation, locale)}</p> : null}
-      <div className="triage-actions-row">
-        <Button variant="secondary" onClick={onBack}>{fa ? "گام قبل" : "Previous step"}</Button>
-        <Button onClick={onRestart}>{fa ? "شروع دوباره" : "Start again"}</Button>
-      </div>
-    </div>
-  );
-}
-
 function Troubleshooting({ locale }: { locale: "en" | "fa" }) {
-  const [path, setPath] = useState<string[]>([troubleshootTree.start]);
-  const node = troubleshootTree.nodes[path[path.length - 1] ?? troubleshootTree.start];
-  const fa = locale === "fa";
-
-  const go = (id: string) => setPath((previous) => [...previous, id]);
-  const back = () => setPath((previous) => (previous.length > 1 ? previous.slice(0, -1) : previous));
-  const restart = () => setPath([troubleshootTree.start]);
-
+  const [nodeId, setNodeId] = useState<string>(troubleshootTree.start);
+  const node = troubleshootTree.nodes[nodeId];
   if (!node) return null;
 
+  if (node.kind === "question") {
+    return (
+      <div className="troubleshoot-panel">
+        <Wrench size={32} />
+        <h3>{localize(node.question, locale)}</h3>
+        {node.hint && <p className="microcopy">{localize(node.hint, locale)}</p>}
+        <div className="decision-list">
+          {node.choices.map((choice) => (
+            <button key={choice.id} onClick={() => setNodeId(choice.next)}>
+              {localize(choice.label, locale)}
+              <ChevronRight size={18} />
+            </button>
+          ))}
+        </div>
+        <SourceNote source={node.source} locale={locale} />
+      </div>
+    );
+  }
+
+  const severity = severityStyle[node.severity] ?? { color: "#B54708", background: "#FFF7ED" };
+  const severityLabel =
+    node.severity === "safe" ? (locale === "fa" ? "ایمن" : "Safe")
+    : node.severity === "caution" ? (locale === "fa" ? "با احتیاط" : "Caution")
+    : (locale === "fa" ? "خطر" : "Danger");
+
   return (
-    <div className="lesson-stack">
-      <p className="triage-crumb">
-        {node.kind === "diagnosis"
-          ? (fa ? "نتیجهٔ تشخیص" : "Diagnosis")
-          : (fa ? `مرحله ${toFaDigits(path.length)} از درخت` : `Step ${path.length} of the tree`)}
-      </p>
-      {node.kind === "question" ? (
-        <TriageQuestion node={node} locale={locale} onChoose={go} />
-      ) : (
-        <TriageDiagnosis node={node} locale={locale} onBack={back} onRestart={restart} />
-      )}
+    <div className="troubleshoot-panel result">
+      <AlertTriangle size={32} />
+      <h3>{localize(node.problem, locale)}</h3>
+      <span className="severity-badge" style={{ color: severity.color, backgroundColor: severity.background }}>
+        {severityLabel}
+      </span>
+      <div className="diagnosis-block">
+        <h4>{locale === "fa" ? "علل احتمالی" : "Likely causes"}</h4>
+        <ol>
+          {node.causes.map((cause, index) => (
+            <li key={index}>{localize(cause, locale)}</li>
+          ))}
+        </ol>
+      </div>
+      <div className="diagnosis-block">
+        <h4>{locale === "fa" ? "اقدامات ایمن کاربر" : "Safe user steps"}</h4>
+        <ol>
+          {node.solution.map((step, index) => (
+            <li key={index}>{localize(step, locale)}</li>
+          ))}
+        </ol>
+      </div>
+      {node.escalation && <p className="escalation-note">{localize(node.escalation, locale)}</p>}
+      <SourceNote source={node.source} locale={locale} />
+      <Button variant="secondary" onClick={() => setNodeId(troubleshootTree.start)}>
+        {locale === "fa" ? "شروع دوباره" : "Start again"}
+      </Button>
     </div>
   );
 }
@@ -523,6 +474,10 @@ function Manuals({ locale }: { locale: "en" | "fa" }) {
           <ExternalLink size={18} />
         </a>
       ))}
+      <div className="missing-source-card">
+        <AlertTriangle size={22} />
+        <p>{locale === "fa" ? "دیتاشیت مستقل و منبع مدل دوم در فایل‌های تحویلی وجود نداشت." : "No standalone datasheet or second-model source was present in the supplied files."}</p>
+      </div>
     </div>
   );
 }
@@ -545,10 +500,10 @@ function Quiz({ locale }: { locale: "en" | "fa" }) {
   );
 }
 
-function ModuleContent({ module, locale, model }: { module: string; locale: "en" | "fa"; model: string }) {
+function ModuleContent({ module, locale }: { module: string; locale: "en" | "fa" }) {
   switch (module) {
     case "overview": return <Overview locale={locale} />;
-    case "anatomy": return <Anatomy locale={locale} model={model} />;
+    case "anatomy": return <Anatomy locale={locale} />;
     case "safety": return <Safety locale={locale} />;
     case "installation": return <Installation locale={locale} />;
     case "connections": return <Connections locale={locale} />;
@@ -576,7 +531,6 @@ export function LessonScreen() {
   const done = completed.includes(lesson.id);
   const previous = product.lessons[lessonIndex - 1];
   const next = product.lessons[lessonIndex + 1];
-  const progress = product.lessons.length > 0 ? Math.min(100, Math.max(0, Math.round((completed.length / product.lessons.length) * 100))) : 0;
   const Back = locale === "fa" ? ArrowRight : ArrowLeft;
   const Forward = locale === "fa" ? ChevronLeft : ChevronRight;
 
@@ -604,17 +558,8 @@ export function LessonScreen() {
             </div>
             {lesson.safetyCritical && <Badge tone="warning"><ShieldAlert size={14} />{locale === "fa" ? "ایمنی‌حیاتی" : "Safety critical"}</Badge>}
           </header>
-          <ModuleContent module={lesson.slug} locale={locale} model={product.slug} />
-          {done && (
-            <div className="lesson-done-banner">
-              <span className="lesson-done-icon"><CheckCircle2 size={22} /></span>
-              <div className="lesson-done-copy">
-                <strong>{locale === "fa" ? "این درس را کامل کردی!" : "Lesson complete!"}</strong>
-                <p>{locale === "fa" ? `${completed.length} از ${product.lessons.length} درس مرور شد` : `${completed.length} of ${product.lessons.length} lessons reviewed`}</p>
-                <div className="lesson-done-track"><span style={{ width: `${Math.max(progress, 3)}%` }} /></div>
-              </div>
-            </div>
-          )}
+          <ModuleContent module={lesson.slug} locale={locale} />
+          <SourceNote source={lesson.source} locale={locale} />
           <div className="lesson-complete">
             <Button variant={done ? "secondary" : "primary"} onClick={() => toggleLesson(lesson.id)}>
               {done ? <Check size={18} /> : null}
@@ -622,8 +567,8 @@ export function LessonScreen() {
             </Button>
           </div>
           <nav className="lesson-pagination">
-            {previous ? <Link href={`/academy/${product.slug}/${previous.slug}`}><Back size={18} /><span><small>{translate("common.previous")}</small>{localize(previous.title, locale)}</span></Link> : <Link className="lesson-pager-end" href={`/academy/${product.slug}`}><Back size={18} /><span><small>{locale === "fa" ? "شروع دوره" : "Course start"}</small>{locale === "fa" ? "بازگشت به آکادمی" : "Back to academy"}</span></Link>}
-            {next ? <Link href={`/academy/${product.slug}/${next.slug}`}><span><small>{translate("common.next")}</small>{localize(next.title, locale)}</span><Forward size={18} /></Link> : <Link className="lesson-pager-end" href={`/academy/${product.slug}`}><span><small>{locale === "fa" ? "پایان دوره" : "Course end"}</small>{locale === "fa" ? "بازگشت به آکادمی" : "Back to academy"}</span><Forward size={18} /></Link>}
+            {previous ? <Link href={`/academy/${product.slug}/${previous.slug}`}><Back size={18} /><span><small>{translate("common.previous")}</small>{localize(previous.title, locale)}</span></Link> : <span />}
+            {next ? <Link href={`/academy/${product.slug}/${next.slug}`}><span><small>{translate("common.next")}</small>{localize(next.title, locale)}</span><Forward size={18} /></Link> : <span />}
           </nav>
         </article>
       </main>
