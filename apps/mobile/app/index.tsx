@@ -35,7 +35,7 @@ export default function LanguageScreen() {
           <Text className="text-[18px] font-bold text-white">3.5 kW</Text>
         </View>
       </View>
-      <View className="flex-1 justify-center gap-[11px] px-[22px]">
+      <View className="flex-1 justify-center gap-[11px] px-[22px]" style={{ paddingBottom: insets.bottom + 20 }}>
         <MobileBrand />
         <Text
           className="mt-3.5 text-[34px] leading-[46px] text-primary"

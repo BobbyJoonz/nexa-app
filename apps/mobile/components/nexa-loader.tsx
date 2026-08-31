@@ -42,10 +42,14 @@ export function NexaLoader() {
       return;
     }
     if (measuredWidth === 0) return;
+    // Gentle breath before motion, then an ease-in-out sweep: soft start,
+    // fluid middle, soft landing (the old easeOut curve jumped to ~80%
+    // instantly and then crawled — felt abrupt).
     Animated.timing(progress, {
       toValue: 1,
-      duration: 4500,
-      easing: Easing.bezier(0.16, 1, 0.3, 1),
+      duration: 5200,
+      delay: 280,
+      easing: Easing.inOut(Easing.cubic),
       useNativeDriver: false
     }).start();
   }, [measuredWidth, progress, reduceMotion]);

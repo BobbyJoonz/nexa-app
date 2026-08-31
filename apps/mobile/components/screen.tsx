@@ -12,11 +12,12 @@ import { cn } from "@/src/ui/cn";
 
 /**
  * Reusable screen shell — the single layout every routed page uses.
- * Layout contract (RTL-safe, status-bar-proof):
- *   [pinned header  ← OUTSIDE the scroll; padding = real device insets]
- *   [scrollable body]
- * The header is a sibling of the ScrollView, so no scroll gesture or
- * content offset can ever push the back/language controls under the clock.
+ * Layout contract (RTL-safe, status-bar-proof, gesture-bar-proof):
+ *   [pinned toolbar header ← OUTSIDE the scroll, inside a bordered card]
+ *   [scrollable body ← bottom padding = real device insets]
+ * The toolbar is a sibling of the ScrollView, so no scroll gesture can push
+ * the back/language controls under the clock; the body keeps the gesture
+ * navigation bar clear via insets.bottom.
  */
 export function Screen({ children, title, scroll = true, back = false }: { children: ReactNode; title?: string; scroll?: boolean; back?: boolean }) {
   const { locale, setLocale } = useAcademy();
@@ -26,16 +27,19 @@ export function Screen({ children, title, scroll = true, back = false }: { child
   const BackIcon = isFa ? (isIOS ? ChevronRight : ArrowRight) : (isIOS ? ChevronLeft : ArrowLeft);
 
   const headerRow = (title || back) ? (
-    <View className={cn("flex-row items-center justify-between gap-2.5", isFa && "flex-row-reverse")}>
+    <View
+      className="flex-row items-center gap-1.5 border border-border bg-card"
+      style={{ borderRadius: 999, paddingHorizontal: 6, paddingVertical: 6 }}
+    >
       {back ? (
         <IconButton onPress={() => router.back()} accessibilityLabel="Back">
           <BackIcon size={isIOS ? 23 : 20} color="#122C4F" />
         </IconButton>
       ) : (
-        <View style={{ width: 40, height: 40 }} />
+        <View style={{ width: 36, height: 36 }} />
       )}
       <Text
-        className="flex-1 text-center text-[16px] font-bold text-primary"
+        className="flex-1 text-center text-[15.5px] font-bold text-primary"
         numberOfLines={1}
         style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}
       >
@@ -46,13 +50,13 @@ export function Screen({ children, title, scroll = true, back = false }: { child
       </IconButton>
     </View>
   ) : (
-    // No header controls — still reserve the status-bar gap so screens that
-    // draw their own brand (models page) can never touch the clock either.
+    // No toolbar — still reserve the status-bar gap so screens that draw
+    // their own brand (models page) can never touch the clock either.
     <View style={{ height: 8 }} />
   );
 
   const body = (
-    <View className="flex-1 px-[18px] pb-7">
+    <View className="flex-1 px-[18px]" style={{ paddingBottom: insets.bottom + 26 }}>
       {children}
       <View className={cn("mt-9 flex-row items-start gap-2 border-t border-border pt-[18px]", isFa && "flex-row-reverse")}>
         <ShieldCheck size={17} color="#5C6878" />
@@ -66,7 +70,7 @@ export function Screen({ children, title, scroll = true, back = false }: { child
 
   return (
     <View className="flex-1" style={{ backgroundColor: "#F4F6F8" }}>
-      <View style={{ paddingTop: insets.top + 6, paddingHorizontal: 18, backgroundColor: "#F4F6F8" }}>
+      <View style={{ paddingTop: insets.top + 6, paddingHorizontal: 18, paddingBottom: 10, backgroundColor: "#F4F6F8" }}>
         {headerRow}
       </View>
       {scroll ? (
