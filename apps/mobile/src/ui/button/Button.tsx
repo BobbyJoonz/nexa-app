@@ -8,6 +8,22 @@ import { sizeClasses, variantClasses } from "./variants";
 import type { ButtonProps } from "./types";
 
 /**
+ * Inline fallbacks for the variant backgrounds. NativeWind resolves core
+ * classes correctly, but these guarantee the fill survives any runtime
+ * className-resolution edge case — a white-on-white button is the worst
+ * possible failure mode, so we belt-and-suspenders it.
+ */
+const inlineFill: Record<string, { backgroundColor?: string }> = {
+  default: { backgroundColor: "#122C4F" },
+  filled: { backgroundColor: "#122C4F" },
+  secondary: { backgroundColor: "#E8EDF2" },
+  destructive: { backgroundColor: "#B42318" },
+  danger: { backgroundColor: "#B42318" },
+  outline: {},
+  ghost: {}
+};
+
+/**
  * Unified Button (single implementation across platforms).
  *
  * Visual contract (shadcn-inspired, brand-mapped):
@@ -38,8 +54,9 @@ export function Button({
   return (
     <PressableSurface
       onPress={() => {
-        if (hapticFeedback) haptics.tap();
+        // Interaction FIRST — a haptics failure must never block the action.
         onPress();
+        if (hapticFeedback) haptics.tap();
       }}
       disabled={pressed}
       accessibilityRole="button"
@@ -48,6 +65,7 @@ export function Button({
       rippleColor={chrome.ripple}
       style={[
         {
+          backgroundColor: variantClasses(variant).container.includes("bg-transparent") ? undefined : inlineFill[variant]?.backgroundColor ?? "#122C4F",
           borderRadius: selectUI(12, 999),
           overflow: "hidden"
         },

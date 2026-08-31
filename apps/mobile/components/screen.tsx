@@ -1,55 +1,60 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { ChevronLeft, ChevronRight, ArrowLeft, ArrowRight, ShieldCheck, Info } from "lucide-react-native";
 import type { ReactNode } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAcademy } from "@/providers/academy-provider";
-import { localizedRow, localizedTextStyle, theme } from "@/theme";
-import { dirIconName } from "@/src/ui/direction";
 import { isIOS } from "@/src/ui/platform";
 import { IconButton } from "@/src/ui/icon-button";
 import { FeedbackRow } from "@/src/ui/feedback";
+import { cn } from "@/src/ui/cn";
 
-export function Screen({
-  children,
-  title,
-  scroll = true,
-  back = false
-}: {
-  children: ReactNode;
-  title?: string;
-  scroll?: boolean;
-  back?: boolean;
-}) {
+/**
+ * Reusable screen shell — the single layout every routed page uses.
+ * Header with back arrow + language toggle, content area, disclaimer, feedback.
+ * Fully NativeWind + Lucide; RTL handled via locale-driven class switching.
+ */
+export function Screen({ children, title, scroll = true, back = false }: { children: ReactNode; title?: string; scroll?: boolean; back?: boolean }) {
   const { locale, setLocale } = useAcademy();
+  const isFa = locale === "fa";
+  const insets = useSafeAreaInsets();
+
+  const BackIcon = isFa ? (isIOS ? ChevronRight : ArrowRight) : (isIOS ? ChevronLeft : ArrowLeft);
+
   const content = (
-    <View style={styles.content}>
+    <View
+      className="flex-1 px-[18px] pb-7"
+      // Explicit native insets — never rely on interop/safe-area wrappers
+      // for the status-bar gap (header must never sit under the clock).
+      style={{ paddingTop: insets.top + 8 }}
+    >
       {(title || back) && (
-        <View style={[styles.header, localizedRow(locale)]}>
+        <View className={cn("flex-row items-center justify-between gap-2.5 mb-1", isFa && "flex-row-reverse")}>
           {back ? (
             <IconButton onPress={() => router.back()} accessibilityLabel="Back">
-              <Ionicons
-                name={dirIconName(
-                  locale,
-                  isIOS ? "chevron-back" : "arrow-back",
-                  isIOS ? "chevron-forward" : "arrow-forward"
-                )}
-                size={isIOS ? 23 : 20}
-                color={theme.colors.brandPrimary}
-              />
+              <BackIcon size={isIOS ? 23 : 20} color="#122C4F" />
             </IconButton>
-          ) : <View style={styles.iconButton} />}
-          <Text style={[styles.headerTitle, localizedTextStyle(locale)]} numberOfLines={1}>{title}</Text>
-          <IconButton tone="technical" accessibilityLabel="Toggle language" onPress={() => void setLocale(locale === "fa" ? "en" : "fa")}>
-            <Text style={styles.localeButtonText}>{locale === "fa" ? "EN" : "فا"}</Text>
+          ) : (
+            <View style={{ width: 40, height: 40 }} />
+          )}
+          <Text
+            className="flex-1 text-center text-[16px] font-bold text-primary"
+            numberOfLines={1}
+            style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}
+          >
+            {title}
+          </Text>
+          <IconButton tone="technical" accessibilityLabel="Toggle language" onPress={() => void setLocale(isFa ? "en" : "fa")}>
+            <Text className="text-[12px] font-bold text-primary">{isFa ? "EN" : "فا"}</Text>
           </IconButton>
         </View>
       )}
       {children}
-      <View style={[styles.disclaimer, localizedRow(locale)]}>
-        <Ionicons name="shield-checkmark-outline" size={17} color={theme.colors.textSecondary} />
-        <Text style={[styles.disclaimerText, localizedTextStyle(locale)]}>
-          {locale === "fa" ? "راهنمای آموزشی است و جایگزین دفترچه رسمی یا نصاب متخصص نیست." : "Educational companion only. It does not replace the official manual or a qualified installer."}
+      <View className={cn("mt-9 flex-row items-start gap-2 border-t border-border pt-[18px]", isFa && "flex-row-reverse")}>
+        <ShieldCheck size={17} color="#5C6878" />
+        <Text className="flex-1 text-[10px] leading-[17px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+          {isFa ? "راهنمای آموزشی است و جایگزین دفترچه رسمی یا نصاب متخصص نیست." : "Educational companion only. It does not replace the official manual or a qualified installer."}
         </Text>
       </View>
       <FeedbackRow context={typeof title === "string" ? title : undefined} />
@@ -57,32 +62,17 @@ export function Screen({
   );
 
   return (
-    <SafeAreaView style={styles.safe}>
-      {scroll ? <ScrollView contentContainerStyle={styles.scroll}>{content}</ScrollView> : content}
-    </SafeAreaView>
+    <View className="flex-1 bg-background">
+      {scroll ? <ScrollView contentContainerStyle={{ flexGrow: 1 }}>{content}</ScrollView> : content}
+    </View>
   );
 }
 
 export function MobileBrand() {
   return (
-    <View style={styles.brand}>
-      <Image source={require("../assets/nexa-logo.png")} style={styles.logo} contentFit="contain" />
-      <Text style={styles.brandText}>SUNVERTER ACADEMY</Text>
+    <View className="items-center gap-[7px]">
+      <Image source={require("../assets/nexa-logo.png")} style={{ width: 126, height: 48 }} contentFit="contain" />
+      <Text className="text-[9px] font-bold tracking-[1.7px] text-muted-foreground">SUNVERTER ACADEMY</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: theme.colors.canvas },
-  scroll: { flexGrow: 1 },
-  content: { flex: 1, paddingHorizontal: 18, paddingBottom: 28 },
-  header: { alignItems: "center", justifyContent: "space-between", minHeight: 64, gap: 10 },
-  headerTitle: { flex: 1, color: theme.colors.brandPrimary, fontSize: 16, fontWeight: "700", textAlign: "center" },
-  iconButton: { width: 40, height: 40 },
-  localeButtonText: { color: theme.colors.brandPrimary, fontWeight: "700", fontSize: 12 },
-  disclaimer: { gap: 8, alignItems: "flex-start", marginTop: 36, paddingTop: 18, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors.borderSubtle },
-  disclaimerText: { flex: 1, color: theme.colors.textSecondary, fontSize: 10, lineHeight: 17 },
-  brand: { alignItems: "center", gap: 7 },
-  logo: { width: 126, height: 48 },
-  brandText: { color: theme.colors.textSecondary, fontSize: 9, fontWeight: "700", letterSpacing: 1.7 }
-});

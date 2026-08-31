@@ -1,7 +1,6 @@
 import type { ComponentProps } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, StyleSheet } from "react-native";
-import { cssInterop } from "nativewind";
 import { ui, isIOS } from "./platform";
 
 type NativePressableProps = ComponentProps<typeof Pressable>;
@@ -12,17 +11,22 @@ type NativePressableProps = ComponentProps<typeof Pressable>;
  *   backgrounds cannot hide it) — callers add `overflow: "hidden"` when rounded.
  * - iOS: pressed-state opacity dim per HIG (no ripple).
  *
- * NativeWind-compatible: `className` is accepted and forwarded to the inner
- * Pressable (via cssInterop) alongside the `style` prop.
+ * NativeWind compatibility (critical): this component forwards `className`
+ * to the CORE react-native Pressable, which NativeWind auto-registers.
+ * We deliberately do NOT wrap it with cssInterop() — custom cssInterop
+ * wrappers lost className styles at runtime (empty buttons, missing
+ * backgrounds) while core components styled correctly in production.
  */
 export interface PressableSurfaceProps extends Omit<NativePressableProps, "style" | "android_ripple"> {
   /** Ripple tint on Android; ignored on iOS. */
   rippleColor?: string;
+  /** Forwarded to the core Pressable (NativeWind auto-resolves it). */
+  className?: string;
   /** Accepts a plain style or a pressed-state style function (boolean form). */
   style?: StyleProp<ViewStyle> | ((pressed: boolean) => StyleProp<ViewStyle>);
 }
 
-function PressableSurfaceBase({ rippleColor, style, children, ...rest }: PressableSurfaceProps) {
+export function PressableSurface({ rippleColor, style, children, ...rest }: PressableSurfaceProps) {
   return (
     <Pressable
       {...rest}
@@ -37,9 +41,6 @@ function PressableSurfaceBase({ rippleColor, style, children, ...rest }: Pressab
     </Pressable>
   );
 }
-
-/** Maps className → style so callers can style this surface with NativeWind. */
-export const PressableSurface = cssInterop(PressableSurfaceBase, { className: "style" });
 
 const styles = StyleSheet.create({
   dim: { opacity: ui.pressDim }

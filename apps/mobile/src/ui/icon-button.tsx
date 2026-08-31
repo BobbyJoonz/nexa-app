@@ -1,11 +1,14 @@
 import type { ReactNode } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
-import { StyleSheet } from "react-native";
+import { cn } from "./cn";
 import { haptics } from "./haptics";
 import { ui } from "./platform";
 import { PressableSurface } from "./pressable-surface";
 
-/** Circular icon control used in headers and overlays. iOS 44pt / Android 48dp minimum target. */
+/**
+ * Circular icon control used in headers and overlays. iOS 44pt / Android 48dp minimum target.
+ * Styling is NativeWind; tones map to semantic tokens.
+ */
 export function IconButton({
   onPress,
   children,
@@ -29,8 +32,9 @@ export function IconButton({
   return (
     <PressableSurface
       onPress={() => {
-        if (hapticFeedback) haptics.tap();
+        // Interaction FIRST — a haptics failure must never block the action.
         onPress();
+        if (hapticFeedback) haptics.tap();
       }}
       disabled={disabled}
       accessibilityRole="button"
@@ -38,23 +42,16 @@ export function IconButton({
       accessibilityState={{ disabled: Boolean(disabled) }}
       rippleColor="rgba(13,34,62,.10)"
       style={[
-        styles.base,
         {
           width: dimension,
           height: dimension,
-          borderRadius: Math.round(dimension / 2),
-          backgroundColor: tone === "technical" ? "#E8EDF2" : "#FFFFFF"
+          borderRadius: Math.round(dimension / 2)
         },
-        disabled && styles.disabled,
         style
       ]}
+      className={cn("items-center justify-center overflow-hidden", tone === "raised" ? "bg-card" : "bg-secondary", disabled && "opacity-45")}
     >
       {children}
     </PressableSurface>
   );
 }
-
-const styles = StyleSheet.create({
-  base: { alignItems: "center", justifyContent: "center", overflow: "hidden" },
-  disabled: { opacity: 0.45 }
-});

@@ -39,6 +39,7 @@ export default function ModelsScreen() {
         accessibilityRole="button"
         accessibilityLabel={verified.modelName.value ?? undefined}
         className="overflow-hidden rounded-panel border border-border bg-card shadow-card"
+        style={{ borderRadius: 20, overflow: "hidden" }}
       >
         <View className="h-[360px] items-center justify-end bg-secondary">
           <Image source={require("../assets/nexa-product-mobile.webp")} className="w-[75%] h-[94%]" contentFit="contain" />
@@ -62,38 +63,56 @@ export default function ModelsScreen() {
             label={isFa ? "مشاهده این مدل" : "Explore this model"}
             trailing={<ExploreIcon size={18} color="#FFFFFF" />}
             onPress={() => router.push(`/academy/${verified.slug}`)}
-            style={{ marginTop: 22 }}
+            style={{ marginTop: 22, borderRadius: 12, overflow: "hidden" }}
           />
         </View>
       </PressableSurface>
 
-      <Button
-        variant="ghost"
-        block
-        label={isFa ? "ماشین‌حساب سازگاری دستگاه" : "Device sizing calculator"}
-        leading={<Calculator size={17} color="#122C4F" />}
-        trailing={<ChevronIcon size={16} color="#CCD5DE" />}
-        onPress={() => router.push("/calculator")}
-        style={{ marginTop: 12 }}
-      />
-      <Button
-        variant="ghost"
-        block
-        label={isFa ? "جست‌وجو و مرجع کد خطا" : "Search & fault reference"}
-        leading={<Search size={17} color="#122C4F" />}
-        trailing={<ChevronIcon size={16} color="#CCD5DE" />}
-        onPress={() => router.push("/search")}
-        style={{ marginTop: 8 }}
-      />
-      <Button
-        variant="ghost"
-        block
-        label={isFa ? "چک‌لیست راه‌اندازی" : "Commissioning checklist"}
-        leading={<ListChecks size={17} color="#122C4F" />}
-        trailing={<ChevronIcon size={16} color="#CCD5DE" />}
-        onPress={() => router.push("/checklist")}
-        style={{ marginTop: 8 }}
-      />
+      <View className="mt-3">
+        {[
+          {
+            icon: Calculator,
+            label: isFa ? "ماشین‌حساب سازگاری دستگاه" : "Device sizing calculator",
+            hint: isFa ? "توان و باتری مناسب را محاسبه کنید" : "Size power and battery",
+            route: "/calculator"
+          },
+          {
+            icon: Search,
+            label: isFa ? "جست‌وجو و مرجع کد خطا" : "Search & fault reference",
+            hint: isFa ? "کد خطا را سریع پیدا کنید" : "Find fault codes fast",
+            route: "/search"
+          },
+          {
+            icon: ListChecks,
+            label: isFa ? "چک‌لیست راه‌اندازی" : "Commissioning checklist",
+            hint: isFa ? "مرحله‌به‌مرحله راه‌اندازی" : "Step-by-step startup",
+            route: "/checklist"
+          }
+        ].map(({ icon: Icon, label, hint, route }) => (
+          <PressableSurface
+            key={route}
+            onPress={() => router.push(route as never)}
+            accessibilityRole="button"
+            accessibilityLabel={label}
+            rippleColor="#0D223E14"
+            className="mt-2.5 flex-row items-center gap-3 rounded-panel border border-border bg-card px-4 py-3.5"
+            style={{ borderRadius: 16, overflow: "hidden" }}
+          >
+            <View className="h-10 w-10 items-center justify-center rounded-[12px] bg-secondary">
+              <Icon size={19} color="#122C4F" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-[13.5px] font-bold text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+                {label}
+              </Text>
+              <Text className="mt-0.5 text-[10.5px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+                {hint}
+              </Text>
+            </View>
+            <ChevronIcon size={17} color="#CCD5DE" />
+          </PressableSurface>
+        ))}
+      </View>
     </Screen>
   );
 }

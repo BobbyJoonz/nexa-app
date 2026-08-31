@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import { ArrowLeft, ArrowRight } from "lucide-react-native";
 import { Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { t } from "@nexa/i18n";
 import { MobileBrand } from "@/components/screen";
 import { useAcademy } from "@/providers/academy-provider";
@@ -13,19 +13,24 @@ import { isIOS } from "@/src/ui/platform";
 export default function LanguageScreen() {
   const { locale, setLocale } = useAcademy();
   const isFa = locale === "fa";
+  const insets = useSafeAreaInsets();
   const choose = (target: "fa" | "en") => {
-    void setLocale(target);
+    try {
+      void setLocale(target);
+    } catch {
+      // Never let a storage hiccup block navigation.
+    }
     router.push("/models");
   };
 
   const ForwardIcon = dirIcon(locale, ArrowRight, ArrowLeft);
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
       <View className="flex-[1.08] items-center justify-center overflow-hidden bg-primary-strong">
         <View className="absolute h-[340px] w-[340px] rounded-full border border-dashed border-white/28" />
         <Image source={require("../assets/nexa-product-mobile.webp")} className="w-[66%] h-[88%]" contentFit="contain" />
-        <View className="absolute bottom-6 right-5 min-w-[110px] rounded-[10px] border border-white/22 bg-[#0D223E]/82 p-3">
+        <View className="absolute bottom-6 right-5 min-w-[110px] rounded-[10px] border border-white/22 bg-primary-strong/82 p-3">
           <Text className="text-[8px] font-bold tracking-[1.5px] text-white/58">POWER</Text>
           <Text className="text-[18px] font-bold text-white">3.5 kW</Text>
         </View>
@@ -44,9 +49,9 @@ export default function LanguageScreen() {
         >
           {t(locale, "language.subtitle")}
         </Text>
-        <Button variant="filled" block label={t(locale, "language.selfFa")} trailing={<ForwardIcon size={isIOS ? 20 : 19} color="#FFFFFF" />} onPress={() => choose("fa")} accessibilityLabel={t(locale, "language.ctaFa")} />
-        <Button variant="secondary" block label={t(locale, "language.selfEn")} trailing={<ForwardIcon size={isIOS ? 20 : 19} color="#122C4F" />} onPress={() => choose("en")} accessibilityLabel={t(locale, "language.ctaEn")} />
+        <Button variant="filled" block label={t(locale, "language.selfFa")} trailing={<ForwardIcon size={isIOS ? 20 : 19} color="#FFFFFF" />} onPress={() => choose("fa")} accessibilityLabel={t(locale, "language.ctaFa")} style={{ backgroundColor: "#122C4F", borderRadius: 12, overflow: "hidden" }} />
+        <Button variant="secondary" block label={t(locale, "language.selfEn")} trailing={<ForwardIcon size={isIOS ? 20 : 19} color="#122C4F" />} onPress={() => choose("en")} accessibilityLabel={t(locale, "language.ctaEn")} style={{ backgroundColor: "#E8EDF2", borderRadius: 12, overflow: "hidden" }} />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

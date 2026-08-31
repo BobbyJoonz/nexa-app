@@ -1,4 +1,7 @@
 import "../global.css";
+// MUST be imported before any screen renders: registers expo-image with
+// NativeWind cssInterop so className-based sizing/colors apply to expo-image.
+import "@/src/ui/nativewind-setup";
 import {
   Vazirmatn_400Regular,
   Vazirmatn_500Medium,
@@ -8,9 +11,9 @@ import {
 import { Stack, router, type ErrorBoundaryProps } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useRef, useState } from "react";
+import { default as React, useEffect, useRef, useState } from "react";
 import { Image } from "expo-image";
-import { BackHandler, Pressable, Text, View } from "react-native";
+import { BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "@nexa/i18n";
 import { NexaLoader } from "@/components/nexa-loader";
@@ -62,7 +65,7 @@ function AppBootstrap() {
       />
       {showExitHint ? (
         <View pointerEvents="none" className="absolute inset-x-0 bottom-16 z-[999] items-center">
-          <View className="rounded-pill px-[18px] py-[11px] bg-[rgba(13,34,62,0.92)] shadow-card">
+          <View className="rounded-pill px-[18px] py-[11px] bg-primary-strong/92 shadow-card">
             <Text className="font-medium text-[13px] text-white" style={{ writingDirection: "rtl" }}>
               {t(locale, "common.exitHint")}
             </Text>
@@ -90,47 +93,161 @@ export default function RootLayout() {
     if (fontsLoaded || fontError) void SplashScreen.hideAsync().catch(() => undefined);
   }, [fontError, fontsLoaded]);
 
-  if (!fontsLoaded && !fontError) return null;
+  // Safety net: hide the splash after 3s even if fonts haven't loaded yet,
+  // so the app never stays stuck on a gray native splash screen.
+  // (Must be registered BEFORE any conditional return — Rules of Hooks.)
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      void SplashScreen.hideAsync().catch(() => undefined);
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  // While fonts load, render the loader card (pure RN Animated, no Reanimated).
+  // Never return null — a null root leaves the gray native splash visible.
+  if (!fontsLoaded && !fontError) {
+    return <NexaLoader />;
+  }
 
   return (
-    <AcademyProvider>
-      <AppBootstrap />
-    </AcademyProvider>
+    <LayoutGuard>
+      <AcademyProvider>
+        <AppBootstrap />
+      </AcademyProvider>
+    </LayoutGuard>
   );
+}
+
+/**
+ * Class-based error boundary INSIDE the root layout.
+ * expo-router's exported ErrorBoundary only covers the layout's child
+ * screens — errors thrown while rendering AcademyProvider, AppBootstrap,
+ * NexaLoader or the fonts guard would otherwise propagate to the React root
+ * and unmount the whole tree (eternal gray screen in release builds).
+ *
+ * Deliberately uses React.createElement + plain StyleSheet objects (no JSX,
+ * no NativeWind) so this guard can still render when css-interop itself is
+ * the thing that broke. The error message is shown in release too — visible
+ * diagnostics beat a silent gray screen.
+ */
+class LayoutGuard extends React.Component<
+  { children: React.ReactNode },
+  { error: Error | null }
+> {
+  state: { error: Error | null } = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, info: unknown) {
+    captureException(error, { boundary: "layout-guard", info: String(info) });
+  }
+
+  render() {
+    if (this.state.error) {
+      const message = this.state.error?.message ?? String(this.state.error);
+      return React.createElement(
+        SafeAreaView,
+        { style: eb.root },
+        React.createElement(
+          View,
+          { style: eb.card },
+          React.createElement(Image, {
+            source: require("../assets/nexa-logo.png"),
+            style: { width: 156, height: 58 },
+            contentFit: "contain",
+          }),
+          React.createElement(View, { style: eb.rule }),
+          React.createElement(
+            Text,
+            { style: [eb.title, { writingDirection: "rtl" }] },
+            t("fa", "error.title")
+          ),
+          React.createElement(
+            Text,
+            { style: [eb.body, { writingDirection: "rtl" }] },
+            t("fa", "error.body")
+          ),
+          React.createElement(Text, { selectable: true, style: eb.debug }, message),
+          React.createElement(
+            Pressable,
+            {
+              style: eb.button,
+              onPress: () => this.setState({ error: null }),
+              accessibilityRole: "button",
+            },
+            React.createElement(
+              Text,
+              { style: eb.buttonLabel },
+              t("fa", "error.retry")
+            )
+          )
+        )
+      );
+    }
+    return this.props.children;
+  }
 }
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
-  // JS-only, provider-free capture: the boundary itself must never depend on a
+  // JS-only, provider-free capture: the boundary must never depend on a
   // broken tree. No-op until Sentry is configured.
   captureException(error, { boundary: "root", message: error.message });
-  // Provider-free locale: the boundary must render even when the provider tree
-  // is broken, so we use the pure dictionary with the fa default — the exact
-  // behavior shipped today (localized boundary remains a backlog item).
-  const locale = "fa" as const;
-  return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-background p-5">
-      <View className="w-full max-w-[430px] items-center rounded-panel border border-border bg-card p-7 shadow-card">
-        <Image source={require("../assets/nexa-logo.png")} style={{ width: 156, height: 58 }} contentFit="contain" />
-        <View className="my-6 h-[3px] w-[34px] rounded-full bg-accent" />
-        <Text className="text-center text-[22px] font-bold text-primary" style={{ writingDirection: "rtl" }}>
-          {t(locale, "error.title")}
-        </Text>
-        <Text className="mt-3 text-center font-medium text-[13px] leading-[23px] text-muted-foreground" style={{ writingDirection: "rtl" }}>
-          {t(locale, "error.body")}
-        </Text>
-        {__DEV__ ? (
-          <Text selectable className="mt-4 w-full rounded-lg bg-[#FFF1F0] p-2.5 text-[10px] text-destructive">
-            {error.message}
-          </Text>
-        ) : null}
-        <Pressable
-          className="mt-6 h-[50px] w-full items-center justify-center rounded-control bg-primary"
-          onPress={retry}
-          accessibilityRole="button"
-        >
-          <Text className="font-medium text-[14px] text-white">{t(locale, "error.retry")}</Text>
-        </Pressable>
-      </View>
-    </SafeAreaView>
+  // Pure createElement + plain StyleSheet — NOT NativeWind JSX — so this
+  // boundary still renders even if the css-interop JSX wrapper is what broke.
+  return React.createElement(
+    SafeAreaView,
+    { style: eb.root },
+    React.createElement(
+      View,
+      { style: eb.card },
+      React.createElement(Image, {
+        source: require("../assets/nexa-logo.png"),
+        style: { width: 156, height: 58 },
+        contentFit: "contain",
+      }),
+      React.createElement(View, { style: eb.rule }),
+      React.createElement(
+        Text,
+        { style: [eb.title, { writingDirection: "rtl" }] },
+        t("fa", "error.title")
+      ),
+      React.createElement(
+        Text,
+        { style: [eb.body, { writingDirection: "rtl" }] },
+        t("fa", "error.body")
+      ),
+      __DEV__
+        ? React.createElement(
+            Text,
+            { selectable: true, style: eb.debug },
+            error.message
+          )
+        : null,
+      React.createElement(
+        Pressable,
+        {
+          style: ({ pressed }: { pressed: boolean }) => [
+            eb.button,
+            pressed && { opacity: 0.8 },
+          ],
+          onPress: retry,
+          accessibilityRole: "button",
+        },
+        React.createElement(Text, { style: eb.buttonLabel }, t("fa", "error.retry"))
+      )
+    )
   );
 }
+
+const eb = StyleSheet.create({
+  root: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#F4F6F8", padding: 20 },
+  card: { width: "100%", maxWidth: 430, alignItems: "center", borderRadius: 16, borderWidth: 1, borderColor: "#CCD5DE", backgroundColor: "#FBFCFD", padding: 28, shadowColor: "#0D223E", shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.12, shadowRadius: 24, elevation: 5 },
+  rule: { height: 3, width: 34, borderRadius: 2, backgroundColor: "#891525", marginVertical: 24 },
+  title: { textAlign: "center", fontSize: 22, fontWeight: "700", color: "#122C4F" },
+  body: { marginTop: 12, textAlign: "center", fontSize: 13, lineHeight: 23, fontWeight: "500", color: "#5C6878" },
+  debug: { marginTop: 16, width: "100%", borderRadius: 8, backgroundColor: "#FFF1F0", padding: 10, fontSize: 10, color: "#B42318" },
+  button: { marginTop: 24, height: 50, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 10, backgroundColor: "#122C4F" },
+  buttonLabel: { fontSize: 14, fontWeight: "500", color: "#FFFFFF" }
+});

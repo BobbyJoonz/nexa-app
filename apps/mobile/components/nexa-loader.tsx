@@ -1,31 +1,26 @@
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AccessibilityInfo,
+  Animated,
   Easing,
   StyleSheet,
   Text,
   View,
   type LayoutChangeEvent
 } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming
-} from "react-native-reanimated";
 import { theme } from "@/theme";
 
 const LOGO_ASPECT_RATIO = 657 / 241;
 
 /**
- * Branded loading screen shown from the very first frame.
- * - Progress reveal + track fill animated with Reanimated (worklets-based).
- * - Respects the OS reduce-motion preference (jumps straight to 100%).
- * - Static layout uses NativeWind classes; the animated reveal uses Reanimated styles.
+ * Branded loading screen — plain RN Animated (no Reanimated).
+ * v1.2.3 approach: reliable, no native module init, no worklets.
+ * Reverted from Reanimated 4 to eliminate module-scope crash hypothesis.
  */
 export function NexaLoader() {
-  const progress = useSharedValue(0);
-  const logoWidthSV = useSharedValue(0);
+  const progress = useRef(new Animated.Value(0)).current;
+  const logoWidth = useRef(new Animated.Value(0)).current;
   const [measuredWidth, setMeasuredWidth] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -43,29 +38,23 @@ export function NexaLoader() {
 
   useEffect(() => {
     if (reduceMotion) {
-      progress.value = 1;
+      progress.setValue(1);
       return;
     }
     if (measuredWidth === 0) return;
-    progress.value = withTiming(1, {
+    Animated.timing(progress, {
+      toValue: 1,
       duration: 4500,
-      easing: Easing.bezier(0.16, 1, 0.3, 1)
-    });
-  }, [measuredWidth, progress.value, reduceMotion]);
+      easing: Easing.bezier(0.16, 1, 0.3, 1),
+      useNativeDriver: false
+    }).start();
+  }, [measuredWidth, progress, reduceMotion]);
 
   const onLogoLayout = (event: LayoutChangeEvent) => {
     const w = Math.round(event.nativeEvent.layout.width);
-    logoWidthSV.value = w;
+    logoWidth.setValue(w);
     setMeasuredWidth(w);
   };
-
-  const logoRevealStyle = useAnimatedStyle(() => ({
-    width: progress.value * logoWidthSV.value
-  }));
-
-  const trackStyle = useAnimatedStyle(() => ({
-    width: `${progress.value * 100}%`
-  }));
 
   return (
     <View
@@ -96,7 +85,10 @@ export function NexaLoader() {
             <Animated.View
               style={[
                 { position: "absolute", top: 0, bottom: 0, left: 0, overflow: "hidden" },
-                logoRevealStyle
+                { width: progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, measuredWidth]
+                })}
               ]}
             >
               <Image
@@ -111,7 +103,10 @@ export function NexaLoader() {
             <Animated.View
               style={[
                 { height: "100%", borderRadius: 99, backgroundColor: theme.colors.brandAccent },
-                trackStyle
+                { width: progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: ["0%", "100%"]
+                })}
               ]}
             />
           </View>

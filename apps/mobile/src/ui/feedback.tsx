@@ -1,9 +1,9 @@
 import Constants from "expo-constants";
-import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
-import { StyleSheet, Text, View } from "react-native";
+import { MessageCircle, Mail, Send } from "lucide-react-native";
+import { Text, View } from "react-native";
 import { useAcademy } from "@/providers/academy-provider";
-import { localizedRow, theme } from "@/theme";
+import { cn } from "@/src/ui/cn";
 import { PressableSurface } from "./pressable-surface";
 
 /**
@@ -18,17 +18,18 @@ const FEEDBACK_TELEGRAM = "https://t.me/imma_bobby";
 
 export function FeedbackRow({ context }: { context?: string }) {
   const { locale } = useAcademy();
+  const isFa = locale === "fa";
   if (!FEEDBACK_EMAIL && !FEEDBACK_TELEGRAM) return null;
 
   const version = Constants.expoConfig?.version ?? "unknown";
-  const subject = locale === "fa" ? `خطای محتوایی — Sunverter Academy v${version}` : `Content correction — Sunverter Academy v${version}`;
+  const subject = isFa ? `خطای محتوایی — Sunverter Academy v${version}` : `Content correction — Sunverter Academy v${version}`;
   const bodyLines = [
-    locale === "fa" ? "صفحه/بخش:" : "Screen/section:",
+    isFa ? "صفحه/بخش:" : "Screen/section:",
     context ?? "-",
     "",
-    locale === "fa" ? "مشکل پیشنهادی:" : "Reported issue:",
+    isFa ? "مشکل پیشنهادی:" : "Reported issue:",
     "",
-    locale === "fa" ? "نسخهٔ برنامه:" : "App version:",
+    isFa ? "نسخهٔ برنامه:" : "App version:",
     version
   ];
   const body = encodeURIComponent(bodyLines.join("\n"));
@@ -42,34 +43,25 @@ export function FeedbackRow({ context }: { context?: string }) {
   };
 
   return (
-    <View style={[styles.row, localizedRow(locale)]}>
-      <Ionicons name="chatbubble-ellipses-outline" size={16} color={theme.colors.textSecondary} />
-      <Text style={[styles.label, locale === "fa" ? styles.rtlText : null]}>
-        {locale === "fa" ? "خطای محتوایی دیدید؟" : "Spotted a content error?"}
+    <View className={cn("mt-[18px] flex-row items-center gap-2 border-t border-border pt-4", isFa && "flex-row-reverse")}>
+      <MessageCircle size={16} color="#5C6878" />
+      <Text className="flex-1 text-[11px] text-muted-foreground" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+        {isFa ? "خطای محتوایی دیدید؟" : "Spotted a content error?"}
       </Text>
-      <View style={[styles.buttons, localizedRow(locale)]}>
+      <View className={cn("flex-row items-center gap-2", isFa && "flex-row-reverse")}>
         {FEEDBACK_EMAIL ? (
-          <PressableSurface onPress={openMail} accessibilityRole="button" accessibilityLabel="Email feedback" rippleColor={theme.colors.borderSubtle} style={styles.chip}>
-            <Ionicons name="mail-outline" size={14} color={theme.colors.brandPrimary} />
-            <Text style={styles.chipText}>{locale === "fa" ? "ایمیل" : "Email"}</Text>
+          <PressableSurface onPress={openMail} accessibilityRole="button" accessibilityLabel="Email feedback" rippleColor="#C9D3DE" className={cn("flex-row items-center gap-1.5 rounded-pill border border-border bg-card px-3", isFa && "flex-row-reverse")} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#CCD5DE", backgroundColor: "#FBFCFD", minHeight: 34, overflow: "hidden" }}>
+            <Mail size={14} color="#1D6F4E" />
+            <Text className="text-[11px] font-bold text-primary">{isFa ? "ایمیل" : "Email"}</Text>
           </PressableSurface>
         ) : null}
         {FEEDBACK_TELEGRAM ? (
-          <PressableSurface onPress={openTelegram} accessibilityRole="button" accessibilityLabel="Telegram feedback" rippleColor={theme.colors.borderSubtle} style={styles.chip}>
-            <Ionicons name="paper-plane-outline" size={14} color={theme.colors.brandPrimary} />
-            <Text style={styles.chipText}>{locale === "fa" ? "تلگرام" : "Telegram"}</Text>
+          <PressableSurface onPress={openTelegram} accessibilityRole="button" accessibilityLabel="Telegram feedback" rippleColor="#C9D3DE" className={cn("flex-row items-center gap-1.5 rounded-pill border border-border bg-card px-3", isFa && "flex-row-reverse")} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#CCD5DE", backgroundColor: "#FBFCFD", minHeight: 34, overflow: "hidden" }}>
+            <Send size={14} color="#1D6F4E" />
+            <Text className="text-[11px] font-bold text-primary">{isFa ? "تلگرام" : "Telegram"}</Text>
           </PressableSurface>
         ) : null}
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  row: { alignItems: "center", gap: 8, marginTop: 18, paddingTop: 16, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors.borderSubtle },
-  label: { flex: 1, color: theme.colors.textSecondary, fontSize: 11 },
-  rtlText: { textAlign: "right", writingDirection: "rtl" },
-  buttons: { flexDirection: "row", gap: 8 },
-  chip: { overflow: "hidden", flexDirection: "row", alignItems: "center", gap: 6, minHeight: 34, paddingHorizontal: 12, borderRadius: theme.radii.pill, borderWidth: StyleSheet.hairlineWidth, borderColor: theme.colors.borderSubtle, backgroundColor: theme.colors.raised },
-  chipText: { color: theme.colors.brandPrimary, fontSize: 11, fontWeight: "700" }
-});

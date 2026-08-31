@@ -53,9 +53,9 @@ export default function AcademyScreen() {
 
   return (
     <Screen title={`${product.brand} ${product.modelName.value}`} back>
-      <View className="rounded-panel bg-primary-strong">
+      <View className="overflow-hidden rounded-panel bg-primary-strong" style={{ borderRadius: 20, overflow: "hidden" }}>
         <View className="flex-row">
-          <View className="flex-1 pt-5 pl-4 pr-4">
+          <View className="flex-1 pt-5 pl-4 pr-4 pb-4">
             <Text className="text-[9px] font-bold tracking-[1.5px] text-white/58">PRODUCT ACADEMY</Text>
             <Text className="mt-1 text-[22px] font-bold leading-7 text-white" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
               {isFa ? "سانورترت را بشناس." : "Know your Sunverter."}
@@ -78,33 +78,28 @@ export default function AcademyScreen() {
       </View>
 
       <View className={cn("mt-4 flex-row", isFa && "flex-row-reverse")}>
-        <Pressable
-          className="flex-1 items-center py-3 rounded-control bg-secondary mr-1"
-          onPress={() => router.push(`/lesson/anatomy?model=${product.slug}`)}
-        >
-          <Scan size={21} color="#122C4F" />
-          <Text className="mt-1 text-[11px] text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
-            {isFa ? "آناتومی" : "Anatomy"}
-          </Text>
-        </Pressable>
-        <Pressable
-          className="flex-1 items-center py-3 rounded-control bg-secondary mx-1"
-          onPress={() => router.push(`/lesson/troubleshooting?model=${product.slug}`)}
-        >
-          <Hammer size={21} color="#122C4F" />
-          <Text className="mt-1 text-[11px] text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
-            {isFa ? "رفع خطا" : "Troubleshoot"}
-          </Text>
-        </Pressable>
-        <Pressable
-          className="flex-1 items-center py-3 rounded-control bg-secondary ml-1"
-          onPress={() => router.push(`/lesson/quiz?model=${product.slug}`)}
-        >
-          <CircleCheck size={21} color="#122C4F" />
-          <Text className="mt-1 text-[11px] text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
-            {isFa ? "مرور" : "Review"}
-          </Text>
-        </Pressable>
+        {[
+          { icon: Scan, label: isFa ? "آناتومی" : "Anatomy", route: `/lesson/anatomy?model=${product.slug}` },
+          { icon: Hammer, label: isFa ? "رفع خطا" : "Troubleshoot", route: `/lesson/troubleshooting?model=${product.slug}` },
+          { icon: CircleCheck, label: isFa ? "مرور" : "Review", route: `/lesson/quiz?model=${product.slug}` }
+        ].map(({ icon: Icon, label, route }, i) => (
+          <Pressable
+            key={route}
+            className="flex-1 items-center rounded-[14px] bg-secondary py-3"
+            style={{
+              borderRadius: 14,
+              marginHorizontal: i === 0 ? (isFa ? 0 : 4) : 4,
+              overflow: "hidden"
+            }}
+            android_ripple={{ color: "#0D223E14", foreground: true, borderless: false }}
+            onPress={() => router.push(route as never)}
+          >
+            <Icon size={21} color="#122C4F" />
+            <Text className="mt-1 text-[11px] text-primary" style={{ writingDirection: isFa ? "rtl" : "ltr", textAlign: isFa ? "right" : "left" }}>
+              {label}
+            </Text>
+          </Pressable>
+        ))}
       </View>
 
       <View className="mt-6">
@@ -115,12 +110,11 @@ export default function AcademyScreen() {
             <Pressable
               key={item.id}
               onPress={() => router.push(`/lesson/${item.slug}?model=${product.slug}`)}
-              className={cn(
-                "flex-row items-center gap-3 py-3.5 border-b border-border",
-                isFa && "flex-row-reverse"
-              )}
+              className={cn("mt-2 flex-row items-center gap-3 rounded-[14px] border border-border bg-card px-3.5 py-3", isFa && "flex-row-reverse")}
+              style={{ borderRadius: 14, overflow: "hidden" }}
+              android_ripple={{ color: "#0D223E14", foreground: true, borderless: false }}
             >
-              <View className={cn("h-[42px] w-[42px] items-center justify-center rounded-[12px]", done ? "bg-success" : "bg-secondary")}>
+              <View className="h-[42px] w-[42px] items-center justify-center rounded-[12px]" style={{ borderRadius: 12, backgroundColor: done ? "#2F6F55" : "#E8EDF2" }}>
                 <LessonIcon size={20} color={done ? "#FFFFFF" : "#122C4F"} />
               </View>
               <View className="flex-1">
@@ -131,7 +125,7 @@ export default function AcademyScreen() {
                   {localize(item.summary, locale)}
                 </Text>
               </View>
-              {item.safetyCritical ? <View className="h-[7px] w-[7px] rounded-full bg-warning" /> : null}
+              {item.safetyCritical ? <View className="h-[7px] w-[7px] rounded-full bg-warning" style={{ borderRadius: 4, backgroundColor: "#B54708" }} /> : null}
               <Text className="text-[9px] font-bold text-[#9BA6B2]">{String(index + 1).padStart(2, "0")}</Text>
               <ChevronIcon size={16} color="#CCD5DE" />
             </Pressable>
