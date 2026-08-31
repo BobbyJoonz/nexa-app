@@ -10,7 +10,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef, useState } from "react";
 import { Image } from "expo-image";
-import { BackHandler, Pressable, Text, View } from "react-native";
+import { BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "@nexa/i18n";
 import { NexaLoader } from "@/components/nexa-loader";
@@ -90,7 +90,23 @@ export default function RootLayout() {
     if (fontsLoaded || fontError) void SplashScreen.hideAsync().catch(() => undefined);
   }, [fontError, fontsLoaded]);
 
-  if (!fontsLoaded && !fontError) return null;
+  // Safety net: hide the splash after 3s even if fonts haven't loaded yet,
+  // so the app never stays stuck on a gray native splash screen.
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      void SplashScreen.hideAsync().catch(() => undefined);
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  // Never return null — always render something so the user never sees a
+  // blank/gray screen. If fonts are still loading, show a minimal placeholder.
+  // This also ensures the native splash screen is dismissed after the 3s timeout.
+  if (!fontsLoaded && !fontError) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#F4F6F8" }} />
+    );
+  }
 
   return (
     <AcademyProvider>
@@ -107,30 +123,37 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   // is broken, so we use the pure dictionary with the fa default — the exact
   // behavior shipped today (localized boundary remains a backlog item).
   const locale = "fa" as const;
+  // Deliberately plain StyleSheet — NOT NativeWind — so this boundary still
+  // renders even if css-interop/NativeWind itself is what crashed.
   return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-background p-5">
-      <View className="w-full max-w-[430px] items-center rounded-panel border border-border bg-card p-7 shadow-card">
+    <SafeAreaView style={eb.root}>
+      <View style={eb.card}>
         <Image source={require("../assets/nexa-logo.png")} style={{ width: 156, height: 58 }} contentFit="contain" />
-        <View className="my-6 h-[3px] w-[34px] rounded-full bg-accent" />
-        <Text className="text-center text-[22px] font-bold text-primary" style={{ writingDirection: "rtl" }}>
-          {t(locale, "error.title")}
-        </Text>
-        <Text className="mt-3 text-center font-medium text-[13px] leading-[23px] text-muted-foreground" style={{ writingDirection: "rtl" }}>
-          {t(locale, "error.body")}
-        </Text>
+        <View style={eb.rule} />
+        <Text style={[eb.title, { writingDirection: "rtl" }]}>{t(locale, "error.title")}</Text>
+        <Text style={[eb.body, { writingDirection: "rtl" }]}>{t(locale, "error.body")}</Text>
         {__DEV__ ? (
-          <Text selectable className="mt-4 w-full rounded-lg bg-[#FFF1F0] p-2.5 text-[10px] text-destructive">
-            {error.message}
-          </Text>
+          <Text selectable style={eb.debug}>{error.message}</Text>
         ) : null}
         <Pressable
-          className="mt-6 h-[50px] w-full items-center justify-center rounded-control bg-primary"
+          style={({ pressed }) => [eb.button, pressed && { opacity: 0.8 }]}
           onPress={retry}
           accessibilityRole="button"
         >
-          <Text className="font-medium text-[14px] text-white">{t(locale, "error.retry")}</Text>
+          <Text style={eb.buttonLabel}>{t(locale, "error.retry")}</Text>
         </Pressable>
       </View>
     </SafeAreaView>
   );
 }
+
+const eb = StyleSheet.create({
+  root: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#F4F6F8", padding: 20 },
+  card: { width: "100%", maxWidth: 430, alignItems: "center", borderRadius: 16, borderWidth: 1, borderColor: "#CCD5DE", backgroundColor: "#FBFCFD", padding: 28, shadowColor: "#0D223E", shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.12, shadowRadius: 24, elevation: 5 },
+  rule: { height: 3, width: 34, borderRadius: 2, backgroundColor: "#891525", marginVertical: 24 },
+  title: { textAlign: "center", fontSize: 22, fontWeight: "700", color: "#122C4F" },
+  body: { marginTop: 12, textAlign: "center", fontSize: 13, lineHeight: 23, fontWeight: "500", color: "#5C6878" },
+  debug: { marginTop: 16, width: "100%", borderRadius: 8, backgroundColor: "#FFF1F0", padding: 10, fontSize: 10, color: "#B42318" },
+  button: { marginTop: 24, height: 50, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 10, backgroundColor: "#122C4F" },
+  buttonLabel: { fontSize: 14, fontWeight: "500", color: "#FFFFFF" }
+});
